@@ -1,14 +1,3 @@
-export interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-  }
-  
-  export interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-  }
-  
+import { CardanoQueryClient } from "@utxorpc/sdk";
+
+export type Utxo = Awaited<ReturnType<CardanoQueryClient["searchUtxosByAddress"]>>[number];

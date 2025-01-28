@@ -1,51 +1,57 @@
-import axios from "axios";
-import { User, Post } from "./types";
+import { Utxo } from "./types";
 import { SdkError } from "./errors";
 import { logger } from "./utils/logger";
 import { CardanoQueryClient } from "@utxorpc/sdk";
+import { cardano } from "@utxorpc/spec";
+import { toAddress } from "@meshsdk/core-csl";
 
-export class JsonPlaceholderClient {
+export class UtxorpcClient {
   private baseUrl: string;
+  private dmtr_api_key: string | undefined;
 
-  constructor(baseUrl: string = "https://jsonplaceholder.typicode.com") {
+  constructor(
+    baseUrl: string = "http://localhost:50051",
+    dmtr_api_key?: string
+  ) {
     this.baseUrl = baseUrl;
+    this.dmtr_api_key = dmtr_api_key;
   }
 
-  async getParams(): Promise<any> {
+  async getParams(): Promise<cardano.PParams> {
     try {
       logger.log("Fetching network params");
       const cardanoQueryClient = new CardanoQueryClient({
-        uri: "https://preprod.utxorpc-v0.demeter.run:443",
+        uri: this.baseUrl,
         headers: {
-          "dmtr-api-key": "...",
+          "dmtr-api-key": this.dmtr_api_key || "",
         },
       });
       const response = await cardanoQueryClient.readParams();
+      logger.log(JSON.stringify(response, null, 2));
       return response;
     } catch (error) {
+      logger.error(JSON.stringify(error, null, 2));
       throw new SdkError("Failed to fetch network params.");
     }
   }
 
-  async getUser(userId: number): Promise<User> {
+  async getUtxos(): Promise<Utxo[]> {
     try {
-      logger.log(`Fetching user ${userId}`);
-      const response = await axios.get<User>(`${this.baseUrl}/users/${userId}`);
-      return response.data;
+      logger.log("Fetching network params");
+      const cardanoQueryClient = new CardanoQueryClient({
+        uri: this.baseUrl,
+        headers: {
+          "dmtr-api-key": this.dmtr_api_key || "",
+        },
+      });
+      const addressBytes = toAddress("addr_test1xp4dc8aqq65n0ct64hp9s2jq8qqrm89zx9wgwj05ycrnpt9szypvq3txq55ca309x05w6wyqhvdtrrec3p2avmflgh0sgdlkwz").to_bytes();
+      const response = await cardanoQueryClient.searchUtxosByAddress(addressBytes);
+      logger.log(JSON.stringify(response, null, 2));
+      return response;
     } catch (error) {
-      throw new SdkError("Failed to fetch user data.");
+      logger.error(JSON.stringify(error, null, 2));
+      throw new SdkError("Failed to fetch utxos.");
     }
   }
 
-  async getUserPosts(userId: number): Promise<Post[]> {
-    try {
-      logger.log(`Fetching posts for user ${userId}`);
-      const response = await axios.get<Post[]>(
-        `${this.baseUrl}/users/${userId}/posts`
-      );
-      return response.data;
-    } catch (error) {
-      throw new SdkError("Failed to fetch user posts.");
-    }
-  }
 }

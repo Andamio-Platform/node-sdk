@@ -1,38 +1,43 @@
-import { JsonPlaceholderClient } from "../src/client";
+require('dotenv').config();  // Load environment variables from .env file
+
+import { UtxorpcClient } from "../src/client";
 import { CardanoQueryClient } from "@utxorpc/sdk";
 import { SdkError } from "../src/errors";  // Adjust the import path if needed
 import { logger } from "../src/utils/logger";  // Adjust the import path if needed
 
 jest.setTimeout(10000);  // Increase timeout in case of slower network responses
 
-describe("JsonPlaceholderClient", () => {
-  let client: JsonPlaceholderClient;
+describe("UtxorpcClient", () => {
+  let client: UtxorpcClient;
 
   beforeEach(() => {
-    client = new JsonPlaceholderClient(); // Create a new instance before each test
-  });
-
-  test("Client should fetch user data", async () => {
-    const user = await client.getUser(1);  // Fetch user with ID 1
-    expect(user).toHaveProperty("id");
-    expect(user.id).toBe(1);
-  });
-
-  test("Client should fetch user posts", async () => {
-    const posts = await client.getUserPosts(1);  // Fetch posts for user with ID 1
-    expect(Array.isArray(posts)).toBe(true);
-    expect(posts.length).toBeGreaterThan(0);
+    client = new UtxorpcClient(
+      "https://preprod.utxorpc-v0.demeter.run:443",
+      process.env.DMTR_API_KEY
+    );
   });
 
   test("Client should fetch network params", async () => {
     try {
-      const params = await client.getParams();  // Fetch network parameters
-      expect(params).toHaveProperty("protocolParams");
-      expect(params.protocolParams).toHaveProperty("maxTxSize");
+      const params = await client.getParams(); // Fetch network parameters
+      expect(params).toHaveProperty("governanceActionDeposit");
     } catch (error) {
-      // This will catch any errors thrown in getParams
       expect(error).toBeInstanceOf(SdkError);
-      expect(error.message).toBe("Failed to fetch network params.");
+      if (error instanceof SdkError) {
+        expect(error.message).toBe("Failed to fetch network params.");
+      }
+    }
+  });
+
+  test("Client should fetch utxos", async () => {
+    try {
+      const uxtos = await client.getUtxos();
+      expect(uxtos.length).toBeGreaterThan(1);
+    } catch (error) {
+      expect(error).toBeInstanceOf(SdkError);
+      if (error instanceof SdkError) {
+        expect(error.message).toBe("Failed to fetch utxos.");
+      }
     }
   });
 });
