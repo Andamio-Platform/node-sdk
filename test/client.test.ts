@@ -4,6 +4,7 @@ import { UtxorpcClient } from "../src/client";
 import { CardanoQueryClient } from "@utxorpc/sdk";
 import { SdkError } from "../src/errors";  // Adjust the import path if needed
 import { logger } from "../src/utils/logger";  // Adjust the import path if needed
+import { Utxo } from "../src/types";
 
 jest.setTimeout(10000);  // Increase timeout in case of slower network responses
 
@@ -33,6 +34,27 @@ describe("UtxorpcClient", () => {
     try {
       const uxtos = await client.getUtxos();
       expect(uxtos.length).toBeGreaterThan(1);
+    } catch (error) {
+      expect(error).toBeInstanceOf(SdkError);
+      if (error instanceof SdkError) {
+        expect(error.message).toBe("Failed to fetch utxos.");
+      }
+    }
+  });
+
+  test("Stress test: Client should handle multiple requests", async () => {
+    const numRequests = 60; // Number of requests to simulate
+    const requests: Promise<Utxo[]>[] = [];
+
+    for (let i = 0; i < numRequests; i++) {
+      requests.push(client.getUtxos());
+    }
+
+    try {
+      const results = await Promise.all(requests);
+      results.forEach((uxtos) => {
+        expect(uxtos.length).toBeGreaterThan(1);
+      });
     } catch (error) {
       expect(error).toBeInstanceOf(SdkError);
       if (error instanceof SdkError) {

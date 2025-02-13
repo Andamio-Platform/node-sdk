@@ -1,4 +1,4 @@
-import { JsonPlaceholderClient } from "./client";
+import { UtxorpcClient } from "./client";
 
-export default JsonPlaceholderClient;
+export default UtxorpcClient;
 export * from "./types";
