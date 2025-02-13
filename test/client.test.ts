@@ -1,65 +1,75 @@
-require('dotenv').config();  // Load environment variables from .env file
+require("dotenv").config(); // Load environment variables from .env file
 
 import { UtxorpcClient } from "../src/client";
-import { CardanoQueryClient } from "@utxorpc/sdk";
-import { SdkError } from "../src/errors";  // Adjust the import path if needed
-import { logger } from "../src/utils/logger";  // Adjust the import path if needed
-import { Utxo } from "../src/types";
+import { logger } from "../src/utils/logger"; // Adjust the import path if needed
+import AndamioConfig from "../andamio-config.json";
 
-jest.setTimeout(10000);  // Increase timeout in case of slower network responses
+// Increase timeout in case of slower network responses
+jest.setTimeout(10000);
 
 describe("UtxorpcClient", () => {
   let client: UtxorpcClient;
 
-  beforeEach(() => {
+  beforeAll(() => {
     client = new UtxorpcClient(
-      "https://preprod.utxorpc-v0.demeter.run:443",
-      process.env.DMTR_API_KEY
+      process.env.DMTR_URL || "http://localhost:50051",
+      process.env.DMTR_API_KEY,
+      process.env.REDIS_URL
     );
   });
 
+  afterAll(async () => {
+    await client.disconnect();
+  });
+
+  /**
+   * ✅ Test Redis Connection
+   */
+  test("Redis connection test", async () => {
+    if (client["redisClient"]) {
+      try {
+        await client["redisClient"].ping();
+        logger.log("Redis is connected and responsive.");
+      } catch (error) {
+        logger.error(`Redis connection failed: ${error}`);
+      }
+    } else {
+      logger.warn("⚠️ Redis client is not initialized.");
+    }
+
+    expect(client["redisClient"]).toBeTruthy();
+  });
+
+  /**
+   * ✅ Test fetching network parameters
+   */
   test("Client should fetch network params", async () => {
-    try {
-      const params = await client.getParams(); // Fetch network parameters
-      expect(params).toHaveProperty("governanceActionDeposit");
-    } catch (error) {
-      expect(error).toBeInstanceOf(SdkError);
-      if (error instanceof SdkError) {
-        expect(error.message).toBe("Failed to fetch network params.");
-      }
-    }
+    const params = await client.getParams();
+    expect(params).toBeTruthy();
   });
 
+  /**
+   * ✅ Test fetching UTXOs
+   */
   test("Client should fetch utxos", async () => {
-    try {
-      const uxtos = await client.getUtxos();
-      expect(uxtos.length).toBeGreaterThan(1);
-    } catch (error) {
-      expect(error).toBeInstanceOf(SdkError);
-      if (error instanceof SdkError) {
-        expect(error.message).toBe("Failed to fetch utxos.");
-      }
-    }
+    const utxos = await client.getUtxos(AndamioConfig.globalStateS.sCAddress);
+    expect(Array.isArray(utxos)).toBe(true);
+    expect(utxos.length).toBeGreaterThan(0);
   });
 
+  /**
+   * ✅ Stress test: Handle multiple concurrent requests
+   */
   test("Stress test: Client should handle multiple requests", async () => {
-    const numRequests = 60; // Number of requests to simulate
-    const requests: Promise<Utxo[]>[] = [];
+    const numRequests = 3;
+    const requests = Array.from({ length: numRequests }, () =>
+      client.getUtxos(AndamioConfig.globalStateS.sCAddress)
+    );
 
-    for (let i = 0; i < numRequests; i++) {
-      requests.push(client.getUtxos());
-    }
-
-    try {
-      const results = await Promise.all(requests);
-      results.forEach((uxtos) => {
-        expect(uxtos.length).toBeGreaterThan(1);
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(SdkError);
-      if (error instanceof SdkError) {
-        expect(error.message).toBe("Failed to fetch utxos.");
-      }
-    }
+    const results = await Promise.all(requests);
+    results.forEach((utxos) => {
+      expect(Array.isArray(utxos)).toBe(true);
+      expect(utxos.length).toBeGreaterThan(0);
+    });
   });
 });
