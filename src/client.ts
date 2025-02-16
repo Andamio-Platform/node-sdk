@@ -14,7 +14,7 @@ export class UtxorpcClient {
   constructor(
     private baseUrl: string,
     private dmtr_api_key?: string,
-    private redisUrl?: string
+    private redisUrl?: string,
   ) {
     // Initialize gRPC client (mandatory)
     this.cardanoQueryClient = new CardanoQueryClient({
@@ -70,12 +70,18 @@ export class UtxorpcClient {
     logger.log("Fetching UTXOs from gRPC...");
     try {
       const addressBytes = toAddress(address).to_bytes();
-      const response = await this.cardanoQueryClient.searchUtxosByAddress(addressBytes);
+      const response =
+        await this.cardanoQueryClient.searchUtxosByAddress(addressBytes);
       logger.log("UTXOs fetched");
 
       // Store in Redis if available
       if (this.isRedisAvailable && this.redisClient) {
-        await this.redisClient.set(cacheKey, JSON.stringify(response), "EX", 60);
+        await this.redisClient.set(
+          cacheKey,
+          JSON.stringify(response),
+          "EX",
+          60,
+        );
       }
 
       return response;
@@ -112,7 +118,12 @@ export class UtxorpcClient {
 
       // Store in Redis if available
       if (this.isRedisAvailable && this.redisClient) {
-        await this.redisClient.set(cacheKey, JSON.stringify(response), "EX", 300); // Cache for 5 mins
+        await this.redisClient.set(
+          cacheKey,
+          JSON.stringify(response),
+          "EX",
+          300,
+        ); // Cache for 5 mins
       }
 
       return response;

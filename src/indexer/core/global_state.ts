@@ -5,20 +5,19 @@ import { SdkError } from "~/errors";
 import { Utxo } from "~/types";
 
 export class GlobalState {
-    public address: string = AndamioConfig.globalStateS.sCAddress;
-    private client: UtxorpcClient = new UtxorpcClient(
-        env.BASE_URL,
-        env.DMTR_API_KEY,
-        env.REDIS_URL
-    );
+  public address: string = AndamioConfig.globalStateS.sCAddress;
+  private client: UtxorpcClient = new UtxorpcClient(
+    env.BASE_URL,
+    env.DMTR_API_KEY,
+    env.REDIS_URL,
+  );
 
-    async getUtxos(): Promise<Utxo[]> {
-        try {
-            const utxos = await this.client.getUtxos(this.address);
-            return utxos;
-        } catch (err) {
-            throw new SdkError(`Failed to fetch UTXOs: ${err}`);
-        }
+  async getUtxos(): Promise<Utxo[]> {
+    try {
+      const utxos = await this.client.getUtxos(this.address);
+      return utxos;
+    } catch (err) {
+      throw new SdkError(`Failed to fetch UTXOs: ${err}`);
     }
-
+  }
 }

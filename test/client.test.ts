@@ -8,11 +8,7 @@ describe("UtxorpcClient", () => {
   let client: UtxorpcClient;
 
   beforeAll(() => {
-    client = new UtxorpcClient(
-      env.BASE_URL,
-      env.DMTR_API_KEY,
-      env.REDIS_URL
-    );
+    client = new UtxorpcClient(env.BASE_URL, env.DMTR_API_KEY, env.REDIS_URL);
   });
 
   afterAll(async () => {
@@ -60,7 +56,7 @@ describe("UtxorpcClient", () => {
   test("Stress test: Client should handle multiple requests", async () => {
     const numRequests = 3;
     const requests = Array.from({ length: numRequests }, () =>
-      client.getUtxos(AndamioConfig.globalStateS.sCAddress)
+      client.getUtxos(AndamioConfig.globalStateS.sCAddress),
     );
 
     const results = await Promise.all(requests);
