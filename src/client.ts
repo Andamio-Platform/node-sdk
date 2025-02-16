@@ -12,7 +12,7 @@ export class UtxorpcClient {
   private cardanoQueryClient: CardanoQueryClient;
 
   constructor(
-    private baseUrl: string = "http://localhost:50051",
+    private baseUrl: string,
     private dmtr_api_key?: string,
     private redisUrl?: string
   ) {
@@ -25,8 +25,8 @@ export class UtxorpcClient {
     });
 
     // Initialize Redis client if URL is provided
-    if (redisUrl) {
-      this.redisClient = new Redis(redisUrl);
+    if (this.redisUrl) {
+      this.redisClient = new Redis(this.redisUrl);
 
       this.redisClient.on("connect", () => {
         this.isRedisAvailable = true;

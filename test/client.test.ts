@@ -1,20 +1,17 @@
-require("dotenv").config(); // Load environment variables from .env file
-
-import { UtxorpcClient } from "../src/client";
-import { logger } from "../src/utils/logger"; // Adjust the import path if needed
-import AndamioConfig from "../andamio-config.json";
+import UtxorpcClient from "../src";
+import { logger, AndamioConfig, env } from "../src";
 
 // Increase timeout in case of slower network responses
-jest.setTimeout(10000);
+// jest.setTimeout(10000);
 
 describe("UtxorpcClient", () => {
   let client: UtxorpcClient;
 
   beforeAll(() => {
     client = new UtxorpcClient(
-      process.env.DMTR_URL || "http://localhost:50051",
-      process.env.DMTR_API_KEY,
-      process.env.REDIS_URL
+      env.BASE_URL,
+      env.DMTR_API_KEY,
+      env.REDIS_URL
     );
   });
 
