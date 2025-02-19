@@ -12,7 +12,7 @@ export class Instance {
     env.REDIS_URL,
   );
 
-  async getUtxos(): Promise<Utxo[]> {
+  async getUtxos(policy?: string, filter?: string): Promise<Utxo[]> {
     try {
       const utxos = await this.client.getUtxos(this.address);
       return utxos;
