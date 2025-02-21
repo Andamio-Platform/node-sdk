@@ -1,16 +1,12 @@
 import AndamioConfig from "@andamio-config";
 import { UtxorpcClient } from "~/client";
-import { env } from "~/env";
 import { SdkError } from "~/errors";
-import { Utxo } from "~/types";
+import { Utxo, UtxorpcClientParams } from "~/types";
 
 export class Governance {
-  public address: string = AndamioConfig.governanceS.sCAddress;
-  private client: UtxorpcClient = new UtxorpcClient(
-    env.BASE_URL,
-    env.DMTR_API_KEY,
-    env.REDIS_URL,
-  );
+  public readonly address: string = AndamioConfig.governanceS.sCAddress;
+
+  constructor(private readonly client: UtxorpcClient) {}
 
   async getUtxos(): Promise<Utxo[]> {
     try {

@@ -1,89 +1,88 @@
-import { Utxo } from "./types";
+import { Utxo, UtxorpcClientParams, CacheConfig } from "./types";
 import { SdkError } from "./errors";
 import { logger } from "./utils/logger";
 import { CardanoQueryClient } from "@utxorpc/sdk";
 import { cardano } from "@utxorpc/spec";
 import { toAddress } from "@meshsdk/core-csl";
 import Redis from "ioredis";
+import { hexToBytes, stringToHex } from "@meshsdk/common";
+import { RedisManager } from "./redis";
 
 export class UtxorpcClient {
-  private redisClient: Redis | null = null;
-  private isRedisAvailable: boolean = false;
-  private cardanoQueryClient: CardanoQueryClient;
+  private readonly redisManager: RedisManager;
+  private readonly cardanoQueryClient: CardanoQueryClient;
+  private readonly cacheConfig: CacheConfig = {
+    utxoTtl: 60,     // 1 minute
+    paramsTtl: 300,  // 5 minutes
+  };
 
-  constructor(
-    private baseUrl: string,
-    private dmtr_api_key?: string,
-    private redisUrl?: string,
-  ) {
-    // Initialize gRPC client (mandatory)
-    this.cardanoQueryClient = new CardanoQueryClient({
-      uri: this.baseUrl,
+  constructor(private readonly params: UtxorpcClientParams) {
+    this.redisManager = new RedisManager(params.redisUrl);
+    this.cardanoQueryClient = this.initializeCardanoClient();
+  }
+
+  private initializeCardanoClient(): CardanoQueryClient {
+    return new CardanoQueryClient({
+      uri: this.params.baseUrl,
       headers: {
-        "dmtr-api-key": this.dmtr_api_key || "",
+        "dmtr-api-key": this.params.dmtr_api_key || "",
       },
     });
-
-    // Initialize Redis client if URL is provided
-    if (this.redisUrl) {
-      this.redisClient = new Redis(this.redisUrl);
-
-      this.redisClient.on("connect", () => {
-        this.isRedisAvailable = true;
-      });
-
-      this.redisClient.on("error", (err) => {
-        this.isRedisAvailable = false;
-        if (this.redisClient) {
-          this.redisClient.disconnect();
-        }
-        this.redisClient = null;
-      });
-
-      this.redisClient.on("end", () => {
-        this.isRedisAvailable = false;
-        this.redisClient = null;
-      });
-    }
   }
 
   /**
    * Fetch UTXOs for a given address with optional caching
    */
-  async getUtxos(address: string): Promise<Utxo[]> {
-    const cacheKey = `utxos:${address}`;
-
-    // Try fetching from Redis cache first
-    if (this.isRedisAvailable && this.redisClient) {
-      try {
-        const cachedData = await this.redisClient.get(cacheKey);
-        if (cachedData) {
-          logger.log("Returning cached UTXOs");
-          return JSON.parse(cachedData);
-        }
-      } catch (error) {
-        logger.error(`Redis read error: ${error}`);
-      }
+  async getUtxos(address: string, policy?: string, name?: string): Promise<Utxo[]> {
+    const cacheKey = this.buildUtxoCacheKey(address, policy, name);
+    
+    // Try cache first
+    const cachedData = await this.redisManager.get(cacheKey);
+    if (cachedData) {
+      logger.log("Returning cached UTXOs");
+      return JSON.parse(cachedData);
     }
 
-    // Fetch from gRPC if not cached or Redis is unavailable
+    // Fetch from gRPC
+    const utxos = await this.fetchUtxosFromGrpc(address, policy, name);
+    
+    // Cache the results
+    await this.redisManager.set(
+      cacheKey,
+      JSON.stringify(utxos),
+      this.cacheConfig.utxoTtl
+    );
+
+    return utxos;
+  }
+
+  private buildUtxoCacheKey(address: string, policy?: string, name?: string): string {
+    const parts = [`utxos:${address}`];
+    if (policy) parts.push(`policy:${policy}`);
+    if (name) parts.push(`name:${name}`);
+    return parts.join(':');
+  }
+
+  private async fetchUtxosFromGrpc(
+    address: string,
+    policy?: string,
+    name?: string
+  ): Promise<Utxo[]> {
     logger.log("Fetching UTXOs from gRPC...");
     try {
       const addressBytes = toAddress(address).to_bytes();
-      const response =
-        await this.cardanoQueryClient.searchUtxosByAddress(addressBytes);
-      logger.log("UTXOs fetched");
+      let response: Utxo[];
 
-      // Store in Redis if available
-      if (this.isRedisAvailable && this.redisClient) {
-        await this.redisClient.set(
-          cacheKey,
-          JSON.stringify(response),
-          "EX",
-          60,
-        );
+      if (policy || name) {
+        console.log("policy", policy)
+        console.log("name", name)
+        response = await this.fetchUtxosWithAsset(addressBytes, policy, name);
+        console.log("response", response)
+      } else {
+        response = await this.cardanoQueryClient.searchUtxosByAddress(addressBytes);
       }
 
+      logger.log("UTXOs fetched");
       return response;
     } catch (error) {
       logger.error(JSON.stringify(error, null, 2));
@@ -91,42 +90,48 @@ export class UtxorpcClient {
     }
   }
 
+  private async fetchUtxosWithAsset(
+    addressBytes: Uint8Array,
+    policy?: string,
+    name?: string
+  ): Promise<Utxo[]> {
+    const asset_policy = policy ? hexToBytes(policy) : undefined;
+    const asset_name = name ? hexToBytes(name) : undefined;
+    
+    return await this.cardanoQueryClient.searchUtxosByAddressWithAsset(
+      addressBytes,
+      asset_policy,
+      asset_name
+    );
+  }
+
   /**
    * Fetch network parameters with optional caching
    */
   async getParams(): Promise<cardano.PParams> {
-    const cacheKey = `network_params`;
-
-    // Try fetching from Redis cache first
-    if (this.isRedisAvailable && this.redisClient) {
-      try {
-        const cachedData = await this.redisClient.get(cacheKey);
-        if (cachedData) {
-          logger.log("Returning cached network params");
-          return JSON.parse(cachedData);
-        }
-      } catch (error) {
-        logger.error(`Redis read error: ${error}`);
-      }
+    const cacheKey = "network_params";
+    
+    // Try cache first
+    const cachedData = await this.redisManager.get(cacheKey);
+    if (cachedData) {
+      logger.log("Returning cached network params");
+      return JSON.parse(cachedData);
     }
 
-    // Fetch from gRPC if not cached or Redis is unavailable
+    // Fetch from gRPC
     logger.log("Fetching network params...");
     try {
-      const response = await this.cardanoQueryClient.readParams();
+      const params = await this.cardanoQueryClient.readParams();
       logger.log("Network params fetched");
 
-      // Store in Redis if available
-      if (this.isRedisAvailable && this.redisClient) {
-        await this.redisClient.set(
-          cacheKey,
-          JSON.stringify(response),
-          "EX",
-          300,
-        ); // Cache for 5 mins
-      }
+      // Cache the results
+      await this.redisManager.set(
+        cacheKey,
+        JSON.stringify(params),
+        this.cacheConfig.paramsTtl
+      );
 
-      return response;
+      return params;
     } catch (error) {
       logger.error(JSON.stringify(error, null, 2));
       throw new SdkError("Failed to fetch network params.");
@@ -134,16 +139,9 @@ export class UtxorpcClient {
   }
 
   /**
-   * Graceful shutdown: Disconnect Redis if connected
+   * Graceful shutdown
    */
   async disconnect(): Promise<void> {
-    if (this.isRedisAvailable && this.redisClient) {
-      try {
-        await this.redisClient.quit();
-        logger.log("Redis disconnected");
-      } catch (error) {
-        logger.error(`Error disconnecting Redis: ${error}`);
-      }
-    }
+    await this.redisManager.disconnect();
   }
 }
