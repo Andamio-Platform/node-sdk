@@ -13,7 +13,9 @@
     "paths": {
       "~/*": ["src/*"],
       "@andamio-config": ["./andamio-config.json"]
-    }
+    },
+    "skipLibCheck": true,
+    "strictNullChecks": false
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "test"]
