@@ -64,10 +64,3 @@ jobs:
           git add node-sdk
           git commit -m "Update node-sdk submodule to latest main commit $LATEST_COMMIT" || echo "No changes to commit"
           git push origin main
-
-      - name: Trigger docs-site workflow
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          repository: Andamio-Platform/docs-site
-          event-type: update-node-sdk
