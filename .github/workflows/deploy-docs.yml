@@ -29,17 +29,29 @@ jobs:
       - name: Update submodule to latest main
         working-directory: docs-site
         run: |
-          git submodule update --init --recursive
-          git submodule set-url path/to/node-sdk-submodule https://github.com/Andamio-Platform/node-sdk.git
-          git submodule set-branch --branch main path/to/node-sdk-submodule
-          git submodule update --remote --merge path/to/node-sdk-submodule
+          # Initialize submodules with HTTPS URLs
+          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "git@github.com:"
+          
+          # Make sure .gitmodules uses HTTPS
+          if [ -f .gitmodules ]; then
+            sed -i 's|git@github.com:|https://github.com/|g' .gitmodules
+          fi
+          
+          # Initialize and update the submodule
+          git submodule init
+          git submodule update
+          
+          # Set the submodule URL to HTTPS and update to latest main
+          git submodule set-url node-sdk https://github.com/Andamio-Platform/node-sdk.git
+          git submodule set-branch --branch main node-sdk
+          git submodule update --remote --merge node-sdk
 
       - name: Commit and push changes
         working-directory: docs-site
         run: |
           git add .
           git commit -m "Update node-sdk submodule to latest main" || echo "No changes to commit"
-          git push
+          git push origin main
 
       - name: Trigger docs-site workflow
         uses: peter-evans/repository-dispatch@v2
