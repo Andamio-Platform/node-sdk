@@ -1,43 +1,27 @@
 import { UtxorpcClient } from "./client";
-import {
-  AliasIndex,
-  GlobalState,
-  Governance,
-  Instance,
-} from "./indexer/core";
-import { Course } from "./indexer/core/course";
-import { UtxorpcClientParams } from "./types";
+import { Core } from "./indexer/core";
+import { UtxorpcClientParams } from "./types/types";
 
-export class CoreCourse {
-  public course: Course;
-
-  constructor(private readonly client: UtxorpcClient) {
-    this.course = new Course(this.client);
-  }
-}
-
-export class Core {
-  public aliasIndex: AliasIndex;
-  public globalState: GlobalState;
-  public governance: Governance;
-  public instance: Instance;
-
-  public course: CoreCourse;
-
-  constructor(private readonly client: UtxorpcClient) {
-    this.aliasIndex = new AliasIndex(this.client);
-    this.globalState = new GlobalState(this.client);
-    this.governance = new Governance(this.client);
-    this.instance = new Instance(this.client);
-
-    this.course = new CoreCourse(this.client);
-  }
-}
-
+/**
+ * The `Provider` class is responsible for initializing and managing the UtxorpcClient and Core instances.
+ *
+ * @remarks
+ * This class acts as a bridge between the client parameters and the core functionalities provided by the UtxorpcClient and Core classes.
+ *
+ * @example
+ * ```typescript
+ * const provider = new Provider(clientParams);
+ * ```
+ */
 export class Provider {
   private client: UtxorpcClient;
   public core: Core;
 
+  /**
+   * Creates an instance of the `Provider` class.
+   *
+   * @param clientParams - The parameters required to initialize the UtxorpcClient.
+   */
   constructor(private readonly clientParams: UtxorpcClientParams) {
     this.client = new UtxorpcClient(this.clientParams);
     this.core = new Core(this.client);

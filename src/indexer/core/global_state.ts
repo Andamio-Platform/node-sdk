@@ -1,7 +1,7 @@
 import AndamioConfig from "@andamio-config";
 import { UtxorpcClient } from "~/client";
-import { SdkError } from "~/errors";
-import { Utxo, UtxorpcClientParams } from "~/types";
+import { SdkError } from "~/utils/errors";
+import { Utxo, UtxorpcClientParams } from "~/types/types";
 
 export class GlobalState {
   public readonly address: string = AndamioConfig.globalStateS.sCAddress;

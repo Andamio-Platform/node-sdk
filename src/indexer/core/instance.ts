@@ -1,9 +1,14 @@
 import AndamioConfig from "@andamio-config";
-import { bytesToHex, hexToString, PlutusScript, stringToHex } from "@meshsdk/common";
+import {
+  bytesToHex,
+  hexToString,
+  PlutusScript,
+  stringToHex,
+} from "@meshsdk/common";
 import { deserializePlutusScript, scriptHashToBech32 } from "@meshsdk/core-cst";
 import { UtxorpcClient } from "~/client";
-import { SdkError } from "~/errors";
-import { Utxo, UtxorpcClientParams } from "~/types";
+import { SdkError } from "~/utils/errors";
+import { Utxo, UtxorpcClientParams } from "~/types/types";
 
 export class Instance {
   public readonly address: string = AndamioConfig.instanceMS.mSCAddress;
@@ -12,13 +17,17 @@ export class Instance {
 
   async getUtxos(policy?: string, filter?: string): Promise<Utxo[]> {
     try {
-      let asset_name
+      let asset_name;
       if (filter) {
-        asset_name = stringToHex(filter)
-        console.log("asset_name", asset_name)
+        asset_name = stringToHex(filter);
+        console.log("asset_name", asset_name);
       }
-      const utxos = await this.client.getUtxos(this.address, AndamioConfig.instanceMS.mSCPolicyID, asset_name);
-      console.log("utxos", utxos)
+      const utxos = await this.client.getUtxos(
+        this.address,
+        AndamioConfig.instanceMS.mSCPolicyID,
+        asset_name,
+      );
+      console.log("utxos", utxos);
       if (policy) {
         const instance_utxos = byInstancePolicy({
           utxos,
@@ -74,21 +83,3 @@ function byInstancePolicy({
 
   return filteredUtxos;
 }
-
-export const serializePlutusScript = (
-  script: PlutusScript,
-  stakeCredentialHash?: string,
-  networkId = 0,
-  isScriptStakeCredential = false,
-) => {
-  const scriptHash = deserializePlutusScript(script.code, script.version)
-    .hash()
-    .toString();
-  const address = scriptHashToBech32(
-    scriptHash,
-    stakeCredentialHash,
-    networkId,
-    isScriptStakeCredential,
-  );
-  return { address };
-};

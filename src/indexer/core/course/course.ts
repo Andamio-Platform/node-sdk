@@ -1,11 +1,12 @@
-import { Utxo } from "~/types";
-import { Instance, serializePlutusScript } from "../instance";
+import { Utxo } from "~/types/types";
+import { Instance } from "../instance";
 import { bytesToHex } from "@meshsdk/common";
 import cbor from "cbor";
 import AndamioConfig from "@andamio-config";
-import { env } from "~/env";
-import { SdkError } from "~/errors";
+import { SdkError } from "~/utils/errors";
 import { UtxorpcClient } from "~/client";
+import { NetworkId } from "~/types/network";
+import { serializePlutusScript } from "~/utils/serializer";
 
 export class Course {
   constructor(private readonly client: UtxorpcClient) {}
@@ -13,7 +14,10 @@ export class Course {
   public async getAddress(courseNftPolicy: string): Promise<string> {
     const instanceValidator = new Instance(this.client);
     try {
-      const instanceUtxos = await instanceValidator.getUtxos(courseNftPolicy, "CourseStateScripts");
+      const instanceUtxos = await instanceValidator.getUtxos(
+        courseNftPolicy,
+        "CourseStateScripts",
+      );
 
       if (!instanceUtxos[0].parsedValued?.script?.script.value) {
         throw new Error("Invalid course NFT UTXO: missing script value");
@@ -29,7 +33,7 @@ export class Course {
       const serializedScript = serializePlutusScript(
         { code: doubleEncodedCborHex, version: "V3" },
         AndamioConfig.stakingSH,
-        env.NETWORK_ID,
+        NetworkId[this.client.network],
         true,
       );
 
