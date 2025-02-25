@@ -58,7 +58,7 @@ jobs:
         run: |
           git add .
           git commit -m "Update node-sdk submodule to latest main" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Andamio-Platform/docs-site.git main
+          git push origin main
 
       - name: Trigger docs-site workflow
         uses: peter-evans/repository-dispatch@v2
