@@ -1,0 +1,49 @@
+name: Update docs-site submodule
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-docs-site:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout node-sdk repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Git user
+        run: |
+          git config --global user.name "GitHub Actions Bot"
+          git config --global user.email "actions@github.com"
+
+      - name: Clone docs-site repository
+        run: |
+          git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/Andamio-Platform/docs-site.git
+          cd docs-site
+
+      - name: Update submodule to latest main
+        working-directory: docs-site
+        run: |
+          git submodule update --init --recursive
+          git submodule set-url path/to/node-sdk-submodule https://github.com/Andamio-Platform/node-sdk.git
+          git submodule set-branch --branch main path/to/node-sdk-submodule
+          git submodule update --remote --merge path/to/node-sdk-submodule
+
+      - name: Commit and push changes
+        working-directory: docs-site
+        run: |
+          git add .
+          git commit -m "Update node-sdk submodule to latest main" || echo "No changes to commit"
+          git push
+
+      - name: Trigger docs-site workflow
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: Andamio-Platform/docs-site
+          event-type: update-node-sdk
