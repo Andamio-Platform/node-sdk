@@ -1,4 +1,5 @@
 import { UtxorpcClient } from "./client";
+import { Aggregate } from "./indexer/aggregate";
 import { Core } from "./indexer/core";
 import { UtxorpcClientParams } from "./types/types";
 
@@ -16,6 +17,7 @@ import { UtxorpcClientParams } from "./types/types";
 export class Provider {
   private client: UtxorpcClient;
   public core: Core;
+  public aggregate: Aggregate;
 
   /**
    * Creates an instance of the `Provider` class.
@@ -25,5 +27,6 @@ export class Provider {
   constructor(private readonly clientParams: UtxorpcClientParams) {
     this.client = new UtxorpcClient(this.clientParams);
     this.core = new Core(this.client);
+    this.aggregate = new Aggregate(this.client);
   }
 }

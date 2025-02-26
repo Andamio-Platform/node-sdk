@@ -1,5 +1,7 @@
 import { UtxorpcClient } from "~/client";
 import { Course } from "./course";
+import { Assignment } from "./assignment";
+import { Module } from "./module";
 
 export * from "./course";
 
@@ -11,6 +13,8 @@ export class CoreCourse {
    * The course instance.
    */
   public course: Course;
+  public assignment: Assignment;
+  public module: Module;
 
   /**
    * Creates an instance of CoreCourse.
@@ -18,5 +22,7 @@ export class CoreCourse {
    */
   constructor(private readonly client: UtxorpcClient) {
     this.course = new Course(this.client);
+    this.assignment = new Assignment(this.client);
+    this.module = new Module(this.client);
   }
 }
