@@ -4,12 +4,12 @@ import { UtxorpcClient } from "~/client";
 import { getAddress } from "../utils/get_address";
 
 
-export class Course {
+export class Escrow {
   constructor(private readonly client: UtxorpcClient) { }
 
-  async getUtxos(courseNftPolicy: string): Promise<Utxo[]> {
+  async getUtxos(projectNftPolicy: string): Promise<Utxo[]> {
     try {
-      const address = await getAddress(this.client, courseNftPolicy, "CourseStateScripts");
+      const address = await getAddress(this.client, projectNftPolicy, "Escrow1");
       return await this.client.getUtxos(address);
     } catch (error) {
       throw new SdkError(`Failed to fetch UTXOs: ${error}`);

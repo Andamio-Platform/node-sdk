@@ -85,10 +85,7 @@ export class UtxorpcClient {
       let response: Utxo[];
 
       if (policy || name) {
-        console.log("policy", policy);
-        console.log("name", name);
         response = await this.fetchUtxosWithAsset(addressBytes, policy, name);
-        console.log("response", response);
       } else {
         response =
           await this.cardanoQueryClient.searchUtxosByAddress(addressBytes);
