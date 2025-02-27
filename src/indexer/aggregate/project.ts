@@ -20,10 +20,12 @@ export class ProjectInfo {
         }
     }
 
-    async funds(courseNftPolicy: string): Promise<number> {
+    async funds(courseNftPolicy: string): Promise<bigint> {
         try {
-            const moduleRefUtxos = await this.project.treasury.getUtxos(courseNftPolicy);
-            return moduleRefUtxos.length;
+            const utxos = await this.project.treasury.getUtxos(courseNftPolicy);
+            const fundUtxos = utxos.filter((utxo) => !utxo.parsedValued.datum.payload);
+            const lovelace = fundUtxos.reduce((acc, utxo) => acc + BigInt(utxo.parsedValued.coin), BigInt(0));
+            return lovelace;
         } catch (err) {
             throw new SdkError(`Failed to fetch course modules: ${err}`);
         }
