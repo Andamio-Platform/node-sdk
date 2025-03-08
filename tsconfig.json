@@ -1,20 +1,23 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "CommonJS",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "ESNext",
     "moduleResolution": "Node",
+    "target": "ES6",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "declaration": true,
-    "esModuleInterop": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "~/*": ["src/*"],
       "@andamio-config": ["./andamio-config.json"]
     },
-    "skipLibCheck": true,
     "strictNullChecks": false
   },
   "include": ["src"],
