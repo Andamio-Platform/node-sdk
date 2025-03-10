@@ -8,14 +8,14 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "prepublishOnly": "pnpm run build",
     "test": "jest",
     "link": "pnpm link --global",
     "unlink": "pnpm unlink --global"
   },
   "keywords": [
-    "math",
+    "andamio",
     "sdk",
     "typescript"
   ],
@@ -26,5 +26,11 @@
     "jest": "^29.7.0",
     "ts-jest": "^29.2.6",
     "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@meshsdk/common": "1.9.0-beta.18",
+    "@meshsdk/core-cst": "1.9.0-beta.18",
+    "@utxorpc/sdk": "^0.6.7",
+    "@utxorpc/spec": "^0.16.0"
   }
 }

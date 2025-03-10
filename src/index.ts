@@ -1,22 +1,26 @@
-/**
- * A simple math SDK for performing basic arithmetic operations
- */
-export class MathSDK {
-  /**
-   * Adds two numbers together
-   * @param a - First number
-   * @param b - Second number
-   * @returns The sum of the two numbers
-   */
-  public add(a: number, b: number): number {
-    return a + b;
-  }
+import { Network } from "./network";
+import { UtxorpcClient } from "./u5c";
+import { Provider } from "./provider";
 
-  // Add a new method
-  public subtract(a: number, b: number): number {
-    return a - b;
+/**
+ * Andamio SDK for querying andamio data, building transactions, and datum utility functions
+ */
+export class AndamioSDK {
+  private client: UtxorpcClient;
+  public provider: Provider;
+
+  constructor(
+    private readonly baseUrl: string,
+    private readonly network: Network,
+    private readonly dmtr_api_key?: string
+  ) {
+    this.client = new UtxorpcClient(
+      this.baseUrl,
+      this.network,
+      this.dmtr_api_key
+    );
+    this.provider = new Provider(this.client);
   }
 }
 
-// Default export for easier importing
-export default MathSDK;
+export default AndamioSDK;
