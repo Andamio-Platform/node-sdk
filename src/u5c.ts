@@ -12,7 +12,7 @@ export class UtxorpcClient {
 
     constructor(
         private readonly baseUrl: string,
-        private readonly network: Network,
+        public readonly network: Network,
         private readonly dmtr_api_key?: string
     ) {
         this.network = this.network;

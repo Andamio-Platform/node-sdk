@@ -1,12 +1,12 @@
-import AndamioConfig from "../../andamio-config.json";
-import { UtxorpcClient } from "../../u5c";
-import { SdkError } from "../../error";
-import { Utxo } from "../../utxo";
+import AndamioConfig from "../../../andamio-config.json";
+import { UtxorpcClient } from "../../../u5c";
+import { SdkError } from "../../../error";
+import { Utxo } from "../../../utxo";
 
-export class GlobalState {
-    public readonly address: string = AndamioConfig.globalStateS.sCAddress;
+export class AliasIndex {
+    public readonly address: string = AndamioConfig.indexMS.mSCAddress;
     public readonly policy: string = AndamioConfig.indexMS.mSCPolicyID;
-
+  
     constructor(private readonly client: UtxorpcClient) { }
 
     async getUtxos(): Promise<Utxo[]> {
