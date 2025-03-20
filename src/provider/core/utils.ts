@@ -7,6 +7,7 @@ import AndamioConfig from "../../andamio-config.json";
 import { NetworkId } from "../../network";
 import { SdkError } from "../../error";
 import { deserializePlutusScript, scriptHashToBech32 } from "@meshsdk/core-cst";
+import { logger } from "../../logger";
 
 const serializePlutusScript = (
     script: PlutusScript,
@@ -34,8 +35,10 @@ export async function getAddress(client: UtxorpcClient, courseNftPolicy: string,
             filter,
         );
 
+        logger.log(`Serializing validator address...`);
+
         if (!instanceUtxos[0].parsedValued?.script?.script.value) {
-            throw new Error("Invalid course NFT UTXO: missing script value");
+            throw new Error("Invalid UTXO: missing script value");
         }
 
         const cborHex = bytesToHex(
