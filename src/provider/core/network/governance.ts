@@ -1,12 +1,13 @@
-import AndamioConfig from "../../../andamio-config.json";
 import { UtxorpcClient } from "../../../u5c";
 import { SdkError } from "../../../error";
 import { Utxo } from "../../../utxo";
 
 export class Governance  {
-    public readonly address: string = AndamioConfig.governanceS.sCAddress;
+    public readonly address: string;
 
-    constructor(private readonly client: UtxorpcClient) { }
+    constructor(private readonly client: UtxorpcClient) {
+        this.address = this.client.andamioConfig.governanceS.sCAddress;
+    }
 
     async getUtxos(): Promise<Utxo[]> {
         try {

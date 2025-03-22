@@ -16,10 +16,15 @@ export class Escrow {
     }
   }
 
-  async getUtxos(projectNftPolicy: string): Promise<Utxo[]> {
+  async getUtxos(projectNftPolicy?: string, address?: string): Promise<Utxo[]> {
+    if (!projectNftPolicy && !address) {
+      throw new SdkError("Either projectNftPolicy or address must be provided");
+    }
     try {
-      const address = await this.getAddress(projectNftPolicy);
-      logger.log(`Escrow address: ${address}`);
+      if (!address) {
+        address = await this.getAddress(projectNftPolicy!);
+        logger.log(`Escrow address: ${address}`);
+      }
       return await this.client.getUtxos(address);
     } catch (error) {
       throw new SdkError(`Failed to fetch UTXOs: ${error}`);

@@ -16,10 +16,15 @@ export class CourseState {
     }
   }
 
-  async getUtxos(courseNftPolicy: string): Promise<Utxo[]> {
+  async getUtxos(courseNftPolicy?: string, address?: string): Promise<Utxo[]> {
+    if (!courseNftPolicy && !address) {
+      throw new SdkError("Either courseNftPolicy or address must be provided");
+    }
     try {
-      const address = await this.getAddress(courseNftPolicy);
-      logger.log(`CourseState address: ${address}`);
+      if (!address) {
+        address = await this.getAddress(courseNftPolicy!);
+        logger.log(`CourseState address: ${address}`);
+      }
       return await this.client.getUtxos(address);
     } catch (error) {
       throw new SdkError(`Failed to fetch UTXOs: ${error}`);

@@ -3,7 +3,6 @@ import { Instance } from "./network/instance";
 import { InstanceFilter } from "./network/instance";
 import { bytesToHex, PlutusScript } from "@meshsdk/common";
 import cbor from "cbor";
-import AndamioConfig from "../../andamio-config.json";
 import { NetworkId } from "../../network";
 import { SdkError } from "../../error";
 import { deserializePlutusScript, scriptHashToBech32 } from "@meshsdk/core-cst";
@@ -50,7 +49,7 @@ export async function getAddress(client: UtxorpcClient, courseNftPolicy: string,
 
         const serializedScript = serializePlutusScript(
             { code: doubleEncodedCborHex, version: "V3" },
-            AndamioConfig.stakingSH,
+            client.andamioConfig.stakingSH,
             NetworkId[client.network],
             true,
         );

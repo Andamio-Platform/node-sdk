@@ -6,9 +6,12 @@ import { cardano } from "@utxorpc/spec";
 import { toAddress } from "@meshsdk/core-cst";
 import { hexToBytes, toBytes } from "@meshsdk/common";
 import { Network } from "./network";
+import AndamioConfigPreprod from "./andamio-config-preprod.json";
+import AndamioConfigMainnet from "./andamio-config-mainnet.json";
 
 export class UtxorpcClient {
     private readonly cardanoQueryClient: CardanoQueryClient;
+    public andamioConfig = AndamioConfigMainnet;
 
     constructor(
         private readonly baseUrl: string,
@@ -17,6 +20,11 @@ export class UtxorpcClient {
     ) {
         this.network = this.network;
         this.cardanoQueryClient = this.initializeCardanoClient();
+        if (this.network === "Preview") {
+            throw new SdkError("Preview network is not supported by Andamio");
+        } else if (this.network === "Preprod") {
+            this.andamioConfig = AndamioConfigPreprod;
+        }
     }
 
     private initializeCardanoClient(): CardanoQueryClient {
@@ -53,7 +61,7 @@ export class UtxorpcClient {
         logger.log("Fetching UTXOs from gRPC...");
         try {
             const addressBytes = toBytes(toAddress(address).toBytes());
-         
+
             let response: Utxo[];
 
             if (policy || name) {

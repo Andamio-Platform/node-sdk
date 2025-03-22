@@ -1,4 +1,3 @@
-import AndamioConfig from "../../../andamio-config.json";
 import { UtxorpcClient } from "../../../u5c";
 import { SdkError } from "../../../error";
 import { Utxo } from "../../../utxo";
@@ -15,41 +14,22 @@ export type InstanceFilter =
     | 'ContributorStateScripts'
 
 export class Instance {
-    public readonly address: string = AndamioConfig.instanceMS.mSCAddress;
-    public readonly policy: string = AndamioConfig.instanceMS.mSCPolicyID;
+    public readonly address: string;
+    public readonly policy: string;
 
-    constructor(private readonly client: UtxorpcClient) { }
+    constructor(private readonly client: UtxorpcClient) {
+        this.address = this.client.andamioConfig.instanceMS.mSCAddress;
+        this.policy = this.client.andamioConfig.instanceMS.mSCPolicyID;
+    }
 
     async getUtxos(policy?: string, filter?: InstanceFilter): Promise<Utxo[]> {
         try {
-            let asset_name;
-            if (filter) {
-                logger.log(`filter ${filter}`);
-                asset_name = stringToHex(filter);
-                logger.log(`asset_name ${asset_name}`);
-            }
             let utxos;
-            const c = await this.client.getUtxos(
-                this.address
-            );
-            logger.log('check1');
-            logger.log(c.length.toString());
-            const d = await this.client.getUtxos(
-                this.address,
-                this.policy,
-            );
-            logger.log('check1');
-            logger.log(d.length.toString());
-
-            logger.log(`policy ${policy}`);
-            logger.log(`this policy ${this.policy}`);
             utxos = await this.client.getUtxos(
                 this.address,
-                // this.policy,
+                this.policy,
                 // asset_name,
             );
-            logger.log('check');
-            logger.log(utxos.length.toString());
             // remove when utxorpc node-sdk gets updated
             if (filter) {
                 utxos = byFilter({
