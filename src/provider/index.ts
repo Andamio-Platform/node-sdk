@@ -1,5 +1,6 @@
 import { UtxorpcClient } from "../u5c";
 import { Core } from "./core";
+import { Network } from "./network";
 // import { Aggregate } from "./indexer/aggregate";
 // import { Core } from "./indexer/core";
 
@@ -16,7 +17,7 @@ import { Core } from "./core";
  */
 export class Provider {
       public core: Core;
-    //   public aggregate: Aggregate;
+      public network: Network;
 
     /**
      * Creates an instance of the `Provider` class.
@@ -25,6 +26,6 @@ export class Provider {
      */
     constructor(private readonly client: UtxorpcClient) {
         this.core = new Core(this.client);
-        // this.aggregate = new Aggregate(this.client);
+        this.network = new Network(this.core);
     }
 }
