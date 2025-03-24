@@ -1,4 +1,4 @@
-import { bytesToHex, stringToHex } from "@meshsdk/common";
+import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 import { SdkError } from "../../error";
 import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
@@ -11,6 +11,66 @@ export class Network {
    * @param client - The UtxorpcClient instance used to initialize the components.
    */
   constructor(private readonly core: Core) { }
+
+  async getAllAliases(): Promise<string[]> {
+    try {
+      const utxos = await this.core.network.globalState.getUtxos();
+      const aliases: string[] = [];
+
+      utxos.forEach((utxo) => {
+
+        const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
+        const alias = (datum.fields[1] as cardano.PlutusData).plutusData.value as Uint8Array
+        aliases.push(
+          hexToString(bytesToHex(alias)),
+        );
+      });
+
+      return aliases;
+    } catch (err) {
+      throw new SdkError(`Failed to fetch all aliases: ${err}`);
+    }
+  }
+
+  async getUserData(alias: string): Promise<{ info: string, data: aliasData }> {
+    try {
+      const utxo = await this.core.network.globalState.getUtxoByAlias(alias);
+      const allInstances = await this.getAllInstancesList();
+
+      const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
+      const info = (datum.fields[3] as cardano.PlutusData).plutusData.value as Uint8Array
+      const data = (datum.fields[2] as cardano.PlutusData).plutusData.value as cardano.PlutusDataArray
+
+      let courses: instance[] = [];
+      let projects: instance[] = [];
+
+      data.items.map((item) => {
+        const policy = bytesToHex((item.plutusData.value as cardano.Constr).fields[0].plutusData.value as Uint8Array)
+        const instance = {
+          policy: policy,
+          challenges: ((item.plutusData.value as cardano.Constr).fields[1].plutusData.value as cardano.PlutusDataArray).items.map((item) => 
+            bytesToHex(item.plutusData.value as Uint8Array)
+          ),
+          completed: ((item.plutusData.value as cardano.Constr).fields[2].plutusData.value as cardano.Constr).tag === 121 ? true : false
+        }
+        if (allInstances.courses.includes(policy)) {
+          courses.push(instance);
+        } else if (allInstances.projects.includes(policy)) {
+          projects.push(instance);
+        }
+      });
+
+      return {
+        info: hexToString(bytesToHex(info)),
+        data: {
+          courses: courses,
+          projects: projects
+        }
+      }
+    } catch (err) {
+      throw new SdkError(`Failed to fetch user data: ${err}`);
+    }
+  }
 
   async getAllInstancesList(): Promise<{ courses: string[]; projects: string[] }> {
     try {
@@ -43,4 +103,17 @@ export class Network {
       throw new SdkError(`Failed to fetch all instances: ${err}`);
     }
   }
+}
+
+
+type instance = {
+  policy: string;
+  challenges: string[];
+  completed: boolean;
+}
+
+
+type aliasData = {
+  courses: instance[];
+  projects: instance[];
 }

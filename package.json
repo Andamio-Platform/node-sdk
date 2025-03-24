@@ -2,17 +2,9 @@
   "name": "@andamiojs/sdk",
   "version": "0.0.7",
   "description": "Query Andamio data and build transactions",
-  "type": "module",
   "main": "./dist/cjs/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/cjs/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
   "files": [
     "dist"
   ],
