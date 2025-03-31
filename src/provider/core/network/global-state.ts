@@ -6,6 +6,7 @@ import { bytesToHex, hexToString } from "@meshsdk/common";
 /**
  * Represents the global state of the system.
  * This class provides methods to interact with the global state UTXOs.
+ * @internal
  */
 export class GlobalState {
     /**

@@ -8,6 +8,7 @@ import { logger } from "../../../logger";
 /**
  * Represents the treasury functionality for a project.
  * This class provides methods to interact with project treasuries.
+ * @internal
  */
 export class Treasury {
   /**

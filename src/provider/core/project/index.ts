@@ -9,6 +9,7 @@ import { Treasury } from "./treasury";
  * A Project contains various states including contributor state, escrow, and treasury.
  * 
  * @class
+ * @internal
  */
 export class Project {
     public contributorState: ContributorState;

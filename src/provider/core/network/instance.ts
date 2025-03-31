@@ -18,6 +18,7 @@ export type InstanceFilter =
  * 
  * This class provides methods to interact with a specific instance address and policy,
  * allowing access to UTXOs and other instance-related operations.
+ * @internal
  */
 export class Instance {
     /**

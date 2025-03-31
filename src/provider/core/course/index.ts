@@ -5,6 +5,7 @@ import { ModuleRef } from "./module-ref";
 
 /**
  * Represents the core course functionality.
+ * @internal
  */
 export class Course {
   /**

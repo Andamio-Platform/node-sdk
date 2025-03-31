@@ -6,6 +6,7 @@ import { cardano } from "@utxorpc/spec";
 /**
  * Represents a Governance entity for managing the governance smart contract.
  * Provides functionality to interact with the governance entity's UTXOs.
+ * @internal
  */
 export class Governance {
     /**

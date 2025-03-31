@@ -8,6 +8,7 @@ import { logger } from "../../../logger";
 /**
  * ModuleRef class for interacting with course module references.
  * Provides methods to get addresses and UTXOs for course modules.
+ * @internal
  */
 export class ModuleRef {
   /**

@@ -8,6 +8,7 @@ import { logger } from "../../../logger";
 /**
  * Manages the state of assignments in a course.
  * This class provides functionality to interact with assignment-related blockchain data.
+ * @internal
  */
 export class AssignmentState {
   /**

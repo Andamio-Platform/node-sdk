@@ -8,6 +8,7 @@ import { logger } from "../../../logger";
 /**
  * Represents the state of a course in the system.
  * Provides methods to interact with course-related blockchain data.
+ * @internal
  */
 export class CourseState {
   /**

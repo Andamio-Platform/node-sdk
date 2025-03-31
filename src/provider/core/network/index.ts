@@ -9,6 +9,7 @@ import { Instance } from "./instance";
  * The Core class serves as the main entry point for interacting with various components
  * of the system, such as AliasIndex, GlobalState, Governance, Instance, and CoreCourse.
  * It initializes these components using the provided UtxorpcClient instance.
+ * @internal
  */
 export class Network {
   /**

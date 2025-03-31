@@ -12,6 +12,7 @@ import { logger } from "../../../logger";
  * such as retrieving addresses and UTXOs associated with a project's NFT policy.
  * 
  * @class ContributorState
+ * @internal
  */
 export class ContributorState {
   /**

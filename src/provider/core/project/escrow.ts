@@ -8,6 +8,7 @@ import { logger } from "../../../logger";
 /**
  * A class representing the escrow functionality for project-related transactions.
  * Escrow manages the addresses and UTXOs associated with project NFT policies.
+ * @internal
  */
 export class Escrow {
   /**

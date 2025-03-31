@@ -7,6 +7,7 @@ import { Utxo } from "../../../utxo";
  * 
  * This class provides methods to interact with UTXOs associated with a specific address and policy.
  * It leverages the UtxorpcClient to perform network operations.
+ * @internal
  */
 export class AliasIndex {
     /**
