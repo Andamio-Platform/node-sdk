@@ -3,22 +3,30 @@ import { SdkError } from "../../error";
 import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
 
+/**
+ * Network class for querying Andamio network data.
+ */
 export class Network {
 
   /**
-   * Constructs a new Network instance and initializes its components.
+   * Constructs a new Network instance.
    *
-   * @param client - The UtxorpcClient instance used to initialize the components.
+   * @param core - The Core instance used to interact with the blockchain.
    */
   constructor(private readonly core: Core) { }
 
+  /**
+   * Retrieves all aliases from the network.
+   * 
+   * @returns A promise that resolves to an array of alias strings.
+   * @throws {SdkError} If the operation fails.
+   */
   async getAllAliases(): Promise<string[]> {
     try {
       const utxos = await this.core.network.globalState.getUtxos();
       const aliases: string[] = [];
 
       utxos.forEach((utxo) => {
-
         const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
         const alias = (datum.fields[1] as cardano.PlutusData).plutusData.value as Uint8Array
         aliases.push(
@@ -32,6 +40,13 @@ export class Network {
     }
   }
 
+  /**
+   * Retrieves user data for a specific alias.
+   * 
+   * @param alias - The alias to fetch data for.
+   * @returns A promise that resolves to an object containing user info and data.
+   * @throws {SdkError} If the operation fails.
+   */
   async getUserData(alias: string): Promise<{ info: string, data: aliasData }> {
     try {
       const utxo = await this.core.network.globalState.getUtxoByAlias(alias);
@@ -72,6 +87,12 @@ export class Network {
     }
   }
 
+  /**
+   * Retrieves all available instances categorized as courses or projects.
+   * 
+   * @returns A promise that resolves to an object containing arrays of course and project policy IDs.
+   * @throws {SdkError} If the operation fails.
+   */
   async getAllInstancesList(): Promise<{ courses: string[]; projects: string[] }> {
     try {
       const utxos = await this.core.network.governance.getUtxos();
@@ -105,15 +126,24 @@ export class Network {
   }
 }
 
-
+/**
+ * Represents an instance with policy ID, challenges, and completion status.
+ */
 type instance = {
+  /** The policy ID of the instance */
   policy: string;
+  /** Array of challenge identifiers */
   challenges: string[];
+  /** Whether the instance is completed */
   completed: boolean;
 }
 
-
+/**
+ * Structure containing user's courses and projects data.
+ */
 type aliasData = {
+  /** Array of course instances */
   courses: instance[];
+  /** Array of project instances */
   projects: instance[];
 }

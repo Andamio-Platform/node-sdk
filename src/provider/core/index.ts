@@ -4,23 +4,21 @@ import { Network } from "./network";
 import { Project } from "./project";
 
 /**
- * The Core class serves as the main entry point for interacting with various components
- * of the system, such as AliasIndex, GlobalState, Governance, Instance, and CoreCourse.
- * It initializes these components using the provided UtxorpcClient instance.
+ * The Core class serves as the main entry point for querying various core Andamio utxo data.
  */
 export class Core {
   /**
-   * An instance of AliasIndex for managing alias-related operations.
+   * An instance of Network for querying network-related utxo data.
    */
   public network: Network;
 
   /**
-   * An instance of CoreCourse for managing course-related operations.
+   * An instance of Course for querying course-related utxo data.
    */
   public course: Course;
 
   /**
-   * An instance of Project for managing project-related operations.
+   * An instance of Project for querying project-related utxo data.
    */
   public project: Project;
 

@@ -4,19 +4,20 @@ import { Escrow } from "./escrow";
 import { Treasury } from "./treasury";
 
 /**
- * Represents the core course functionality.
+ * Represents a Project in the system.
+ * 
+ * A Project contains various states including contributor state, escrow, and treasury.
+ * 
+ * @class
  */
 export class Project {
-    /**
-     * The course instance.
-     */
     public contributorState: ContributorState;
     public escrow: Escrow;
     public treasury: Treasury;
 
     /**
-     * Creates an instance of CoreCourse.
-     * @param client - The UtxorpcClient instance used to interact with the course.
+     * Creates an instance of Project.
+     * @param client - The UtxorpcClient instance used to interact with the project.
      */
     constructor(private readonly client: UtxorpcClient) {
         this.contributorState = new ContributorState(this.client);

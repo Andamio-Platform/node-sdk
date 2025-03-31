@@ -13,15 +13,41 @@ export type InstanceFilter =
     | 'Escrow1'
     | 'ContributorStateScripts'
 
+/**
+ * Represents an instance in the Andamio network.
+ * 
+ * This class provides methods to interact with a specific instance address and policy,
+ * allowing access to UTXOs and other instance-related operations.
+ */
 export class Instance {
+    /**
+     * The address of the instance.
+     */
     public readonly address: string;
+
+    /**
+     * The policy ID of the instance.
+     */
     public readonly policy: string;
 
+    /**
+     * Creates a new instance.
+     * 
+     * @param client - The UtxorpcClient to use for network operations.
+     */
     constructor(private readonly client: UtxorpcClient) {
         this.address = this.client.andamioConfig.instanceMS.mSCAddress;
         this.policy = this.client.andamioConfig.instanceMS.mSCPolicyID;
     }
 
+    /**
+     * Retrieves UTXOs for the instance.
+     * 
+     * @param policy - Optional policy ID to filter UTXOs.
+     * @param filter - Optional filter to apply to the UTXOs.
+     * @returns A promise that resolves to an array of UTXOs.
+     * @throws {SdkError} If fetching UTXOs fails.
+     */
     async getUtxos(policy?: string, filter?: InstanceFilter): Promise<Utxo[]> {
         try {
             let utxos;

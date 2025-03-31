@@ -3,7 +3,14 @@ import { UtxorpcClient } from "./u5c";
 import { Provider } from "./provider";
 
 /**
- * Andamio SDK for querying andamio data, building transactions, and datum utility functions
+ * Main class for the Andamio SDK.
+ * Provides access to the UTXO-RPC client and provider.
+ * 
+ * @class AndamioSDK
+ * @example
+ * ```typescript
+ * const sdk = new AndamioSDK('https://preprod.utxorpc-v0.demeter.run:443', 'Preprod', 'dmtr_utxorpc...');
+ * ```
  */
 export class AndamioSDK {
   private client: UtxorpcClient;
