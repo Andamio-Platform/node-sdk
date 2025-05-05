@@ -25,15 +25,20 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
-    "ts-jest": "^29.2.6",
-    "typescript": "^5.8.2"
+    "ts-jest": "^29.3.2",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
-    "@meshsdk/common": "1.9.0-beta.18",
-    "@meshsdk/core-cst": "1.9.0-beta.18",
+    "@meshsdk/common": "1.9.0-beta.30",
+    "@meshsdk/core": "1.9.0-beta.30",
+    "@meshsdk/core-csl": "1.9.0-beta.30",
+    "@meshsdk/core-cst": "1.9.0-beta.30",
     "@utxorpc/sdk": "^0.6.7",
     "@utxorpc/spec": "^0.16.0",
     "cbor": "^10.0.3"
   },
-  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6"
+  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6",
+  "pnpm": {
+    "overrides": {}
+  }
 }
