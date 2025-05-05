@@ -2,6 +2,12 @@
 
 The Provider is a core component of the Andamio SDK designed to retrieve and interact with on-chain Andamio-specific data. It serves as the connection layer between your application and the Andamio blockchain data structures.
 
+```typescript
+const sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc...")
+
+const provider = sdk.provider
+```
+
 ## Overview
 
 The Provider component abstracts the complexity of querying and processing blockchain data specific to Andamio protocols and smart contracts. It offers a streamlined interface for developers to access this data without having to manage the underlying blockchain interactions directly.

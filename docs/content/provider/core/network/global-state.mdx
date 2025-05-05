@@ -1,0 +1,13 @@
+# Global State
+
+## Get UTxOs
+
+```typescript
+const utxos = await sdk.provider.core.course.globalState.getUtxos()
+```
+
+## Get UTxO by Alias
+
+```typescript
+const utxo = await sdk.provider.core.course.globalState.getUtxoByAlias(<alias>)
+```

@@ -1,0 +1,13 @@
+# Instance Validator
+
+## Get UTxOs
+
+```typescript
+const utxos = await sdk.provider.core.course.instance.getUtxos()
+```
+
+To filter by instance policy or instance type
+
+```typescript
+const utxos = await sdk.provider.core.course.instance.getUtxos(<policy>, <instance-filter>)
+```
