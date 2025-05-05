@@ -1,6 +1,7 @@
 node_modules/
 dist/
 *.log
+!mint-access-token-tx.log
 .DS_Store
 .env
 .nyc_output/
