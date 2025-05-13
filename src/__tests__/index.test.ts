@@ -1,7 +1,7 @@
 // src/__tests__/index.test.ts
 import { AndamioSDK } from '../index';
 
-jest.setTimeout(50000);
+jest.setTimeout(150000);
 
 describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
@@ -12,8 +12,25 @@ describe('AndamioSDK', () => {
 
   describe('get utxos', () => {
     it('fetch network utxos from grpc', async () => {
-      const tx = await sdk.transaction.mintAccessToken({ userAddress: "addr_test1qzx4yysnpp9t2692g08gdmvykl22w4fyfqyp2clzrqrx5tdk88srfmghu2rk9nh87744pdaew9x9tz80mqz0pszlhvrs6zlvrg", alias: "hanuman" });
-      console.log("tx cbor : ", JSON.stringify(tx, null, 4))
+
+      const blocks = await sdk.provider.network.andamioTxs("")
+      
+
+      // const projects = (await sdk.provider.network.getAllInstancesList()).projects;
+      // console.log("projects : ", JSON.stringify(projects, null, 4))
+
+      // for (const project of projects) {
+      //   try {
+        // const txs = await sdk.provider.network.treasuryTxs("caffc76e84584da3f7be51e72a271b159e62f5ee0cece5c1c0c061f6")
+  
+        // console.log("txs : ", JSON.stringify(txs, null, 4))
+      //   } catch (error) {
+      //     continue;
+      //   }
+      // }
+
+      // const tx = await sdk.transaction.mintAccessToken({ userAddress: "addr_test1qzx4yysnpp9t2692g08gdmvykl22w4fyfqyp2clzrqrx5tdk88srfmghu2rk9nh87744pdaew9x9tz80mqz0pszlhvrs6zlvrg", alias: "hanuman" });
+      // console.log("tx cbor : ", JSON.stringify(tx, null, 4))
       // expect((await sdk.provider.core.network.aliasIndex.getUtxos())).toBeTruthy();
       // expect((await sdk.provider.core.network.globalState.getUtxos())).toBeTruthy();
       // expect((await sdk.provider.core.network.governance.getUtxos())).toBeTruthy();

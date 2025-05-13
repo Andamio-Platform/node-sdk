@@ -2,6 +2,8 @@ import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 import { SdkError } from "../../error";
 import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
+import { deserializeTx } from "@meshsdk/core-csl";
+import { addressesToWatch, fetchBlockAddresses, fetchNextBlocks, syncBlocks } from "./tx-history";
 
 /**
  * Network class for querying Andamio network data.
@@ -63,7 +65,7 @@ export class Network {
         const policy = bytesToHex((item.plutusData.value as cardano.Constr).fields[0].plutusData.value as Uint8Array)
         const instance = {
           policy: policy,
-          challenges: ((item.plutusData.value as cardano.Constr).fields[1].plutusData.value as cardano.PlutusDataArray).items.map((item) => 
+          challenges: ((item.plutusData.value as cardano.Constr).fields[1].plutusData.value as cardano.PlutusDataArray).items.map((item) =>
             bytesToHex(item.plutusData.value as Uint8Array)
           ),
           completed: ((item.plutusData.value as cardano.Constr).fields[2].plutusData.value as cardano.Constr).tag === 121 ? true : false
@@ -124,7 +126,68 @@ export class Network {
       throw new SdkError(`Failed to fetch all instances: ${err}`);
     }
   }
+
+
+  async treasuryTxs(projectNftPolicy: string): Promise<{ txs: tx[] }> {
+    try {
+      const utxos = await this.core.project.treasury.getUtxos(projectNftPolicy)
+      console.log("utxos : ", utxos)
+      const txPromises = utxos.map(async (utxo) => {
+        const txHash = bytesToHex(utxo.txoRef.hash)
+        console.log("txHash : ", txHash)
+        const cbor = await fetch(
+          `http://192.168.1.7:50052/txs/${txHash}/cbor`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+            },
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+
+        return {
+          txHash: txHash,
+          cbor: cbor
+        };
+      });
+
+      const txs = await Promise.all(txPromises);
+
+      return { txs };
+    } catch (err) {
+      throw new SdkError(`Failed to fetch treasury transactions: ${err}`);
+    }
+  }
+
+
+  async andamioTxs(txHash: string) {
+    try {
+      const addresses_to_watch = await addressesToWatch()
+      let blockHash = "063fb21145bd30da11ea995e8ffea41bc06300df03be0f4512f9538a06684404"
+      const sync = await syncBlocks(blockHash);
+
+
+    } catch (err) {
+      throw new SdkError(`Failed to fetch Andamio transactions: ${err}`);
+    }
+
+  }
 }
+
+type tx = {
+  txHash: string;
+  cbor: string;
+}
+
+
+
 
 /**
  * Represents an instance with policy ID, challenges, and completion status.

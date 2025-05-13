@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// BlockAddress is where we store the all andamio txs we need
+model BlockAddress {
+  id           Int           @id @default(autoincrement())
+  address      String        
+  block        Blocks        @relation(fields: [blockId], references: [id])
+  blockId      Int
+  transactions Transaction[]
+
+  @@index([address])
+}
+
+model Transaction {
+  id             Int          @id @default(autoincrement())
+  txHash         String       
+  blockAddress   BlockAddress @relation(fields: [blockAddressId], references: [id])
+  blockAddressId Int
+
+  @@index([txHash])
+  @@index([blockAddressId])
+}
+
+model Blocks {
+  id        Int            @id @default(autoincrement())
+  blockHash String         @unique
+  addresses BlockAddress[]
+  createdAt DateTime       @default(now())
+}
+
+enum LocalStateType {
+  Course
+  Assignment
+  ModuleRef
+  Treasury
+  Escrow
+  ContributorState
+}
+
+// AddressToWatch is a table to store addresses we want to watch
+model AddressToWatch {
+  id    Int             @id @default(autoincrement())
+  key   String          @unique
+  value String
+  type  LocalStateType? // Optional enum field
+
+  @@index([type])
+}

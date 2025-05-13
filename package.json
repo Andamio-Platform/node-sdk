@@ -8,12 +8,20 @@
   "files": [
     "dist"
   ],
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "scripts": {
     "build": "rm -rf dist && tsc && tsc -p tsconfig.cjs.json",
     "prepublishOnly": "pnpm run build",
     "test": "jest",
     "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
+    "unlink": "pnpm unlink --global",
+    "seed": "prisma db seed",
+    "generate": "prisma generate",
+    "db:update": "prisma migrate dev --name update && prisma generate",
+    "db:reset": "prisma migrate reset --force --skip-generate --skip-seed && npm run seed && npm run generate",
+    "check-db": "tsx prisma/check-db.ts"
   },
   "keywords": [
     "andamio",
@@ -24,8 +32,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.17",
     "jest": "^29.7.0",
+    "prisma": "^6.7.0",
     "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   },
   "dependencies": {
@@ -33,6 +45,7 @@
     "@meshsdk/core": "1.9.0-beta.30",
     "@meshsdk/core-csl": "1.9.0-beta.30",
     "@meshsdk/core-cst": "1.9.0-beta.30",
+    "@prisma/client": "6.7.0",
     "@utxorpc/sdk": "^0.6.7",
     "@utxorpc/spec": "^0.16.0",
     "cbor": "^10.0.3"
