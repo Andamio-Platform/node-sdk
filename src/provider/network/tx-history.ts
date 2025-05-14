@@ -1,63 +1,140 @@
-import { PrismaClient } from "../../../prisma/generated/client";
+import { BlockAddress, PrismaClient } from "../../../prisma/generated/client";
 import { logger } from "../../logger";
+import NetworkInitConfig from "../../network-init-config.json";
 
 const prisma = new PrismaClient()
 
-export async function syncBlocks(blockHash: string) {
-    // Fetch the previous block to start the sync
-    let nextBlocks = await fetchPreviousBlocks(blockHash);
+export async function syncBlocks() {
+    let blockHash;
+    let nextBlocks;
 
-    while (nextBlocks.length >= 100) {
+    // Get the latest block hash from the database
+    const latestBlock = await prisma.blocks.findFirst({
+        orderBy: {
+            id: 'desc'
+        },
+        select: {
+            blockHash: true
+        }
+    });
+
+    if (latestBlock) {
+        blockHash = latestBlock.blockHash;
+        nextBlocks = await fetchNextBlocks(blockHash);
+    } else {
+        blockHash = NetworkInitConfig.blockHash;
+        // Fetch the previous block to start the sync
+        const previousBlocks = await fetchPreviousBlocks(blockHash);
+        blockHash = previousBlocks[previousBlocks.length - 1].hash;
+        nextBlocks = await fetchNextBlocks(blockHash);
+    }
+
+    while (nextBlocks.length > 0) {
+        // Process blocks sequentially to avoid race conditions
+        for (const block of nextBlocks) {
+            logger.log(`Syncing ⏳⏳⏳ [ Slot: ${block.slot} - Block: ${block.hash} ]`);
+
+            // // Query the addresses affected in the block
+            // const addresses = await fetchBlockAddresses(block.hash);
+
+            // Query the addresses affected in the block
+            let addresses;
+            try {
+                addresses = await fetchBlockAddresses(block.hash);
+            } catch (error) {
+                logger.error(`Failed to fetch addresses for block ${block.hash}: ${error}`);
+                // Skip this block and continue with the next one
+                continue;
+            }
+
+            // Get the andamio addresses to watch from the database
+            const addresses_to_watch = await addressesToWatch();
+
+            // Find all addresses that match any entry in addresses_to_watch
+            const relevantAddresses = [];
+
+            for (const watchAddress of addresses_to_watch) {
+                const matchingAddresses = addresses.filter((address: any) =>
+                    address.address === watchAddress.value
+                );
+
+                if (matchingAddresses.length > 0) {
+                    logger.log(`✨ Found match for: ${watchAddress.key} ✨`);
+                    relevantAddresses.push(...matchingAddresses);
+                }
+            }
+
+            // Save the block to the database
+            try {
+                const blockData = {
+                    blockHash: block.hash,
+                    addresses: {
+                        create: await Promise.all(
+                            relevantAddresses.map(async (address: any) => {
+                                const transactions = await Promise.all(
+                                    address.transactions.map(async (tx: any) => {
+                                        const txCbor = await fetchTxCbor(tx.tx_hash);
+                                        return {
+                                            txHash: tx.tx_hash,
+                                            cbor: txCbor.cbor,
+                                        };
+                                    })
+                                );
+
+                                return {
+                                    address: address.address,
+                                    transactions: {
+                                        create: transactions,
+                                    },
+                                };
+                            })
+                        ),
+                    },
+                };
+
+                await prisma.blocks.create({
+                    data: blockData,
+                });
+
+                // logger.log(`✅ Created block record for hash: ${block.hash}`);
+            } catch (error) {
+                logger.error(`❌ Failed to create block record: ${error} - Block Hash: ${block.hash}`);
+            }
+
+        }
+
+        // Get next batch of blocks using the last processed block's hash
         blockHash = nextBlocks[nextBlocks.length - 1].hash;
         nextBlocks = await fetchNextBlocks(blockHash);
 
-        // query the addresses affected in the blocks
-        nextBlocks.map(async (block: any) => {
+        // Safety check to avoid infinite loop if we reach the chain tip
+        if (nextBlocks.length === 0) {
+            logger.log('Reached the end of the chain or no more blocks available');
+            break;
+        }
+    }
+}
 
-            // log the slot number to monitor the progress
-            logger.log(`Syncing ⏳⏳⏳ [ Slot: ${block.slot} - Block: ${block.hash} ]`)
-
-            const addresses = await fetchBlockAddresses(block.hash)
-
-            // Get the andamio addresses to watch from the database
-            // and filter the addresses from the blocks
-            const addresses_to_watch = await addressesToWatch()
-            const relevantAddresses = addresses.filter((address: any) =>
-                addresses_to_watch.some((item: any) => {
-                    const match = (item.value === address.address)
-                    if (match) {
-                        logger.log(`✨ Found match: ${item.key} ✨`)
-                    }
-                    return match
-                })
-            )
-
-
-            // Save the blocks to the database
-            try {
-                await prisma.blocks.create({
-                    data: {
-                        blockHash: block.hash,
-                        addresses: {
-                            create: relevantAddresses.map((address: any) => ({
-                                address: address.address,
-                                transactions: {
-                                    create: address.transactions.map((tx: any) => ({
-                                        txHash: tx.tx_hash
-                                    }))
-                                }
-                            }))
-                        }
-                    },
-                });
-                logger.log(`✅ Created block record for hash: ${block.hash}`);
-            } catch (error) {
-                logger.error(`Failed to create block record: ${error}`);
+export async function fetchTxCbor(txHash: string) {
+    const txCbor = await fetch(
+        `http://192.168.1.7:50052/txs/${txHash}/cbor`,
+        {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            },
+        }
+    )
+        .then((response) => {
+            if (!response.ok) {
+                logger.error(`Failed to fetch transaction CBOR: ${response.statusText}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            return response.json();
         })
 
-
-    }
+    return txCbor
 }
 
 export async function fetchPreviousBlocks(blockHash: string) {
@@ -73,6 +150,7 @@ export async function fetchPreviousBlocks(blockHash: string) {
     )
         .then((response) => {
             if (!response.ok) {
+                logger.error(`Failed to fetch previous blocks: ${response.statusText}`);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -94,6 +172,7 @@ export async function fetchNextBlocks(blockHash: string) {
     )
         .then((response) => {
             if (!response.ok) {
+                logger.error(`Failed to fetch next blocks: ${response.statusText}`);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
@@ -115,6 +194,7 @@ export async function fetchBlockAddresses(blockHash: string) {
     )
         .then((response) => {
             if (!response.ok) {
+                logger.error(`Failed to fetch block addresses: ${response.statusText} - Block Hash: ${blockHash}`);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();

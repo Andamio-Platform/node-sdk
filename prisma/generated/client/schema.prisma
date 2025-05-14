@@ -24,6 +24,7 @@ model Transaction {
   txHash         String
   blockAddress   BlockAddress @relation(fields: [blockAddressId], references: [id])
   blockAddressId Int
+  cbor           String
 
   @@index([txHash])
   @@index([blockAddressId])

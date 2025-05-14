@@ -169,10 +169,7 @@ export class Network {
 
   async andamioTxs(txHash: string) {
     try {
-      const addresses_to_watch = await addressesToWatch()
-      let blockHash = "063fb21145bd30da11ea995e8ffea41bc06300df03be0f4512f9538a06684404"
-      const sync = await syncBlocks(blockHash);
-
+      const sync = await syncBlocks();
 
     } catch (err) {
       throw new SdkError(`Failed to fetch Andamio transactions: ${err}`);

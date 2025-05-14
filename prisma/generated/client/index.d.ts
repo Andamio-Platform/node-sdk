@@ -2350,18 +2350,21 @@ export namespace Prisma {
     id: number | null
     txHash: string | null
     blockAddressId: number | null
+    cbor: string | null
   }
 
   export type TransactionMaxAggregateOutputType = {
     id: number | null
     txHash: string | null
     blockAddressId: number | null
+    cbor: string | null
   }
 
   export type TransactionCountAggregateOutputType = {
     id: number
     txHash: number
     blockAddressId: number
+    cbor: number
     _all: number
   }
 
@@ -2380,18 +2383,21 @@ export namespace Prisma {
     id?: true
     txHash?: true
     blockAddressId?: true
+    cbor?: true
   }
 
   export type TransactionMaxAggregateInputType = {
     id?: true
     txHash?: true
     blockAddressId?: true
+    cbor?: true
   }
 
   export type TransactionCountAggregateInputType = {
     id?: true
     txHash?: true
     blockAddressId?: true
+    cbor?: true
     _all?: true
   }
 
@@ -2485,6 +2491,7 @@ export namespace Prisma {
     id: number
     txHash: string
     blockAddressId: number
+    cbor: string
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -2510,6 +2517,7 @@ export namespace Prisma {
     id?: boolean
     txHash?: boolean
     blockAddressId?: boolean
+    cbor?: boolean
     blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -2517,6 +2525,7 @@ export namespace Prisma {
     id?: boolean
     txHash?: boolean
     blockAddressId?: boolean
+    cbor?: boolean
     blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -2524,6 +2533,7 @@ export namespace Prisma {
     id?: boolean
     txHash?: boolean
     blockAddressId?: boolean
+    cbor?: boolean
     blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
@@ -2531,9 +2541,10 @@ export namespace Prisma {
     id?: boolean
     txHash?: boolean
     blockAddressId?: boolean
+    cbor?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "blockAddressId", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "blockAddressId" | "cbor", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
   }
@@ -2553,6 +2564,7 @@ export namespace Prisma {
       id: number
       txHash: string
       blockAddressId: number
+      cbor: string
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -2980,6 +2992,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Transaction", 'Int'>
     readonly txHash: FieldRef<"Transaction", 'String'>
     readonly blockAddressId: FieldRef<"Transaction", 'Int'>
+    readonly cbor: FieldRef<"Transaction", 'String'>
   }
     
 
@@ -5514,7 +5527,8 @@ export namespace Prisma {
   export const TransactionScalarFieldEnum: {
     id: 'id',
     txHash: 'txHash',
-    blockAddressId: 'blockAddressId'
+    blockAddressId: 'blockAddressId',
+    cbor: 'cbor'
   };
 
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
@@ -5698,6 +5712,7 @@ export namespace Prisma {
     id?: IntFilter<"Transaction"> | number
     txHash?: StringFilter<"Transaction"> | string
     blockAddressId?: IntFilter<"Transaction"> | number
+    cbor?: StringFilter<"Transaction"> | string
     blockAddress?: XOR<BlockAddressScalarRelationFilter, BlockAddressWhereInput>
   }
 
@@ -5705,6 +5720,7 @@ export namespace Prisma {
     id?: SortOrder
     txHash?: SortOrder
     blockAddressId?: SortOrder
+    cbor?: SortOrder
     blockAddress?: BlockAddressOrderByWithRelationInput
   }
 
@@ -5715,6 +5731,7 @@ export namespace Prisma {
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     txHash?: StringFilter<"Transaction"> | string
     blockAddressId?: IntFilter<"Transaction"> | number
+    cbor?: StringFilter<"Transaction"> | string
     blockAddress?: XOR<BlockAddressScalarRelationFilter, BlockAddressWhereInput>
   }, "id">
 
@@ -5722,6 +5739,7 @@ export namespace Prisma {
     id?: SortOrder
     txHash?: SortOrder
     blockAddressId?: SortOrder
+    cbor?: SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
     _max?: TransactionMaxOrderByAggregateInput
@@ -5736,6 +5754,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Transaction"> | number
     txHash?: StringWithAggregatesFilter<"Transaction"> | string
     blockAddressId?: IntWithAggregatesFilter<"Transaction"> | number
+    cbor?: StringWithAggregatesFilter<"Transaction"> | string
   }
 
   export type BlocksWhereInput = {
@@ -5878,6 +5897,7 @@ export namespace Prisma {
 
   export type TransactionCreateInput = {
     txHash: string
+    cbor: string
     blockAddress: BlockAddressCreateNestedOneWithoutTransactionsInput
   }
 
@@ -5885,10 +5905,12 @@ export namespace Prisma {
     id?: number
     txHash: string
     blockAddressId: number
+    cbor: string
   }
 
   export type TransactionUpdateInput = {
     txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
     blockAddress?: BlockAddressUpdateOneRequiredWithoutTransactionsNestedInput
   }
 
@@ -5896,22 +5918,26 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     blockAddressId?: IntFieldUpdateOperationsInput | number
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionCreateManyInput = {
     id?: number
     txHash: string
     blockAddressId: number
+    cbor: string
   }
 
   export type TransactionUpdateManyMutationInput = {
     txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     blockAddressId?: IntFieldUpdateOperationsInput | number
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type BlocksCreateInput = {
@@ -6115,6 +6141,7 @@ export namespace Prisma {
     id?: SortOrder
     txHash?: SortOrder
     blockAddressId?: SortOrder
+    cbor?: SortOrder
   }
 
   export type TransactionAvgOrderByAggregateInput = {
@@ -6126,12 +6153,14 @@ export namespace Prisma {
     id?: SortOrder
     txHash?: SortOrder
     blockAddressId?: SortOrder
+    cbor?: SortOrder
   }
 
   export type TransactionMinOrderByAggregateInput = {
     id?: SortOrder
     txHash?: SortOrder
     blockAddressId?: SortOrder
+    cbor?: SortOrder
   }
 
   export type TransactionSumOrderByAggregateInput = {
@@ -6523,11 +6552,13 @@ export namespace Prisma {
 
   export type TransactionCreateWithoutBlockAddressInput = {
     txHash: string
+    cbor: string
   }
 
   export type TransactionUncheckedCreateWithoutBlockAddressInput = {
     id?: number
     txHash: string
+    cbor: string
   }
 
   export type TransactionCreateOrConnectWithoutBlockAddressInput = {
@@ -6585,6 +6616,7 @@ export namespace Prisma {
     id?: IntFilter<"Transaction"> | number
     txHash?: StringFilter<"Transaction"> | string
     blockAddressId?: IntFilter<"Transaction"> | number
+    cbor?: StringFilter<"Transaction"> | string
   }
 
   export type BlockAddressCreateWithoutTransactionsInput = {
@@ -6674,20 +6706,24 @@ export namespace Prisma {
   export type TransactionCreateManyBlockAddressInput = {
     id?: number
     txHash: string
+    cbor: string
   }
 
   export type TransactionUpdateWithoutBlockAddressInput = {
     txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionUncheckedUpdateWithoutBlockAddressInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionUncheckedUpdateManyWithoutBlockAddressInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
   export type BlockAddressCreateManyBlockInput = {

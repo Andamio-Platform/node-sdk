@@ -11,7 +11,7 @@ datasource db {
 // BlockAddress is where we store the all andamio txs we need
 model BlockAddress {
   id           Int           @id @default(autoincrement())
-  address      String        
+  address      String
   block        Blocks        @relation(fields: [blockId], references: [id])
   blockId      Int
   transactions Transaction[]
@@ -21,9 +21,10 @@ model BlockAddress {
 
 model Transaction {
   id             Int          @id @default(autoincrement())
-  txHash         String       
+  txHash         String
   blockAddress   BlockAddress @relation(fields: [blockAddressId], references: [id])
   blockAddressId Int
+  cbor           String
 
   @@index([txHash])
   @@index([blockAddressId])

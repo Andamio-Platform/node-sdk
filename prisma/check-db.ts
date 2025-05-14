@@ -17,11 +17,16 @@ async function main() {
             let data;
             if (name === 'blockAddress') {
                 data = await (model as any).findMany({
+                    // orderBy: {
+                    //     id: 'desc'
+                    // },
                     take: 10,
                     include: { transactions: true }
                 });
             } else {
-                data = await (model as any).findMany({ take: 10 });
+                data = await (model as any).findMany({
+                    take: 10,
+                });
             }
             console.log(`📄 ${name.toUpperCase()}:`)
             console.dir(data, { depth: null })

@@ -129,7 +129,8 @@ exports.Prisma.BlockAddressScalarFieldEnum = {
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   txHash: 'txHash',
-  blockAddressId: 'blockAddressId'
+  blockAddressId: 'blockAddressId',
+  cbor: 'cbor'
 };
 
 exports.Prisma.BlocksScalarFieldEnum = {
