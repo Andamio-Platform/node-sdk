@@ -8,33 +8,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// BlockAddress is where we store the all andamio txs we need
-model BlockAddress {
-  id           Int           @id @default(autoincrement())
-  address      String
-  block        Blocks        @relation(fields: [blockId], references: [id])
-  blockId      Int
-  transactions Transaction[]
-
-  @@index([address])
-}
-
 model Transaction {
-  id             Int          @id @default(autoincrement())
-  txHash         String
-  blockAddress   BlockAddress @relation(fields: [blockAddressId], references: [id])
-  blockAddressId Int
-  cbor           String
+  id     Int    @id @default(autoincrement())
+  txHash String @unique
+  cbor   String
 
+  addressToWatch   AddressToWatch? @relation(fields: [addressToWatchId], references: [id])
+  addressToWatchId Int?
+
+  @@index([addressToWatchId])
   @@index([txHash])
-  @@index([blockAddressId])
-}
-
-model Blocks {
-  id        Int            @id @default(autoincrement())
-  blockHash String         @unique
-  addresses BlockAddress[]
-  createdAt DateTime       @default(now())
 }
 
 enum LocalStateType {
@@ -49,11 +32,18 @@ enum LocalStateType {
 
 // AddressToWatch is a table to store addresses we want to watch
 model AddressToWatch {
-  id    Int             @id @default(autoincrement())
-  key   String
-  value String          @unique
-  type  LocalStateType? // Optional enum field
+  id           Int             @id @default(autoincrement())
+  key          String
+  value        String          @unique
+  type         LocalStateType? // Optional enum field
+  transactions Transaction[]
 
   @@index([key])
   @@index([type])
+}
+
+model AddressToWatchSyncTip {
+  id        Int    @id @default(autoincrement())
+  slot      Int    @unique
+  blockHash String @unique
 }

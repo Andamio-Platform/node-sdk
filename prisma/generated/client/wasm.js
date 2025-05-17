@@ -120,23 +120,11 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
-exports.Prisma.BlockAddressScalarFieldEnum = {
-  id: 'id',
-  address: 'address',
-  blockId: 'blockId'
-};
-
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   txHash: 'txHash',
-  blockAddressId: 'blockAddressId',
-  cbor: 'cbor'
-};
-
-exports.Prisma.BlocksScalarFieldEnum = {
-  id: 'id',
-  blockHash: 'blockHash',
-  createdAt: 'createdAt'
+  cbor: 'cbor',
+  addressToWatchId: 'addressToWatchId'
 };
 
 exports.Prisma.AddressToWatchScalarFieldEnum = {
@@ -144,6 +132,12 @@ exports.Prisma.AddressToWatchScalarFieldEnum = {
   key: 'key',
   value: 'value',
   type: 'type'
+};
+
+exports.Prisma.AddressToWatchSyncTipScalarFieldEnum = {
+  id: 'id',
+  slot: 'slot',
+  blockHash: 'blockHash'
 };
 
 exports.Prisma.SortOrder = {
@@ -171,10 +165,9 @@ exports.LocalStateType = exports.$Enums.LocalStateType = {
 };
 
 exports.Prisma.ModelName = {
-  BlockAddress: 'BlockAddress',
   Transaction: 'Transaction',
-  Blocks: 'Blocks',
-  AddressToWatch: 'AddressToWatch'
+  AddressToWatch: 'AddressToWatch',
+  AddressToWatchSyncTip: 'AddressToWatchSyncTip'
 };
 
 /**

@@ -14,25 +14,20 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 
 /**
- * Model BlockAddress
- * 
- */
-export type BlockAddress = $Result.DefaultSelection<Prisma.$BlockAddressPayload>
-/**
  * Model Transaction
  * 
  */
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 /**
- * Model Blocks
- * 
- */
-export type Blocks = $Result.DefaultSelection<Prisma.$BlocksPayload>
-/**
  * Model AddressToWatch
  * 
  */
 export type AddressToWatch = $Result.DefaultSelection<Prisma.$AddressToWatchPayload>
+/**
+ * Model AddressToWatchSyncTip
+ * 
+ */
+export type AddressToWatchSyncTip = $Result.DefaultSelection<Prisma.$AddressToWatchSyncTipPayload>
 
 /**
  * Enums
@@ -63,8 +58,8 @@ export const LocalStateType: typeof $Enums.LocalStateType
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more BlockAddresses
- * const blockAddresses = await prisma.blockAddress.findMany()
+ * // Fetch zero or more Transactions
+ * const transactions = await prisma.transaction.findMany()
  * ```
  *
  *
@@ -84,8 +79,8 @@ export class PrismaClient<
    * @example
    * ```
    * const prisma = new PrismaClient()
-   * // Fetch zero or more BlockAddresses
-   * const blockAddresses = await prisma.blockAddress.findMany()
+   * // Fetch zero or more Transactions
+   * const transactions = await prisma.transaction.findMany()
    * ```
    *
    *
@@ -182,16 +177,6 @@ export class PrismaClient<
   }>>
 
       /**
-   * `prisma.blockAddress`: Exposes CRUD operations for the **BlockAddress** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more BlockAddresses
-    * const blockAddresses = await prisma.blockAddress.findMany()
-    * ```
-    */
-  get blockAddress(): Prisma.BlockAddressDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.transaction`: Exposes CRUD operations for the **Transaction** model.
     * Example usage:
     * ```ts
@@ -202,16 +187,6 @@ export class PrismaClient<
   get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.blocks`: Exposes CRUD operations for the **Blocks** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Blocks
-    * const blocks = await prisma.blocks.findMany()
-    * ```
-    */
-  get blocks(): Prisma.BlocksDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.addressToWatch`: Exposes CRUD operations for the **AddressToWatch** model.
     * Example usage:
     * ```ts
@@ -220,6 +195,16 @@ export class PrismaClient<
     * ```
     */
   get addressToWatch(): Prisma.AddressToWatchDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.addressToWatchSyncTip`: Exposes CRUD operations for the **AddressToWatchSyncTip** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AddressToWatchSyncTips
+    * const addressToWatchSyncTips = await prisma.addressToWatchSyncTip.findMany()
+    * ```
+    */
+  get addressToWatchSyncTip(): Prisma.AddressToWatchSyncTipDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -660,10 +645,9 @@ export namespace Prisma {
 
 
   export const ModelName: {
-    BlockAddress: 'BlockAddress',
     Transaction: 'Transaction',
-    Blocks: 'Blocks',
-    AddressToWatch: 'AddressToWatch'
+    AddressToWatch: 'AddressToWatch',
+    AddressToWatchSyncTip: 'AddressToWatchSyncTip'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -682,84 +666,10 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "blockAddress" | "transaction" | "blocks" | "addressToWatch"
+      modelProps: "transaction" | "addressToWatch" | "addressToWatchSyncTip"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
-      BlockAddress: {
-        payload: Prisma.$BlockAddressPayload<ExtArgs>
-        fields: Prisma.BlockAddressFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.BlockAddressFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.BlockAddressFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          findFirst: {
-            args: Prisma.BlockAddressFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.BlockAddressFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          findMany: {
-            args: Prisma.BlockAddressFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>[]
-          }
-          create: {
-            args: Prisma.BlockAddressCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          createMany: {
-            args: Prisma.BlockAddressCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.BlockAddressCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>[]
-          }
-          delete: {
-            args: Prisma.BlockAddressDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          update: {
-            args: Prisma.BlockAddressUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          deleteMany: {
-            args: Prisma.BlockAddressDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.BlockAddressUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.BlockAddressUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>[]
-          }
-          upsert: {
-            args: Prisma.BlockAddressUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlockAddressPayload>
-          }
-          aggregate: {
-            args: Prisma.BlockAddressAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateBlockAddress>
-          }
-          groupBy: {
-            args: Prisma.BlockAddressGroupByArgs<ExtArgs>
-            result: $Utils.Optional<BlockAddressGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.BlockAddressCountArgs<ExtArgs>
-            result: $Utils.Optional<BlockAddressCountAggregateOutputType> | number
-          }
-        }
-      }
       Transaction: {
         payload: Prisma.$TransactionPayload<ExtArgs>
         fields: Prisma.TransactionFieldRefs
@@ -834,80 +744,6 @@ export namespace Prisma {
           }
         }
       }
-      Blocks: {
-        payload: Prisma.$BlocksPayload<ExtArgs>
-        fields: Prisma.BlocksFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.BlocksFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.BlocksFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          findFirst: {
-            args: Prisma.BlocksFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.BlocksFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          findMany: {
-            args: Prisma.BlocksFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>[]
-          }
-          create: {
-            args: Prisma.BlocksCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          createMany: {
-            args: Prisma.BlocksCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.BlocksCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>[]
-          }
-          delete: {
-            args: Prisma.BlocksDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          update: {
-            args: Prisma.BlocksUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          deleteMany: {
-            args: Prisma.BlocksDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.BlocksUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.BlocksUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>[]
-          }
-          upsert: {
-            args: Prisma.BlocksUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$BlocksPayload>
-          }
-          aggregate: {
-            args: Prisma.BlocksAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateBlocks>
-          }
-          groupBy: {
-            args: Prisma.BlocksGroupByArgs<ExtArgs>
-            result: $Utils.Optional<BlocksGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.BlocksCountArgs<ExtArgs>
-            result: $Utils.Optional<BlocksCountAggregateOutputType> | number
-          }
-        }
-      }
       AddressToWatch: {
         payload: Prisma.$AddressToWatchPayload<ExtArgs>
         fields: Prisma.AddressToWatchFieldRefs
@@ -979,6 +815,80 @@ export namespace Prisma {
           count: {
             args: Prisma.AddressToWatchCountArgs<ExtArgs>
             result: $Utils.Optional<AddressToWatchCountAggregateOutputType> | number
+          }
+        }
+      }
+      AddressToWatchSyncTip: {
+        payload: Prisma.$AddressToWatchSyncTipPayload<ExtArgs>
+        fields: Prisma.AddressToWatchSyncTipFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AddressToWatchSyncTipFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AddressToWatchSyncTipFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          findFirst: {
+            args: Prisma.AddressToWatchSyncTipFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AddressToWatchSyncTipFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          findMany: {
+            args: Prisma.AddressToWatchSyncTipFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>[]
+          }
+          create: {
+            args: Prisma.AddressToWatchSyncTipCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          createMany: {
+            args: Prisma.AddressToWatchSyncTipCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AddressToWatchSyncTipCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>[]
+          }
+          delete: {
+            args: Prisma.AddressToWatchSyncTipDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          update: {
+            args: Prisma.AddressToWatchSyncTipUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          deleteMany: {
+            args: Prisma.AddressToWatchSyncTipDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AddressToWatchSyncTipUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AddressToWatchSyncTipUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>[]
+          }
+          upsert: {
+            args: Prisma.AddressToWatchSyncTipUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AddressToWatchSyncTipPayload>
+          }
+          aggregate: {
+            args: Prisma.AddressToWatchSyncTipAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAddressToWatchSyncTip>
+          }
+          groupBy: {
+            args: Prisma.AddressToWatchSyncTipGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AddressToWatchSyncTipGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AddressToWatchSyncTipCountArgs<ExtArgs>
+            result: $Utils.Optional<AddressToWatchSyncTipCountAggregateOutputType> | number
           }
         }
       }
@@ -1066,10 +976,9 @@ export namespace Prisma {
     omit?: Prisma.GlobalOmitConfig
   }
   export type GlobalOmitConfig = {
-    blockAddress?: BlockAddressOmit
     transaction?: TransactionOmit
-    blocks?: BlocksOmit
     addressToWatch?: AddressToWatchOmit
+    addressToWatchSyncTip?: AddressToWatchSyncTipOmit
   }
 
   /* Types for Logging */
@@ -1160,1170 +1069,39 @@ export namespace Prisma {
 
 
   /**
-   * Count Type BlockAddressCountOutputType
+   * Count Type AddressToWatchCountOutputType
    */
 
-  export type BlockAddressCountOutputType = {
+  export type AddressToWatchCountOutputType = {
     transactions: number
   }
 
-  export type BlockAddressCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    transactions?: boolean | BlockAddressCountOutputTypeCountTransactionsArgs
+  export type AddressToWatchCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transactions?: boolean | AddressToWatchCountOutputTypeCountTransactionsArgs
   }
 
   // Custom InputTypes
   /**
-   * BlockAddressCountOutputType without action
+   * AddressToWatchCountOutputType without action
    */
-  export type BlockAddressCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AddressToWatchCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the BlockAddressCountOutputType
+     * Select specific fields to fetch from the AddressToWatchCountOutputType
      */
-    select?: BlockAddressCountOutputTypeSelect<ExtArgs> | null
+    select?: AddressToWatchCountOutputTypeSelect<ExtArgs> | null
   }
 
   /**
-   * BlockAddressCountOutputType without action
+   * AddressToWatchCountOutputType without action
    */
-  export type BlockAddressCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type AddressToWatchCountOutputTypeCountTransactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: TransactionWhereInput
-  }
-
-
-  /**
-   * Count Type BlocksCountOutputType
-   */
-
-  export type BlocksCountOutputType = {
-    addresses: number
-  }
-
-  export type BlocksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    addresses?: boolean | BlocksCountOutputTypeCountAddressesArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * BlocksCountOutputType without action
-   */
-  export type BlocksCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlocksCountOutputType
-     */
-    select?: BlocksCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * BlocksCountOutputType without action
-   */
-  export type BlocksCountOutputTypeCountAddressesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: BlockAddressWhereInput
   }
 
 
   /**
    * Models
    */
-
-  /**
-   * Model BlockAddress
-   */
-
-  export type AggregateBlockAddress = {
-    _count: BlockAddressCountAggregateOutputType | null
-    _avg: BlockAddressAvgAggregateOutputType | null
-    _sum: BlockAddressSumAggregateOutputType | null
-    _min: BlockAddressMinAggregateOutputType | null
-    _max: BlockAddressMaxAggregateOutputType | null
-  }
-
-  export type BlockAddressAvgAggregateOutputType = {
-    id: number | null
-    blockId: number | null
-  }
-
-  export type BlockAddressSumAggregateOutputType = {
-    id: number | null
-    blockId: number | null
-  }
-
-  export type BlockAddressMinAggregateOutputType = {
-    id: number | null
-    address: string | null
-    blockId: number | null
-  }
-
-  export type BlockAddressMaxAggregateOutputType = {
-    id: number | null
-    address: string | null
-    blockId: number | null
-  }
-
-  export type BlockAddressCountAggregateOutputType = {
-    id: number
-    address: number
-    blockId: number
-    _all: number
-  }
-
-
-  export type BlockAddressAvgAggregateInputType = {
-    id?: true
-    blockId?: true
-  }
-
-  export type BlockAddressSumAggregateInputType = {
-    id?: true
-    blockId?: true
-  }
-
-  export type BlockAddressMinAggregateInputType = {
-    id?: true
-    address?: true
-    blockId?: true
-  }
-
-  export type BlockAddressMaxAggregateInputType = {
-    id?: true
-    address?: true
-    blockId?: true
-  }
-
-  export type BlockAddressCountAggregateInputType = {
-    id?: true
-    address?: true
-    blockId?: true
-    _all?: true
-  }
-
-  export type BlockAddressAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which BlockAddress to aggregate.
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of BlockAddresses to fetch.
-     */
-    orderBy?: BlockAddressOrderByWithRelationInput | BlockAddressOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: BlockAddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` BlockAddresses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` BlockAddresses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned BlockAddresses
-    **/
-    _count?: true | BlockAddressCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: BlockAddressAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: BlockAddressSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: BlockAddressMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: BlockAddressMaxAggregateInputType
-  }
-
-  export type GetBlockAddressAggregateType<T extends BlockAddressAggregateArgs> = {
-        [P in keyof T & keyof AggregateBlockAddress]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateBlockAddress[P]>
-      : GetScalarType<T[P], AggregateBlockAddress[P]>
-  }
-
-
-
-
-  export type BlockAddressGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: BlockAddressWhereInput
-    orderBy?: BlockAddressOrderByWithAggregationInput | BlockAddressOrderByWithAggregationInput[]
-    by: BlockAddressScalarFieldEnum[] | BlockAddressScalarFieldEnum
-    having?: BlockAddressScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: BlockAddressCountAggregateInputType | true
-    _avg?: BlockAddressAvgAggregateInputType
-    _sum?: BlockAddressSumAggregateInputType
-    _min?: BlockAddressMinAggregateInputType
-    _max?: BlockAddressMaxAggregateInputType
-  }
-
-  export type BlockAddressGroupByOutputType = {
-    id: number
-    address: string
-    blockId: number
-    _count: BlockAddressCountAggregateOutputType | null
-    _avg: BlockAddressAvgAggregateOutputType | null
-    _sum: BlockAddressSumAggregateOutputType | null
-    _min: BlockAddressMinAggregateOutputType | null
-    _max: BlockAddressMaxAggregateOutputType | null
-  }
-
-  type GetBlockAddressGroupByPayload<T extends BlockAddressGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<BlockAddressGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof BlockAddressGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], BlockAddressGroupByOutputType[P]>
-            : GetScalarType<T[P], BlockAddressGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type BlockAddressSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    address?: boolean
-    blockId?: boolean
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-    transactions?: boolean | BlockAddress$transactionsArgs<ExtArgs>
-    _count?: boolean | BlockAddressCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["blockAddress"]>
-
-  export type BlockAddressSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    address?: boolean
-    blockId?: boolean
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["blockAddress"]>
-
-  export type BlockAddressSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    address?: boolean
-    blockId?: boolean
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["blockAddress"]>
-
-  export type BlockAddressSelectScalar = {
-    id?: boolean
-    address?: boolean
-    blockId?: boolean
-  }
-
-  export type BlockAddressOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "address" | "blockId", ExtArgs["result"]["blockAddress"]>
-  export type BlockAddressInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-    transactions?: boolean | BlockAddress$transactionsArgs<ExtArgs>
-    _count?: boolean | BlockAddressCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type BlockAddressIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-  }
-  export type BlockAddressIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    block?: boolean | BlocksDefaultArgs<ExtArgs>
-  }
-
-  export type $BlockAddressPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "BlockAddress"
-    objects: {
-      block: Prisma.$BlocksPayload<ExtArgs>
-      transactions: Prisma.$TransactionPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      address: string
-      blockId: number
-    }, ExtArgs["result"]["blockAddress"]>
-    composites: {}
-  }
-
-  type BlockAddressGetPayload<S extends boolean | null | undefined | BlockAddressDefaultArgs> = $Result.GetResult<Prisma.$BlockAddressPayload, S>
-
-  type BlockAddressCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<BlockAddressFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: BlockAddressCountAggregateInputType | true
-    }
-
-  export interface BlockAddressDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['BlockAddress'], meta: { name: 'BlockAddress' } }
-    /**
-     * Find zero or one BlockAddress that matches the filter.
-     * @param {BlockAddressFindUniqueArgs} args - Arguments to find a BlockAddress
-     * @example
-     * // Get one BlockAddress
-     * const blockAddress = await prisma.blockAddress.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends BlockAddressFindUniqueArgs>(args: SelectSubset<T, BlockAddressFindUniqueArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one BlockAddress that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {BlockAddressFindUniqueOrThrowArgs} args - Arguments to find a BlockAddress
-     * @example
-     * // Get one BlockAddress
-     * const blockAddress = await prisma.blockAddress.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends BlockAddressFindUniqueOrThrowArgs>(args: SelectSubset<T, BlockAddressFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first BlockAddress that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressFindFirstArgs} args - Arguments to find a BlockAddress
-     * @example
-     * // Get one BlockAddress
-     * const blockAddress = await prisma.blockAddress.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends BlockAddressFindFirstArgs>(args?: SelectSubset<T, BlockAddressFindFirstArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first BlockAddress that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressFindFirstOrThrowArgs} args - Arguments to find a BlockAddress
-     * @example
-     * // Get one BlockAddress
-     * const blockAddress = await prisma.blockAddress.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends BlockAddressFindFirstOrThrowArgs>(args?: SelectSubset<T, BlockAddressFindFirstOrThrowArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more BlockAddresses that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all BlockAddresses
-     * const blockAddresses = await prisma.blockAddress.findMany()
-     * 
-     * // Get first 10 BlockAddresses
-     * const blockAddresses = await prisma.blockAddress.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const blockAddressWithIdOnly = await prisma.blockAddress.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends BlockAddressFindManyArgs>(args?: SelectSubset<T, BlockAddressFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a BlockAddress.
-     * @param {BlockAddressCreateArgs} args - Arguments to create a BlockAddress.
-     * @example
-     * // Create one BlockAddress
-     * const BlockAddress = await prisma.blockAddress.create({
-     *   data: {
-     *     // ... data to create a BlockAddress
-     *   }
-     * })
-     * 
-     */
-    create<T extends BlockAddressCreateArgs>(args: SelectSubset<T, BlockAddressCreateArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many BlockAddresses.
-     * @param {BlockAddressCreateManyArgs} args - Arguments to create many BlockAddresses.
-     * @example
-     * // Create many BlockAddresses
-     * const blockAddress = await prisma.blockAddress.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends BlockAddressCreateManyArgs>(args?: SelectSubset<T, BlockAddressCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many BlockAddresses and returns the data saved in the database.
-     * @param {BlockAddressCreateManyAndReturnArgs} args - Arguments to create many BlockAddresses.
-     * @example
-     * // Create many BlockAddresses
-     * const blockAddress = await prisma.blockAddress.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many BlockAddresses and only return the `id`
-     * const blockAddressWithIdOnly = await prisma.blockAddress.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends BlockAddressCreateManyAndReturnArgs>(args?: SelectSubset<T, BlockAddressCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a BlockAddress.
-     * @param {BlockAddressDeleteArgs} args - Arguments to delete one BlockAddress.
-     * @example
-     * // Delete one BlockAddress
-     * const BlockAddress = await prisma.blockAddress.delete({
-     *   where: {
-     *     // ... filter to delete one BlockAddress
-     *   }
-     * })
-     * 
-     */
-    delete<T extends BlockAddressDeleteArgs>(args: SelectSubset<T, BlockAddressDeleteArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one BlockAddress.
-     * @param {BlockAddressUpdateArgs} args - Arguments to update one BlockAddress.
-     * @example
-     * // Update one BlockAddress
-     * const blockAddress = await prisma.blockAddress.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends BlockAddressUpdateArgs>(args: SelectSubset<T, BlockAddressUpdateArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more BlockAddresses.
-     * @param {BlockAddressDeleteManyArgs} args - Arguments to filter BlockAddresses to delete.
-     * @example
-     * // Delete a few BlockAddresses
-     * const { count } = await prisma.blockAddress.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends BlockAddressDeleteManyArgs>(args?: SelectSubset<T, BlockAddressDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more BlockAddresses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many BlockAddresses
-     * const blockAddress = await prisma.blockAddress.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends BlockAddressUpdateManyArgs>(args: SelectSubset<T, BlockAddressUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more BlockAddresses and returns the data updated in the database.
-     * @param {BlockAddressUpdateManyAndReturnArgs} args - Arguments to update many BlockAddresses.
-     * @example
-     * // Update many BlockAddresses
-     * const blockAddress = await prisma.blockAddress.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more BlockAddresses and only return the `id`
-     * const blockAddressWithIdOnly = await prisma.blockAddress.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends BlockAddressUpdateManyAndReturnArgs>(args: SelectSubset<T, BlockAddressUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one BlockAddress.
-     * @param {BlockAddressUpsertArgs} args - Arguments to update or create a BlockAddress.
-     * @example
-     * // Update or create a BlockAddress
-     * const blockAddress = await prisma.blockAddress.upsert({
-     *   create: {
-     *     // ... data to create a BlockAddress
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the BlockAddress we want to update
-     *   }
-     * })
-     */
-    upsert<T extends BlockAddressUpsertArgs>(args: SelectSubset<T, BlockAddressUpsertArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of BlockAddresses.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressCountArgs} args - Arguments to filter BlockAddresses to count.
-     * @example
-     * // Count the number of BlockAddresses
-     * const count = await prisma.blockAddress.count({
-     *   where: {
-     *     // ... the filter for the BlockAddresses we want to count
-     *   }
-     * })
-    **/
-    count<T extends BlockAddressCountArgs>(
-      args?: Subset<T, BlockAddressCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], BlockAddressCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a BlockAddress.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends BlockAddressAggregateArgs>(args: Subset<T, BlockAddressAggregateArgs>): Prisma.PrismaPromise<GetBlockAddressAggregateType<T>>
-
-    /**
-     * Group by BlockAddress.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlockAddressGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends BlockAddressGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: BlockAddressGroupByArgs['orderBy'] }
-        : { orderBy?: BlockAddressGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, BlockAddressGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBlockAddressGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the BlockAddress model
-   */
-  readonly fields: BlockAddressFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for BlockAddress.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__BlockAddressClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    block<T extends BlocksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BlocksDefaultArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    transactions<T extends BlockAddress$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, BlockAddress$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the BlockAddress model
-   */
-  interface BlockAddressFieldRefs {
-    readonly id: FieldRef<"BlockAddress", 'Int'>
-    readonly address: FieldRef<"BlockAddress", 'String'>
-    readonly blockId: FieldRef<"BlockAddress", 'Int'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * BlockAddress findUnique
-   */
-  export type BlockAddressFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter, which BlockAddress to fetch.
-     */
-    where: BlockAddressWhereUniqueInput
-  }
-
-  /**
-   * BlockAddress findUniqueOrThrow
-   */
-  export type BlockAddressFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter, which BlockAddress to fetch.
-     */
-    where: BlockAddressWhereUniqueInput
-  }
-
-  /**
-   * BlockAddress findFirst
-   */
-  export type BlockAddressFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter, which BlockAddress to fetch.
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of BlockAddresses to fetch.
-     */
-    orderBy?: BlockAddressOrderByWithRelationInput | BlockAddressOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for BlockAddresses.
-     */
-    cursor?: BlockAddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` BlockAddresses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` BlockAddresses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of BlockAddresses.
-     */
-    distinct?: BlockAddressScalarFieldEnum | BlockAddressScalarFieldEnum[]
-  }
-
-  /**
-   * BlockAddress findFirstOrThrow
-   */
-  export type BlockAddressFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter, which BlockAddress to fetch.
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of BlockAddresses to fetch.
-     */
-    orderBy?: BlockAddressOrderByWithRelationInput | BlockAddressOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for BlockAddresses.
-     */
-    cursor?: BlockAddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` BlockAddresses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` BlockAddresses.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of BlockAddresses.
-     */
-    distinct?: BlockAddressScalarFieldEnum | BlockAddressScalarFieldEnum[]
-  }
-
-  /**
-   * BlockAddress findMany
-   */
-  export type BlockAddressFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter, which BlockAddresses to fetch.
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of BlockAddresses to fetch.
-     */
-    orderBy?: BlockAddressOrderByWithRelationInput | BlockAddressOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing BlockAddresses.
-     */
-    cursor?: BlockAddressWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` BlockAddresses from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` BlockAddresses.
-     */
-    skip?: number
-    distinct?: BlockAddressScalarFieldEnum | BlockAddressScalarFieldEnum[]
-  }
-
-  /**
-   * BlockAddress create
-   */
-  export type BlockAddressCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * The data needed to create a BlockAddress.
-     */
-    data: XOR<BlockAddressCreateInput, BlockAddressUncheckedCreateInput>
-  }
-
-  /**
-   * BlockAddress createMany
-   */
-  export type BlockAddressCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many BlockAddresses.
-     */
-    data: BlockAddressCreateManyInput | BlockAddressCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * BlockAddress createManyAndReturn
-   */
-  export type BlockAddressCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * The data used to create many BlockAddresses.
-     */
-    data: BlockAddressCreateManyInput | BlockAddressCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * BlockAddress update
-   */
-  export type BlockAddressUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * The data needed to update a BlockAddress.
-     */
-    data: XOR<BlockAddressUpdateInput, BlockAddressUncheckedUpdateInput>
-    /**
-     * Choose, which BlockAddress to update.
-     */
-    where: BlockAddressWhereUniqueInput
-  }
-
-  /**
-   * BlockAddress updateMany
-   */
-  export type BlockAddressUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update BlockAddresses.
-     */
-    data: XOR<BlockAddressUpdateManyMutationInput, BlockAddressUncheckedUpdateManyInput>
-    /**
-     * Filter which BlockAddresses to update
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * Limit how many BlockAddresses to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * BlockAddress updateManyAndReturn
-   */
-  export type BlockAddressUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * The data used to update BlockAddresses.
-     */
-    data: XOR<BlockAddressUpdateManyMutationInput, BlockAddressUncheckedUpdateManyInput>
-    /**
-     * Filter which BlockAddresses to update
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * Limit how many BlockAddresses to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * BlockAddress upsert
-   */
-  export type BlockAddressUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * The filter to search for the BlockAddress to update in case it exists.
-     */
-    where: BlockAddressWhereUniqueInput
-    /**
-     * In case the BlockAddress found by the `where` argument doesn't exist, create a new BlockAddress with this data.
-     */
-    create: XOR<BlockAddressCreateInput, BlockAddressUncheckedCreateInput>
-    /**
-     * In case the BlockAddress was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<BlockAddressUpdateInput, BlockAddressUncheckedUpdateInput>
-  }
-
-  /**
-   * BlockAddress delete
-   */
-  export type BlockAddressDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    /**
-     * Filter which BlockAddress to delete.
-     */
-    where: BlockAddressWhereUniqueInput
-  }
-
-  /**
-   * BlockAddress deleteMany
-   */
-  export type BlockAddressDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which BlockAddresses to delete
-     */
-    where?: BlockAddressWhereInput
-    /**
-     * Limit how many BlockAddresses to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * BlockAddress.transactions
-   */
-  export type BlockAddress$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Transaction
-     */
-    select?: TransactionSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Transaction
-     */
-    omit?: TransactionOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransactionInclude<ExtArgs> | null
-    where?: TransactionWhereInput
-    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
-    cursor?: TransactionWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
-  }
-
-  /**
-   * BlockAddress without action
-   */
-  export type BlockAddressDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-  }
-
 
   /**
    * Model Transaction
@@ -2339,66 +1117,66 @@ export namespace Prisma {
 
   export type TransactionAvgAggregateOutputType = {
     id: number | null
-    blockAddressId: number | null
+    addressToWatchId: number | null
   }
 
   export type TransactionSumAggregateOutputType = {
     id: number | null
-    blockAddressId: number | null
+    addressToWatchId: number | null
   }
 
   export type TransactionMinAggregateOutputType = {
     id: number | null
     txHash: string | null
-    blockAddressId: number | null
     cbor: string | null
+    addressToWatchId: number | null
   }
 
   export type TransactionMaxAggregateOutputType = {
     id: number | null
     txHash: string | null
-    blockAddressId: number | null
     cbor: string | null
+    addressToWatchId: number | null
   }
 
   export type TransactionCountAggregateOutputType = {
     id: number
     txHash: number
-    blockAddressId: number
     cbor: number
+    addressToWatchId: number
     _all: number
   }
 
 
   export type TransactionAvgAggregateInputType = {
     id?: true
-    blockAddressId?: true
+    addressToWatchId?: true
   }
 
   export type TransactionSumAggregateInputType = {
     id?: true
-    blockAddressId?: true
+    addressToWatchId?: true
   }
 
   export type TransactionMinAggregateInputType = {
     id?: true
     txHash?: true
-    blockAddressId?: true
     cbor?: true
+    addressToWatchId?: true
   }
 
   export type TransactionMaxAggregateInputType = {
     id?: true
     txHash?: true
-    blockAddressId?: true
     cbor?: true
+    addressToWatchId?: true
   }
 
   export type TransactionCountAggregateInputType = {
     id?: true
     txHash?: true
-    blockAddressId?: true
     cbor?: true
+    addressToWatchId?: true
     _all?: true
   }
 
@@ -2491,8 +1269,8 @@ export namespace Prisma {
   export type TransactionGroupByOutputType = {
     id: number
     txHash: string
-    blockAddressId: number
     cbor: string
+    addressToWatchId: number | null
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -2517,55 +1295,55 @@ export namespace Prisma {
   export type TransactionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     txHash?: boolean
-    blockAddressId?: boolean
     cbor?: boolean
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatchId?: boolean
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     txHash?: boolean
-    blockAddressId?: boolean
     cbor?: boolean
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatchId?: boolean
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     txHash?: boolean
-    blockAddressId?: boolean
     cbor?: boolean
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatchId?: boolean
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectScalar = {
     id?: boolean
     txHash?: boolean
-    blockAddressId?: boolean
     cbor?: boolean
+    addressToWatchId?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "blockAddressId" | "cbor", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "cbor" | "addressToWatchId", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }
   export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }
   export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    blockAddress?: boolean | BlockAddressDefaultArgs<ExtArgs>
+    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }
 
   export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Transaction"
     objects: {
-      blockAddress: Prisma.$BlockAddressPayload<ExtArgs>
+      addressToWatch: Prisma.$AddressToWatchPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       txHash: string
-      blockAddressId: number
       cbor: string
+      addressToWatchId: number | null
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -2960,7 +1738,7 @@ export namespace Prisma {
    */
   export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    blockAddress<T extends BlockAddressDefaultArgs<ExtArgs> = {}>(args?: Subset<T, BlockAddressDefaultArgs<ExtArgs>>): Prisma__BlockAddressClient<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    addressToWatch<T extends Transaction$addressToWatchArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$addressToWatchArgs<ExtArgs>>): Prisma__AddressToWatchClient<$Result.GetResult<Prisma.$AddressToWatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2992,8 +1770,8 @@ export namespace Prisma {
   interface TransactionFieldRefs {
     readonly id: FieldRef<"Transaction", 'Int'>
     readonly txHash: FieldRef<"Transaction", 'String'>
-    readonly blockAddressId: FieldRef<"Transaction", 'Int'>
     readonly cbor: FieldRef<"Transaction", 'String'>
+    readonly addressToWatchId: FieldRef<"Transaction", 'Int'>
   }
     
 
@@ -3390,6 +2168,25 @@ export namespace Prisma {
   }
 
   /**
+   * Transaction.addressToWatch
+   */
+  export type Transaction$addressToWatchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatch
+     */
+    select?: AddressToWatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatch
+     */
+    omit?: AddressToWatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    where?: AddressToWatchWhereInput
+  }
+
+  /**
    * Transaction without action
    */
   export type TransactionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3405,1084 +2202,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TransactionInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Blocks
-   */
-
-  export type AggregateBlocks = {
-    _count: BlocksCountAggregateOutputType | null
-    _avg: BlocksAvgAggregateOutputType | null
-    _sum: BlocksSumAggregateOutputType | null
-    _min: BlocksMinAggregateOutputType | null
-    _max: BlocksMaxAggregateOutputType | null
-  }
-
-  export type BlocksAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type BlocksSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type BlocksMinAggregateOutputType = {
-    id: number | null
-    blockHash: string | null
-    createdAt: Date | null
-  }
-
-  export type BlocksMaxAggregateOutputType = {
-    id: number | null
-    blockHash: string | null
-    createdAt: Date | null
-  }
-
-  export type BlocksCountAggregateOutputType = {
-    id: number
-    blockHash: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type BlocksAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type BlocksSumAggregateInputType = {
-    id?: true
-  }
-
-  export type BlocksMinAggregateInputType = {
-    id?: true
-    blockHash?: true
-    createdAt?: true
-  }
-
-  export type BlocksMaxAggregateInputType = {
-    id?: true
-    blockHash?: true
-    createdAt?: true
-  }
-
-  export type BlocksCountAggregateInputType = {
-    id?: true
-    blockHash?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type BlocksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Blocks to aggregate.
-     */
-    where?: BlocksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Blocks to fetch.
-     */
-    orderBy?: BlocksOrderByWithRelationInput | BlocksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: BlocksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Blocks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Blocks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Blocks
-    **/
-    _count?: true | BlocksCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: BlocksAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: BlocksSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: BlocksMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: BlocksMaxAggregateInputType
-  }
-
-  export type GetBlocksAggregateType<T extends BlocksAggregateArgs> = {
-        [P in keyof T & keyof AggregateBlocks]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateBlocks[P]>
-      : GetScalarType<T[P], AggregateBlocks[P]>
-  }
-
-
-
-
-  export type BlocksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: BlocksWhereInput
-    orderBy?: BlocksOrderByWithAggregationInput | BlocksOrderByWithAggregationInput[]
-    by: BlocksScalarFieldEnum[] | BlocksScalarFieldEnum
-    having?: BlocksScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: BlocksCountAggregateInputType | true
-    _avg?: BlocksAvgAggregateInputType
-    _sum?: BlocksSumAggregateInputType
-    _min?: BlocksMinAggregateInputType
-    _max?: BlocksMaxAggregateInputType
-  }
-
-  export type BlocksGroupByOutputType = {
-    id: number
-    blockHash: string
-    createdAt: Date
-    _count: BlocksCountAggregateOutputType | null
-    _avg: BlocksAvgAggregateOutputType | null
-    _sum: BlocksSumAggregateOutputType | null
-    _min: BlocksMinAggregateOutputType | null
-    _max: BlocksMaxAggregateOutputType | null
-  }
-
-  type GetBlocksGroupByPayload<T extends BlocksGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<BlocksGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof BlocksGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], BlocksGroupByOutputType[P]>
-            : GetScalarType<T[P], BlocksGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type BlocksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    blockHash?: boolean
-    createdAt?: boolean
-    addresses?: boolean | Blocks$addressesArgs<ExtArgs>
-    _count?: boolean | BlocksCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["blocks"]>
-
-  export type BlocksSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    blockHash?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["blocks"]>
-
-  export type BlocksSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    blockHash?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["blocks"]>
-
-  export type BlocksSelectScalar = {
-    id?: boolean
-    blockHash?: boolean
-    createdAt?: boolean
-  }
-
-  export type BlocksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "blockHash" | "createdAt", ExtArgs["result"]["blocks"]>
-  export type BlocksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    addresses?: boolean | Blocks$addressesArgs<ExtArgs>
-    _count?: boolean | BlocksCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type BlocksIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type BlocksIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $BlocksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Blocks"
-    objects: {
-      addresses: Prisma.$BlockAddressPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      blockHash: string
-      createdAt: Date
-    }, ExtArgs["result"]["blocks"]>
-    composites: {}
-  }
-
-  type BlocksGetPayload<S extends boolean | null | undefined | BlocksDefaultArgs> = $Result.GetResult<Prisma.$BlocksPayload, S>
-
-  type BlocksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<BlocksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: BlocksCountAggregateInputType | true
-    }
-
-  export interface BlocksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Blocks'], meta: { name: 'Blocks' } }
-    /**
-     * Find zero or one Blocks that matches the filter.
-     * @param {BlocksFindUniqueArgs} args - Arguments to find a Blocks
-     * @example
-     * // Get one Blocks
-     * const blocks = await prisma.blocks.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends BlocksFindUniqueArgs>(args: SelectSubset<T, BlocksFindUniqueArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Blocks that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {BlocksFindUniqueOrThrowArgs} args - Arguments to find a Blocks
-     * @example
-     * // Get one Blocks
-     * const blocks = await prisma.blocks.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends BlocksFindUniqueOrThrowArgs>(args: SelectSubset<T, BlocksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Blocks that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksFindFirstArgs} args - Arguments to find a Blocks
-     * @example
-     * // Get one Blocks
-     * const blocks = await prisma.blocks.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends BlocksFindFirstArgs>(args?: SelectSubset<T, BlocksFindFirstArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Blocks that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksFindFirstOrThrowArgs} args - Arguments to find a Blocks
-     * @example
-     * // Get one Blocks
-     * const blocks = await prisma.blocks.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends BlocksFindFirstOrThrowArgs>(args?: SelectSubset<T, BlocksFindFirstOrThrowArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Blocks that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Blocks
-     * const blocks = await prisma.blocks.findMany()
-     * 
-     * // Get first 10 Blocks
-     * const blocks = await prisma.blocks.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const blocksWithIdOnly = await prisma.blocks.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends BlocksFindManyArgs>(args?: SelectSubset<T, BlocksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Blocks.
-     * @param {BlocksCreateArgs} args - Arguments to create a Blocks.
-     * @example
-     * // Create one Blocks
-     * const Blocks = await prisma.blocks.create({
-     *   data: {
-     *     // ... data to create a Blocks
-     *   }
-     * })
-     * 
-     */
-    create<T extends BlocksCreateArgs>(args: SelectSubset<T, BlocksCreateArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Blocks.
-     * @param {BlocksCreateManyArgs} args - Arguments to create many Blocks.
-     * @example
-     * // Create many Blocks
-     * const blocks = await prisma.blocks.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends BlocksCreateManyArgs>(args?: SelectSubset<T, BlocksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Blocks and returns the data saved in the database.
-     * @param {BlocksCreateManyAndReturnArgs} args - Arguments to create many Blocks.
-     * @example
-     * // Create many Blocks
-     * const blocks = await prisma.blocks.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Blocks and only return the `id`
-     * const blocksWithIdOnly = await prisma.blocks.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends BlocksCreateManyAndReturnArgs>(args?: SelectSubset<T, BlocksCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Blocks.
-     * @param {BlocksDeleteArgs} args - Arguments to delete one Blocks.
-     * @example
-     * // Delete one Blocks
-     * const Blocks = await prisma.blocks.delete({
-     *   where: {
-     *     // ... filter to delete one Blocks
-     *   }
-     * })
-     * 
-     */
-    delete<T extends BlocksDeleteArgs>(args: SelectSubset<T, BlocksDeleteArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Blocks.
-     * @param {BlocksUpdateArgs} args - Arguments to update one Blocks.
-     * @example
-     * // Update one Blocks
-     * const blocks = await prisma.blocks.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends BlocksUpdateArgs>(args: SelectSubset<T, BlocksUpdateArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Blocks.
-     * @param {BlocksDeleteManyArgs} args - Arguments to filter Blocks to delete.
-     * @example
-     * // Delete a few Blocks
-     * const { count } = await prisma.blocks.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends BlocksDeleteManyArgs>(args?: SelectSubset<T, BlocksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Blocks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Blocks
-     * const blocks = await prisma.blocks.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends BlocksUpdateManyArgs>(args: SelectSubset<T, BlocksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Blocks and returns the data updated in the database.
-     * @param {BlocksUpdateManyAndReturnArgs} args - Arguments to update many Blocks.
-     * @example
-     * // Update many Blocks
-     * const blocks = await prisma.blocks.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Blocks and only return the `id`
-     * const blocksWithIdOnly = await prisma.blocks.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends BlocksUpdateManyAndReturnArgs>(args: SelectSubset<T, BlocksUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Blocks.
-     * @param {BlocksUpsertArgs} args - Arguments to update or create a Blocks.
-     * @example
-     * // Update or create a Blocks
-     * const blocks = await prisma.blocks.upsert({
-     *   create: {
-     *     // ... data to create a Blocks
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Blocks we want to update
-     *   }
-     * })
-     */
-    upsert<T extends BlocksUpsertArgs>(args: SelectSubset<T, BlocksUpsertArgs<ExtArgs>>): Prisma__BlocksClient<$Result.GetResult<Prisma.$BlocksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Blocks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksCountArgs} args - Arguments to filter Blocks to count.
-     * @example
-     * // Count the number of Blocks
-     * const count = await prisma.blocks.count({
-     *   where: {
-     *     // ... the filter for the Blocks we want to count
-     *   }
-     * })
-    **/
-    count<T extends BlocksCountArgs>(
-      args?: Subset<T, BlocksCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], BlocksCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Blocks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends BlocksAggregateArgs>(args: Subset<T, BlocksAggregateArgs>): Prisma.PrismaPromise<GetBlocksAggregateType<T>>
-
-    /**
-     * Group by Blocks.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {BlocksGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends BlocksGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: BlocksGroupByArgs['orderBy'] }
-        : { orderBy?: BlocksGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, BlocksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetBlocksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Blocks model
-   */
-  readonly fields: BlocksFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Blocks.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__BlocksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    addresses<T extends Blocks$addressesArgs<ExtArgs> = {}>(args?: Subset<T, Blocks$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$BlockAddressPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Blocks model
-   */
-  interface BlocksFieldRefs {
-    readonly id: FieldRef<"Blocks", 'Int'>
-    readonly blockHash: FieldRef<"Blocks", 'String'>
-    readonly createdAt: FieldRef<"Blocks", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Blocks findUnique
-   */
-  export type BlocksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter, which Blocks to fetch.
-     */
-    where: BlocksWhereUniqueInput
-  }
-
-  /**
-   * Blocks findUniqueOrThrow
-   */
-  export type BlocksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter, which Blocks to fetch.
-     */
-    where: BlocksWhereUniqueInput
-  }
-
-  /**
-   * Blocks findFirst
-   */
-  export type BlocksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter, which Blocks to fetch.
-     */
-    where?: BlocksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Blocks to fetch.
-     */
-    orderBy?: BlocksOrderByWithRelationInput | BlocksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Blocks.
-     */
-    cursor?: BlocksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Blocks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Blocks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Blocks.
-     */
-    distinct?: BlocksScalarFieldEnum | BlocksScalarFieldEnum[]
-  }
-
-  /**
-   * Blocks findFirstOrThrow
-   */
-  export type BlocksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter, which Blocks to fetch.
-     */
-    where?: BlocksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Blocks to fetch.
-     */
-    orderBy?: BlocksOrderByWithRelationInput | BlocksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Blocks.
-     */
-    cursor?: BlocksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Blocks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Blocks.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Blocks.
-     */
-    distinct?: BlocksScalarFieldEnum | BlocksScalarFieldEnum[]
-  }
-
-  /**
-   * Blocks findMany
-   */
-  export type BlocksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter, which Blocks to fetch.
-     */
-    where?: BlocksWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Blocks to fetch.
-     */
-    orderBy?: BlocksOrderByWithRelationInput | BlocksOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Blocks.
-     */
-    cursor?: BlocksWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Blocks from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Blocks.
-     */
-    skip?: number
-    distinct?: BlocksScalarFieldEnum | BlocksScalarFieldEnum[]
-  }
-
-  /**
-   * Blocks create
-   */
-  export type BlocksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Blocks.
-     */
-    data: XOR<BlocksCreateInput, BlocksUncheckedCreateInput>
-  }
-
-  /**
-   * Blocks createMany
-   */
-  export type BlocksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Blocks.
-     */
-    data: BlocksCreateManyInput | BlocksCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Blocks createManyAndReturn
-   */
-  export type BlocksCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * The data used to create many Blocks.
-     */
-    data: BlocksCreateManyInput | BlocksCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Blocks update
-   */
-  export type BlocksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Blocks.
-     */
-    data: XOR<BlocksUpdateInput, BlocksUncheckedUpdateInput>
-    /**
-     * Choose, which Blocks to update.
-     */
-    where: BlocksWhereUniqueInput
-  }
-
-  /**
-   * Blocks updateMany
-   */
-  export type BlocksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Blocks.
-     */
-    data: XOR<BlocksUpdateManyMutationInput, BlocksUncheckedUpdateManyInput>
-    /**
-     * Filter which Blocks to update
-     */
-    where?: BlocksWhereInput
-    /**
-     * Limit how many Blocks to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Blocks updateManyAndReturn
-   */
-  export type BlocksUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * The data used to update Blocks.
-     */
-    data: XOR<BlocksUpdateManyMutationInput, BlocksUncheckedUpdateManyInput>
-    /**
-     * Filter which Blocks to update
-     */
-    where?: BlocksWhereInput
-    /**
-     * Limit how many Blocks to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Blocks upsert
-   */
-  export type BlocksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Blocks to update in case it exists.
-     */
-    where: BlocksWhereUniqueInput
-    /**
-     * In case the Blocks found by the `where` argument doesn't exist, create a new Blocks with this data.
-     */
-    create: XOR<BlocksCreateInput, BlocksUncheckedCreateInput>
-    /**
-     * In case the Blocks was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<BlocksUpdateInput, BlocksUncheckedUpdateInput>
-  }
-
-  /**
-   * Blocks delete
-   */
-  export type BlocksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
-    /**
-     * Filter which Blocks to delete.
-     */
-    where: BlocksWhereUniqueInput
-  }
-
-  /**
-   * Blocks deleteMany
-   */
-  export type BlocksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Blocks to delete
-     */
-    where?: BlocksWhereInput
-    /**
-     * Limit how many Blocks to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Blocks.addresses
-   */
-  export type Blocks$addressesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the BlockAddress
-     */
-    select?: BlockAddressSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the BlockAddress
-     */
-    omit?: BlockAddressOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlockAddressInclude<ExtArgs> | null
-    where?: BlockAddressWhereInput
-    orderBy?: BlockAddressOrderByWithRelationInput | BlockAddressOrderByWithRelationInput[]
-    cursor?: BlockAddressWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: BlockAddressScalarFieldEnum | BlockAddressScalarFieldEnum[]
-  }
-
-  /**
-   * Blocks without action
-   */
-  export type BlocksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Blocks
-     */
-    select?: BlocksSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Blocks
-     */
-    omit?: BlocksOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: BlocksInclude<ExtArgs> | null
   }
 
 
@@ -4676,6 +2395,8 @@ export namespace Prisma {
     key?: boolean
     value?: boolean
     type?: boolean
+    transactions?: boolean | AddressToWatch$transactionsArgs<ExtArgs>
+    _count?: boolean | AddressToWatchCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["addressToWatch"]>
 
   export type AddressToWatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4700,10 +2421,18 @@ export namespace Prisma {
   }
 
   export type AddressToWatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "key" | "value" | "type", ExtArgs["result"]["addressToWatch"]>
+  export type AddressToWatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    transactions?: boolean | AddressToWatch$transactionsArgs<ExtArgs>
+    _count?: boolean | AddressToWatchCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AddressToWatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type AddressToWatchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $AddressToWatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "AddressToWatch"
-    objects: {}
+    objects: {
+      transactions: Prisma.$TransactionPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       key: string
@@ -5103,6 +2832,7 @@ export namespace Prisma {
    */
   export interface Prisma__AddressToWatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    transactions<T extends AddressToWatch$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, AddressToWatch$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -5153,6 +2883,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * Filter, which AddressToWatch to fetch.
      */
     where: AddressToWatchWhereUniqueInput
@@ -5171,6 +2905,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * Filter, which AddressToWatch to fetch.
      */
     where: AddressToWatchWhereUniqueInput
@@ -5188,6 +2926,10 @@ export namespace Prisma {
      * Omit specific fields from the AddressToWatch
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
     /**
      * Filter, which AddressToWatch to fetch.
      */
@@ -5237,6 +2979,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * Filter, which AddressToWatch to fetch.
      */
     where?: AddressToWatchWhereInput
@@ -5285,6 +3031,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * Filter, which AddressToWatches to fetch.
      */
     where?: AddressToWatchWhereInput
@@ -5327,6 +3077,10 @@ export namespace Prisma {
      * Omit specific fields from the AddressToWatch
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
     /**
      * The data needed to create a AddressToWatch.
      */
@@ -5375,6 +3129,10 @@ export namespace Prisma {
      * Omit specific fields from the AddressToWatch
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
     /**
      * The data needed to update a AddressToWatch.
      */
@@ -5442,6 +3200,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * The filter to search for the AddressToWatch to update in case it exists.
      */
     where: AddressToWatchWhereUniqueInput
@@ -5468,6 +3230,10 @@ export namespace Prisma {
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+    /**
      * Filter which AddressToWatch to delete.
      */
     where: AddressToWatchWhereUniqueInput
@@ -5488,6 +3254,30 @@ export namespace Prisma {
   }
 
   /**
+   * AddressToWatch.transactions
+   */
+  export type AddressToWatch$transactionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Transaction
+     */
+    select?: TransactionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Transaction
+     */
+    omit?: TransactionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TransactionInclude<ExtArgs> | null
+    where?: TransactionWhereInput
+    orderBy?: TransactionOrderByWithRelationInput | TransactionOrderByWithRelationInput[]
+    cursor?: TransactionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TransactionScalarFieldEnum | TransactionScalarFieldEnum[]
+  }
+
+  /**
    * AddressToWatch without action
    */
   export type AddressToWatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5499,6 +3289,1017 @@ export namespace Prisma {
      * Omit specific fields from the AddressToWatch
      */
     omit?: AddressToWatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AddressToWatchInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AddressToWatchSyncTip
+   */
+
+  export type AggregateAddressToWatchSyncTip = {
+    _count: AddressToWatchSyncTipCountAggregateOutputType | null
+    _avg: AddressToWatchSyncTipAvgAggregateOutputType | null
+    _sum: AddressToWatchSyncTipSumAggregateOutputType | null
+    _min: AddressToWatchSyncTipMinAggregateOutputType | null
+    _max: AddressToWatchSyncTipMaxAggregateOutputType | null
+  }
+
+  export type AddressToWatchSyncTipAvgAggregateOutputType = {
+    id: number | null
+    slot: number | null
+  }
+
+  export type AddressToWatchSyncTipSumAggregateOutputType = {
+    id: number | null
+    slot: number | null
+  }
+
+  export type AddressToWatchSyncTipMinAggregateOutputType = {
+    id: number | null
+    slot: number | null
+    blockHash: string | null
+  }
+
+  export type AddressToWatchSyncTipMaxAggregateOutputType = {
+    id: number | null
+    slot: number | null
+    blockHash: string | null
+  }
+
+  export type AddressToWatchSyncTipCountAggregateOutputType = {
+    id: number
+    slot: number
+    blockHash: number
+    _all: number
+  }
+
+
+  export type AddressToWatchSyncTipAvgAggregateInputType = {
+    id?: true
+    slot?: true
+  }
+
+  export type AddressToWatchSyncTipSumAggregateInputType = {
+    id?: true
+    slot?: true
+  }
+
+  export type AddressToWatchSyncTipMinAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+  }
+
+  export type AddressToWatchSyncTipMaxAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+  }
+
+  export type AddressToWatchSyncTipCountAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+    _all?: true
+  }
+
+  export type AddressToWatchSyncTipAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AddressToWatchSyncTip to aggregate.
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AddressToWatchSyncTips to fetch.
+     */
+    orderBy?: AddressToWatchSyncTipOrderByWithRelationInput | AddressToWatchSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AddressToWatchSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AddressToWatchSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AddressToWatchSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AddressToWatchSyncTips
+    **/
+    _count?: true | AddressToWatchSyncTipCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AddressToWatchSyncTipAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AddressToWatchSyncTipSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AddressToWatchSyncTipMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AddressToWatchSyncTipMaxAggregateInputType
+  }
+
+  export type GetAddressToWatchSyncTipAggregateType<T extends AddressToWatchSyncTipAggregateArgs> = {
+        [P in keyof T & keyof AggregateAddressToWatchSyncTip]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAddressToWatchSyncTip[P]>
+      : GetScalarType<T[P], AggregateAddressToWatchSyncTip[P]>
+  }
+
+
+
+
+  export type AddressToWatchSyncTipGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AddressToWatchSyncTipWhereInput
+    orderBy?: AddressToWatchSyncTipOrderByWithAggregationInput | AddressToWatchSyncTipOrderByWithAggregationInput[]
+    by: AddressToWatchSyncTipScalarFieldEnum[] | AddressToWatchSyncTipScalarFieldEnum
+    having?: AddressToWatchSyncTipScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AddressToWatchSyncTipCountAggregateInputType | true
+    _avg?: AddressToWatchSyncTipAvgAggregateInputType
+    _sum?: AddressToWatchSyncTipSumAggregateInputType
+    _min?: AddressToWatchSyncTipMinAggregateInputType
+    _max?: AddressToWatchSyncTipMaxAggregateInputType
+  }
+
+  export type AddressToWatchSyncTipGroupByOutputType = {
+    id: number
+    slot: number
+    blockHash: string
+    _count: AddressToWatchSyncTipCountAggregateOutputType | null
+    _avg: AddressToWatchSyncTipAvgAggregateOutputType | null
+    _sum: AddressToWatchSyncTipSumAggregateOutputType | null
+    _min: AddressToWatchSyncTipMinAggregateOutputType | null
+    _max: AddressToWatchSyncTipMaxAggregateOutputType | null
+  }
+
+  type GetAddressToWatchSyncTipGroupByPayload<T extends AddressToWatchSyncTipGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AddressToWatchSyncTipGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AddressToWatchSyncTipGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AddressToWatchSyncTipGroupByOutputType[P]>
+            : GetScalarType<T[P], AddressToWatchSyncTipGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AddressToWatchSyncTipSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["addressToWatchSyncTip"]>
+
+  export type AddressToWatchSyncTipSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["addressToWatchSyncTip"]>
+
+  export type AddressToWatchSyncTipSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["addressToWatchSyncTip"]>
+
+  export type AddressToWatchSyncTipSelectScalar = {
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }
+
+  export type AddressToWatchSyncTipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slot" | "blockHash", ExtArgs["result"]["addressToWatchSyncTip"]>
+
+  export type $AddressToWatchSyncTipPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AddressToWatchSyncTip"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      slot: number
+      blockHash: string
+    }, ExtArgs["result"]["addressToWatchSyncTip"]>
+    composites: {}
+  }
+
+  type AddressToWatchSyncTipGetPayload<S extends boolean | null | undefined | AddressToWatchSyncTipDefaultArgs> = $Result.GetResult<Prisma.$AddressToWatchSyncTipPayload, S>
+
+  type AddressToWatchSyncTipCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AddressToWatchSyncTipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AddressToWatchSyncTipCountAggregateInputType | true
+    }
+
+  export interface AddressToWatchSyncTipDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AddressToWatchSyncTip'], meta: { name: 'AddressToWatchSyncTip' } }
+    /**
+     * Find zero or one AddressToWatchSyncTip that matches the filter.
+     * @param {AddressToWatchSyncTipFindUniqueArgs} args - Arguments to find a AddressToWatchSyncTip
+     * @example
+     * // Get one AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AddressToWatchSyncTipFindUniqueArgs>(args: SelectSubset<T, AddressToWatchSyncTipFindUniqueArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AddressToWatchSyncTip that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AddressToWatchSyncTipFindUniqueOrThrowArgs} args - Arguments to find a AddressToWatchSyncTip
+     * @example
+     * // Get one AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AddressToWatchSyncTipFindUniqueOrThrowArgs>(args: SelectSubset<T, AddressToWatchSyncTipFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AddressToWatchSyncTip that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipFindFirstArgs} args - Arguments to find a AddressToWatchSyncTip
+     * @example
+     * // Get one AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AddressToWatchSyncTipFindFirstArgs>(args?: SelectSubset<T, AddressToWatchSyncTipFindFirstArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AddressToWatchSyncTip that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipFindFirstOrThrowArgs} args - Arguments to find a AddressToWatchSyncTip
+     * @example
+     * // Get one AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AddressToWatchSyncTipFindFirstOrThrowArgs>(args?: SelectSubset<T, AddressToWatchSyncTipFindFirstOrThrowArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AddressToWatchSyncTips that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AddressToWatchSyncTips
+     * const addressToWatchSyncTips = await prisma.addressToWatchSyncTip.findMany()
+     * 
+     * // Get first 10 AddressToWatchSyncTips
+     * const addressToWatchSyncTips = await prisma.addressToWatchSyncTip.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const addressToWatchSyncTipWithIdOnly = await prisma.addressToWatchSyncTip.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AddressToWatchSyncTipFindManyArgs>(args?: SelectSubset<T, AddressToWatchSyncTipFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AddressToWatchSyncTip.
+     * @param {AddressToWatchSyncTipCreateArgs} args - Arguments to create a AddressToWatchSyncTip.
+     * @example
+     * // Create one AddressToWatchSyncTip
+     * const AddressToWatchSyncTip = await prisma.addressToWatchSyncTip.create({
+     *   data: {
+     *     // ... data to create a AddressToWatchSyncTip
+     *   }
+     * })
+     * 
+     */
+    create<T extends AddressToWatchSyncTipCreateArgs>(args: SelectSubset<T, AddressToWatchSyncTipCreateArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AddressToWatchSyncTips.
+     * @param {AddressToWatchSyncTipCreateManyArgs} args - Arguments to create many AddressToWatchSyncTips.
+     * @example
+     * // Create many AddressToWatchSyncTips
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AddressToWatchSyncTipCreateManyArgs>(args?: SelectSubset<T, AddressToWatchSyncTipCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AddressToWatchSyncTips and returns the data saved in the database.
+     * @param {AddressToWatchSyncTipCreateManyAndReturnArgs} args - Arguments to create many AddressToWatchSyncTips.
+     * @example
+     * // Create many AddressToWatchSyncTips
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AddressToWatchSyncTips and only return the `id`
+     * const addressToWatchSyncTipWithIdOnly = await prisma.addressToWatchSyncTip.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AddressToWatchSyncTipCreateManyAndReturnArgs>(args?: SelectSubset<T, AddressToWatchSyncTipCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AddressToWatchSyncTip.
+     * @param {AddressToWatchSyncTipDeleteArgs} args - Arguments to delete one AddressToWatchSyncTip.
+     * @example
+     * // Delete one AddressToWatchSyncTip
+     * const AddressToWatchSyncTip = await prisma.addressToWatchSyncTip.delete({
+     *   where: {
+     *     // ... filter to delete one AddressToWatchSyncTip
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AddressToWatchSyncTipDeleteArgs>(args: SelectSubset<T, AddressToWatchSyncTipDeleteArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AddressToWatchSyncTip.
+     * @param {AddressToWatchSyncTipUpdateArgs} args - Arguments to update one AddressToWatchSyncTip.
+     * @example
+     * // Update one AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AddressToWatchSyncTipUpdateArgs>(args: SelectSubset<T, AddressToWatchSyncTipUpdateArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AddressToWatchSyncTips.
+     * @param {AddressToWatchSyncTipDeleteManyArgs} args - Arguments to filter AddressToWatchSyncTips to delete.
+     * @example
+     * // Delete a few AddressToWatchSyncTips
+     * const { count } = await prisma.addressToWatchSyncTip.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AddressToWatchSyncTipDeleteManyArgs>(args?: SelectSubset<T, AddressToWatchSyncTipDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AddressToWatchSyncTips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AddressToWatchSyncTips
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AddressToWatchSyncTipUpdateManyArgs>(args: SelectSubset<T, AddressToWatchSyncTipUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AddressToWatchSyncTips and returns the data updated in the database.
+     * @param {AddressToWatchSyncTipUpdateManyAndReturnArgs} args - Arguments to update many AddressToWatchSyncTips.
+     * @example
+     * // Update many AddressToWatchSyncTips
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AddressToWatchSyncTips and only return the `id`
+     * const addressToWatchSyncTipWithIdOnly = await prisma.addressToWatchSyncTip.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AddressToWatchSyncTipUpdateManyAndReturnArgs>(args: SelectSubset<T, AddressToWatchSyncTipUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AddressToWatchSyncTip.
+     * @param {AddressToWatchSyncTipUpsertArgs} args - Arguments to update or create a AddressToWatchSyncTip.
+     * @example
+     * // Update or create a AddressToWatchSyncTip
+     * const addressToWatchSyncTip = await prisma.addressToWatchSyncTip.upsert({
+     *   create: {
+     *     // ... data to create a AddressToWatchSyncTip
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AddressToWatchSyncTip we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AddressToWatchSyncTipUpsertArgs>(args: SelectSubset<T, AddressToWatchSyncTipUpsertArgs<ExtArgs>>): Prisma__AddressToWatchSyncTipClient<$Result.GetResult<Prisma.$AddressToWatchSyncTipPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AddressToWatchSyncTips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipCountArgs} args - Arguments to filter AddressToWatchSyncTips to count.
+     * @example
+     * // Count the number of AddressToWatchSyncTips
+     * const count = await prisma.addressToWatchSyncTip.count({
+     *   where: {
+     *     // ... the filter for the AddressToWatchSyncTips we want to count
+     *   }
+     * })
+    **/
+    count<T extends AddressToWatchSyncTipCountArgs>(
+      args?: Subset<T, AddressToWatchSyncTipCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AddressToWatchSyncTipCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AddressToWatchSyncTip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AddressToWatchSyncTipAggregateArgs>(args: Subset<T, AddressToWatchSyncTipAggregateArgs>): Prisma.PrismaPromise<GetAddressToWatchSyncTipAggregateType<T>>
+
+    /**
+     * Group by AddressToWatchSyncTip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AddressToWatchSyncTipGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AddressToWatchSyncTipGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AddressToWatchSyncTipGroupByArgs['orderBy'] }
+        : { orderBy?: AddressToWatchSyncTipGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AddressToWatchSyncTipGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAddressToWatchSyncTipGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AddressToWatchSyncTip model
+   */
+  readonly fields: AddressToWatchSyncTipFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AddressToWatchSyncTip.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AddressToWatchSyncTipClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AddressToWatchSyncTip model
+   */
+  interface AddressToWatchSyncTipFieldRefs {
+    readonly id: FieldRef<"AddressToWatchSyncTip", 'Int'>
+    readonly slot: FieldRef<"AddressToWatchSyncTip", 'Int'>
+    readonly blockHash: FieldRef<"AddressToWatchSyncTip", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AddressToWatchSyncTip findUnique
+   */
+  export type AddressToWatchSyncTipFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which AddressToWatchSyncTip to fetch.
+     */
+    where: AddressToWatchSyncTipWhereUniqueInput
+  }
+
+  /**
+   * AddressToWatchSyncTip findUniqueOrThrow
+   */
+  export type AddressToWatchSyncTipFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which AddressToWatchSyncTip to fetch.
+     */
+    where: AddressToWatchSyncTipWhereUniqueInput
+  }
+
+  /**
+   * AddressToWatchSyncTip findFirst
+   */
+  export type AddressToWatchSyncTipFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which AddressToWatchSyncTip to fetch.
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AddressToWatchSyncTips to fetch.
+     */
+    orderBy?: AddressToWatchSyncTipOrderByWithRelationInput | AddressToWatchSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AddressToWatchSyncTips.
+     */
+    cursor?: AddressToWatchSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AddressToWatchSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AddressToWatchSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AddressToWatchSyncTips.
+     */
+    distinct?: AddressToWatchSyncTipScalarFieldEnum | AddressToWatchSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * AddressToWatchSyncTip findFirstOrThrow
+   */
+  export type AddressToWatchSyncTipFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which AddressToWatchSyncTip to fetch.
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AddressToWatchSyncTips to fetch.
+     */
+    orderBy?: AddressToWatchSyncTipOrderByWithRelationInput | AddressToWatchSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AddressToWatchSyncTips.
+     */
+    cursor?: AddressToWatchSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AddressToWatchSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AddressToWatchSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AddressToWatchSyncTips.
+     */
+    distinct?: AddressToWatchSyncTipScalarFieldEnum | AddressToWatchSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * AddressToWatchSyncTip findMany
+   */
+  export type AddressToWatchSyncTipFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which AddressToWatchSyncTips to fetch.
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AddressToWatchSyncTips to fetch.
+     */
+    orderBy?: AddressToWatchSyncTipOrderByWithRelationInput | AddressToWatchSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AddressToWatchSyncTips.
+     */
+    cursor?: AddressToWatchSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AddressToWatchSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AddressToWatchSyncTips.
+     */
+    skip?: number
+    distinct?: AddressToWatchSyncTipScalarFieldEnum | AddressToWatchSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * AddressToWatchSyncTip create
+   */
+  export type AddressToWatchSyncTipCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * The data needed to create a AddressToWatchSyncTip.
+     */
+    data: XOR<AddressToWatchSyncTipCreateInput, AddressToWatchSyncTipUncheckedCreateInput>
+  }
+
+  /**
+   * AddressToWatchSyncTip createMany
+   */
+  export type AddressToWatchSyncTipCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AddressToWatchSyncTips.
+     */
+    data: AddressToWatchSyncTipCreateManyInput | AddressToWatchSyncTipCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AddressToWatchSyncTip createManyAndReturn
+   */
+  export type AddressToWatchSyncTipCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * The data used to create many AddressToWatchSyncTips.
+     */
+    data: AddressToWatchSyncTipCreateManyInput | AddressToWatchSyncTipCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AddressToWatchSyncTip update
+   */
+  export type AddressToWatchSyncTipUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * The data needed to update a AddressToWatchSyncTip.
+     */
+    data: XOR<AddressToWatchSyncTipUpdateInput, AddressToWatchSyncTipUncheckedUpdateInput>
+    /**
+     * Choose, which AddressToWatchSyncTip to update.
+     */
+    where: AddressToWatchSyncTipWhereUniqueInput
+  }
+
+  /**
+   * AddressToWatchSyncTip updateMany
+   */
+  export type AddressToWatchSyncTipUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AddressToWatchSyncTips.
+     */
+    data: XOR<AddressToWatchSyncTipUpdateManyMutationInput, AddressToWatchSyncTipUncheckedUpdateManyInput>
+    /**
+     * Filter which AddressToWatchSyncTips to update
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * Limit how many AddressToWatchSyncTips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AddressToWatchSyncTip updateManyAndReturn
+   */
+  export type AddressToWatchSyncTipUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * The data used to update AddressToWatchSyncTips.
+     */
+    data: XOR<AddressToWatchSyncTipUpdateManyMutationInput, AddressToWatchSyncTipUncheckedUpdateManyInput>
+    /**
+     * Filter which AddressToWatchSyncTips to update
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * Limit how many AddressToWatchSyncTips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AddressToWatchSyncTip upsert
+   */
+  export type AddressToWatchSyncTipUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * The filter to search for the AddressToWatchSyncTip to update in case it exists.
+     */
+    where: AddressToWatchSyncTipWhereUniqueInput
+    /**
+     * In case the AddressToWatchSyncTip found by the `where` argument doesn't exist, create a new AddressToWatchSyncTip with this data.
+     */
+    create: XOR<AddressToWatchSyncTipCreateInput, AddressToWatchSyncTipUncheckedCreateInput>
+    /**
+     * In case the AddressToWatchSyncTip was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AddressToWatchSyncTipUpdateInput, AddressToWatchSyncTipUncheckedUpdateInput>
+  }
+
+  /**
+   * AddressToWatchSyncTip delete
+   */
+  export type AddressToWatchSyncTipDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter which AddressToWatchSyncTip to delete.
+     */
+    where: AddressToWatchSyncTipWhereUniqueInput
+  }
+
+  /**
+   * AddressToWatchSyncTip deleteMany
+   */
+  export type AddressToWatchSyncTipDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AddressToWatchSyncTips to delete
+     */
+    where?: AddressToWatchSyncTipWhereInput
+    /**
+     * Limit how many AddressToWatchSyncTips to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AddressToWatchSyncTip without action
+   */
+  export type AddressToWatchSyncTipDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AddressToWatchSyncTip
+     */
+    select?: AddressToWatchSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AddressToWatchSyncTip
+     */
+    omit?: AddressToWatchSyncTipOmit<ExtArgs> | null
   }
 
 
@@ -5516,32 +4317,14 @@ export namespace Prisma {
   export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-  export const BlockAddressScalarFieldEnum: {
-    id: 'id',
-    address: 'address',
-    blockId: 'blockId'
-  };
-
-  export type BlockAddressScalarFieldEnum = (typeof BlockAddressScalarFieldEnum)[keyof typeof BlockAddressScalarFieldEnum]
-
-
   export const TransactionScalarFieldEnum: {
     id: 'id',
     txHash: 'txHash',
-    blockAddressId: 'blockAddressId',
-    cbor: 'cbor'
+    cbor: 'cbor',
+    addressToWatchId: 'addressToWatchId'
   };
 
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
-
-
-  export const BlocksScalarFieldEnum: {
-    id: 'id',
-    blockHash: 'blockHash',
-    createdAt: 'createdAt'
-  };
-
-  export type BlocksScalarFieldEnum = (typeof BlocksScalarFieldEnum)[keyof typeof BlocksScalarFieldEnum]
 
 
   export const AddressToWatchScalarFieldEnum: {
@@ -5552,6 +4335,15 @@ export namespace Prisma {
   };
 
   export type AddressToWatchScalarFieldEnum = (typeof AddressToWatchScalarFieldEnum)[keyof typeof AddressToWatchScalarFieldEnum]
+
+
+  export const AddressToWatchSyncTipScalarFieldEnum: {
+    id: 'id',
+    slot: 'slot',
+    blockHash: 'blockHash'
+  };
+
+  export type AddressToWatchSyncTipScalarFieldEnum = (typeof AddressToWatchSyncTipScalarFieldEnum)[keyof typeof AddressToWatchSyncTipScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5612,20 +4404,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
-   */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
-
-
-  /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'LocalStateType'
    */
   export type EnumLocalStateTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'LocalStateType'>
@@ -5656,91 +4434,41 @@ export namespace Prisma {
    */
 
 
-  export type BlockAddressWhereInput = {
-    AND?: BlockAddressWhereInput | BlockAddressWhereInput[]
-    OR?: BlockAddressWhereInput[]
-    NOT?: BlockAddressWhereInput | BlockAddressWhereInput[]
-    id?: IntFilter<"BlockAddress"> | number
-    address?: StringFilter<"BlockAddress"> | string
-    blockId?: IntFilter<"BlockAddress"> | number
-    block?: XOR<BlocksScalarRelationFilter, BlocksWhereInput>
-    transactions?: TransactionListRelationFilter
-  }
-
-  export type BlockAddressOrderByWithRelationInput = {
-    id?: SortOrder
-    address?: SortOrder
-    blockId?: SortOrder
-    block?: BlocksOrderByWithRelationInput
-    transactions?: TransactionOrderByRelationAggregateInput
-  }
-
-  export type BlockAddressWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    AND?: BlockAddressWhereInput | BlockAddressWhereInput[]
-    OR?: BlockAddressWhereInput[]
-    NOT?: BlockAddressWhereInput | BlockAddressWhereInput[]
-    address?: StringFilter<"BlockAddress"> | string
-    blockId?: IntFilter<"BlockAddress"> | number
-    block?: XOR<BlocksScalarRelationFilter, BlocksWhereInput>
-    transactions?: TransactionListRelationFilter
-  }, "id">
-
-  export type BlockAddressOrderByWithAggregationInput = {
-    id?: SortOrder
-    address?: SortOrder
-    blockId?: SortOrder
-    _count?: BlockAddressCountOrderByAggregateInput
-    _avg?: BlockAddressAvgOrderByAggregateInput
-    _max?: BlockAddressMaxOrderByAggregateInput
-    _min?: BlockAddressMinOrderByAggregateInput
-    _sum?: BlockAddressSumOrderByAggregateInput
-  }
-
-  export type BlockAddressScalarWhereWithAggregatesInput = {
-    AND?: BlockAddressScalarWhereWithAggregatesInput | BlockAddressScalarWhereWithAggregatesInput[]
-    OR?: BlockAddressScalarWhereWithAggregatesInput[]
-    NOT?: BlockAddressScalarWhereWithAggregatesInput | BlockAddressScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"BlockAddress"> | number
-    address?: StringWithAggregatesFilter<"BlockAddress"> | string
-    blockId?: IntWithAggregatesFilter<"BlockAddress"> | number
-  }
-
   export type TransactionWhereInput = {
     AND?: TransactionWhereInput | TransactionWhereInput[]
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     id?: IntFilter<"Transaction"> | number
     txHash?: StringFilter<"Transaction"> | string
-    blockAddressId?: IntFilter<"Transaction"> | number
     cbor?: StringFilter<"Transaction"> | string
-    blockAddress?: XOR<BlockAddressScalarRelationFilter, BlockAddressWhereInput>
+    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
+    addressToWatch?: XOR<AddressToWatchNullableScalarRelationFilter, AddressToWatchWhereInput> | null
   }
 
   export type TransactionOrderByWithRelationInput = {
     id?: SortOrder
     txHash?: SortOrder
-    blockAddressId?: SortOrder
     cbor?: SortOrder
-    blockAddress?: BlockAddressOrderByWithRelationInput
+    addressToWatchId?: SortOrderInput | SortOrder
+    addressToWatch?: AddressToWatchOrderByWithRelationInput
   }
 
   export type TransactionWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    txHash?: string
     AND?: TransactionWhereInput | TransactionWhereInput[]
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
-    txHash?: StringFilter<"Transaction"> | string
-    blockAddressId?: IntFilter<"Transaction"> | number
     cbor?: StringFilter<"Transaction"> | string
-    blockAddress?: XOR<BlockAddressScalarRelationFilter, BlockAddressWhereInput>
-  }, "id">
+    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
+    addressToWatch?: XOR<AddressToWatchNullableScalarRelationFilter, AddressToWatchWhereInput> | null
+  }, "id" | "txHash">
 
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
     txHash?: SortOrder
-    blockAddressId?: SortOrder
     cbor?: SortOrder
+    addressToWatchId?: SortOrderInput | SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
     _max?: TransactionMaxOrderByAggregateInput
@@ -5754,55 +4482,8 @@ export namespace Prisma {
     NOT?: TransactionScalarWhereWithAggregatesInput | TransactionScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Transaction"> | number
     txHash?: StringWithAggregatesFilter<"Transaction"> | string
-    blockAddressId?: IntWithAggregatesFilter<"Transaction"> | number
     cbor?: StringWithAggregatesFilter<"Transaction"> | string
-  }
-
-  export type BlocksWhereInput = {
-    AND?: BlocksWhereInput | BlocksWhereInput[]
-    OR?: BlocksWhereInput[]
-    NOT?: BlocksWhereInput | BlocksWhereInput[]
-    id?: IntFilter<"Blocks"> | number
-    blockHash?: StringFilter<"Blocks"> | string
-    createdAt?: DateTimeFilter<"Blocks"> | Date | string
-    addresses?: BlockAddressListRelationFilter
-  }
-
-  export type BlocksOrderByWithRelationInput = {
-    id?: SortOrder
-    blockHash?: SortOrder
-    createdAt?: SortOrder
-    addresses?: BlockAddressOrderByRelationAggregateInput
-  }
-
-  export type BlocksWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    blockHash?: string
-    AND?: BlocksWhereInput | BlocksWhereInput[]
-    OR?: BlocksWhereInput[]
-    NOT?: BlocksWhereInput | BlocksWhereInput[]
-    createdAt?: DateTimeFilter<"Blocks"> | Date | string
-    addresses?: BlockAddressListRelationFilter
-  }, "id" | "blockHash">
-
-  export type BlocksOrderByWithAggregationInput = {
-    id?: SortOrder
-    blockHash?: SortOrder
-    createdAt?: SortOrder
-    _count?: BlocksCountOrderByAggregateInput
-    _avg?: BlocksAvgOrderByAggregateInput
-    _max?: BlocksMaxOrderByAggregateInput
-    _min?: BlocksMinOrderByAggregateInput
-    _sum?: BlocksSumOrderByAggregateInput
-  }
-
-  export type BlocksScalarWhereWithAggregatesInput = {
-    AND?: BlocksScalarWhereWithAggregatesInput | BlocksScalarWhereWithAggregatesInput[]
-    OR?: BlocksScalarWhereWithAggregatesInput[]
-    NOT?: BlocksScalarWhereWithAggregatesInput | BlocksScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Blocks"> | number
-    blockHash?: StringWithAggregatesFilter<"Blocks"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Blocks"> | Date | string
+    addressToWatchId?: IntNullableWithAggregatesFilter<"Transaction"> | number | null
   }
 
   export type AddressToWatchWhereInput = {
@@ -5813,6 +4494,7 @@ export namespace Prisma {
     key?: StringFilter<"AddressToWatch"> | string
     value?: StringFilter<"AddressToWatch"> | string
     type?: EnumLocalStateTypeNullableFilter<"AddressToWatch"> | $Enums.LocalStateType | null
+    transactions?: TransactionListRelationFilter
   }
 
   export type AddressToWatchOrderByWithRelationInput = {
@@ -5820,6 +4502,7 @@ export namespace Prisma {
     key?: SortOrder
     value?: SortOrder
     type?: SortOrderInput | SortOrder
+    transactions?: TransactionOrderByRelationAggregateInput
   }
 
   export type AddressToWatchWhereUniqueInput = Prisma.AtLeast<{
@@ -5830,6 +4513,7 @@ export namespace Prisma {
     NOT?: AddressToWatchWhereInput | AddressToWatchWhereInput[]
     key?: StringFilter<"AddressToWatch"> | string
     type?: EnumLocalStateTypeNullableFilter<"AddressToWatch"> | $Enums.LocalStateType | null
+    transactions?: TransactionListRelationFilter
   }, "id" | "value">
 
   export type AddressToWatchOrderByWithAggregationInput = {
@@ -5854,79 +4538,81 @@ export namespace Prisma {
     type?: EnumLocalStateTypeNullableWithAggregatesFilter<"AddressToWatch"> | $Enums.LocalStateType | null
   }
 
-  export type BlockAddressCreateInput = {
-    address: string
-    block: BlocksCreateNestedOneWithoutAddressesInput
-    transactions?: TransactionCreateNestedManyWithoutBlockAddressInput
+  export type AddressToWatchSyncTipWhereInput = {
+    AND?: AddressToWatchSyncTipWhereInput | AddressToWatchSyncTipWhereInput[]
+    OR?: AddressToWatchSyncTipWhereInput[]
+    NOT?: AddressToWatchSyncTipWhereInput | AddressToWatchSyncTipWhereInput[]
+    id?: IntFilter<"AddressToWatchSyncTip"> | number
+    slot?: IntFilter<"AddressToWatchSyncTip"> | number
+    blockHash?: StringFilter<"AddressToWatchSyncTip"> | string
   }
 
-  export type BlockAddressUncheckedCreateInput = {
+  export type AddressToWatchSyncTipOrderByWithRelationInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type AddressToWatchSyncTipWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    address: string
-    blockId: number
-    transactions?: TransactionUncheckedCreateNestedManyWithoutBlockAddressInput
+    slot?: number
+    blockHash?: string
+    AND?: AddressToWatchSyncTipWhereInput | AddressToWatchSyncTipWhereInput[]
+    OR?: AddressToWatchSyncTipWhereInput[]
+    NOT?: AddressToWatchSyncTipWhereInput | AddressToWatchSyncTipWhereInput[]
+  }, "id" | "slot" | "blockHash">
+
+  export type AddressToWatchSyncTipOrderByWithAggregationInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+    _count?: AddressToWatchSyncTipCountOrderByAggregateInput
+    _avg?: AddressToWatchSyncTipAvgOrderByAggregateInput
+    _max?: AddressToWatchSyncTipMaxOrderByAggregateInput
+    _min?: AddressToWatchSyncTipMinOrderByAggregateInput
+    _sum?: AddressToWatchSyncTipSumOrderByAggregateInput
   }
 
-  export type BlockAddressUpdateInput = {
-    address?: StringFieldUpdateOperationsInput | string
-    block?: BlocksUpdateOneRequiredWithoutAddressesNestedInput
-    transactions?: TransactionUpdateManyWithoutBlockAddressNestedInput
-  }
-
-  export type BlockAddressUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    address?: StringFieldUpdateOperationsInput | string
-    blockId?: IntFieldUpdateOperationsInput | number
-    transactions?: TransactionUncheckedUpdateManyWithoutBlockAddressNestedInput
-  }
-
-  export type BlockAddressCreateManyInput = {
-    id?: number
-    address: string
-    blockId: number
-  }
-
-  export type BlockAddressUpdateManyMutationInput = {
-    address?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type BlockAddressUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    address?: StringFieldUpdateOperationsInput | string
-    blockId?: IntFieldUpdateOperationsInput | number
+  export type AddressToWatchSyncTipScalarWhereWithAggregatesInput = {
+    AND?: AddressToWatchSyncTipScalarWhereWithAggregatesInput | AddressToWatchSyncTipScalarWhereWithAggregatesInput[]
+    OR?: AddressToWatchSyncTipScalarWhereWithAggregatesInput[]
+    NOT?: AddressToWatchSyncTipScalarWhereWithAggregatesInput | AddressToWatchSyncTipScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AddressToWatchSyncTip"> | number
+    slot?: IntWithAggregatesFilter<"AddressToWatchSyncTip"> | number
+    blockHash?: StringWithAggregatesFilter<"AddressToWatchSyncTip"> | string
   }
 
   export type TransactionCreateInput = {
     txHash: string
     cbor: string
-    blockAddress: BlockAddressCreateNestedOneWithoutTransactionsInput
+    addressToWatch?: AddressToWatchCreateNestedOneWithoutTransactionsInput
   }
 
   export type TransactionUncheckedCreateInput = {
     id?: number
     txHash: string
-    blockAddressId: number
     cbor: string
+    addressToWatchId?: number | null
   }
 
   export type TransactionUpdateInput = {
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
-    blockAddress?: BlockAddressUpdateOneRequiredWithoutTransactionsNestedInput
+    addressToWatch?: AddressToWatchUpdateOneWithoutTransactionsNestedInput
   }
 
   export type TransactionUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
-    blockAddressId?: IntFieldUpdateOperationsInput | number
     cbor?: StringFieldUpdateOperationsInput | string
+    addressToWatchId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TransactionCreateManyInput = {
     id?: number
     txHash: string
-    blockAddressId: number
     cbor: string
+    addressToWatchId?: number | null
   }
 
   export type TransactionUpdateManyMutationInput = {
@@ -5937,57 +4623,15 @@ export namespace Prisma {
   export type TransactionUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
-    blockAddressId?: IntFieldUpdateOperationsInput | number
     cbor?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type BlocksCreateInput = {
-    blockHash: string
-    createdAt?: Date | string
-    addresses?: BlockAddressCreateNestedManyWithoutBlockInput
-  }
-
-  export type BlocksUncheckedCreateInput = {
-    id?: number
-    blockHash: string
-    createdAt?: Date | string
-    addresses?: BlockAddressUncheckedCreateNestedManyWithoutBlockInput
-  }
-
-  export type BlocksUpdateInput = {
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addresses?: BlockAddressUpdateManyWithoutBlockNestedInput
-  }
-
-  export type BlocksUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    addresses?: BlockAddressUncheckedUpdateManyWithoutBlockNestedInput
-  }
-
-  export type BlocksCreateManyInput = {
-    id?: number
-    blockHash: string
-    createdAt?: Date | string
-  }
-
-  export type BlocksUpdateManyMutationInput = {
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type BlocksUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    addressToWatchId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type AddressToWatchCreateInput = {
     key: string
     value: string
     type?: $Enums.LocalStateType | null
+    transactions?: TransactionCreateNestedManyWithoutAddressToWatchInput
   }
 
   export type AddressToWatchUncheckedCreateInput = {
@@ -5995,12 +4639,14 @@ export namespace Prisma {
     key: string
     value: string
     type?: $Enums.LocalStateType | null
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAddressToWatchInput
   }
 
   export type AddressToWatchUpdateInput = {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
+    transactions?: TransactionUpdateManyWithoutAddressToWatchNestedInput
   }
 
   export type AddressToWatchUncheckedUpdateInput = {
@@ -6008,6 +4654,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
+    transactions?: TransactionUncheckedUpdateManyWithoutAddressToWatchNestedInput
   }
 
   export type AddressToWatchCreateManyInput = {
@@ -6028,6 +4675,45 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
+  }
+
+  export type AddressToWatchSyncTipCreateInput = {
+    slot: number
+    blockHash: string
+  }
+
+  export type AddressToWatchSyncTipUncheckedCreateInput = {
+    id?: number
+    slot: number
+    blockHash: string
+  }
+
+  export type AddressToWatchSyncTipUpdateInput = {
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AddressToWatchSyncTipUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AddressToWatchSyncTipCreateManyInput = {
+    id?: number
+    slot: number
+    blockHash: string
+  }
+
+  export type AddressToWatchSyncTipUpdateManyMutationInput = {
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type AddressToWatchSyncTipUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6056,47 +4742,56 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type BlocksScalarRelationFilter = {
-    is?: BlocksWhereInput
-    isNot?: BlocksWhereInput
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type TransactionListRelationFilter = {
-    every?: TransactionWhereInput
-    some?: TransactionWhereInput
-    none?: TransactionWhereInput
+  export type AddressToWatchNullableScalarRelationFilter = {
+    is?: AddressToWatchWhereInput | null
+    isNot?: AddressToWatchWhereInput | null
   }
 
-  export type TransactionOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
-  export type BlockAddressCountOrderByAggregateInput = {
+  export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
-    address?: SortOrder
-    blockId?: SortOrder
+    txHash?: SortOrder
+    cbor?: SortOrder
+    addressToWatchId?: SortOrder
   }
 
-  export type BlockAddressAvgOrderByAggregateInput = {
+  export type TransactionAvgOrderByAggregateInput = {
     id?: SortOrder
-    blockId?: SortOrder
+    addressToWatchId?: SortOrder
   }
 
-  export type BlockAddressMaxOrderByAggregateInput = {
+  export type TransactionMaxOrderByAggregateInput = {
     id?: SortOrder
-    address?: SortOrder
-    blockId?: SortOrder
+    txHash?: SortOrder
+    cbor?: SortOrder
+    addressToWatchId?: SortOrder
   }
 
-  export type BlockAddressMinOrderByAggregateInput = {
+  export type TransactionMinOrderByAggregateInput = {
     id?: SortOrder
-    address?: SortOrder
-    blockId?: SortOrder
+    txHash?: SortOrder
+    cbor?: SortOrder
+    addressToWatchId?: SortOrder
   }
 
-  export type BlockAddressSumOrderByAggregateInput = {
+  export type TransactionSumOrderByAggregateInput = {
     id?: SortOrder
-    blockId?: SortOrder
+    addressToWatchId?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -6133,101 +4828,20 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type BlockAddressScalarRelationFilter = {
-    is?: BlockAddressWhereInput
-    isNot?: BlockAddressWhereInput
-  }
-
-  export type TransactionCountOrderByAggregateInput = {
-    id?: SortOrder
-    txHash?: SortOrder
-    blockAddressId?: SortOrder
-    cbor?: SortOrder
-  }
-
-  export type TransactionAvgOrderByAggregateInput = {
-    id?: SortOrder
-    blockAddressId?: SortOrder
-  }
-
-  export type TransactionMaxOrderByAggregateInput = {
-    id?: SortOrder
-    txHash?: SortOrder
-    blockAddressId?: SortOrder
-    cbor?: SortOrder
-  }
-
-  export type TransactionMinOrderByAggregateInput = {
-    id?: SortOrder
-    txHash?: SortOrder
-    blockAddressId?: SortOrder
-    cbor?: SortOrder
-  }
-
-  export type TransactionSumOrderByAggregateInput = {
-    id?: SortOrder
-    blockAddressId?: SortOrder
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type BlockAddressListRelationFilter = {
-    every?: BlockAddressWhereInput
-    some?: BlockAddressWhereInput
-    none?: BlockAddressWhereInput
-  }
-
-  export type BlockAddressOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type BlocksCountOrderByAggregateInput = {
-    id?: SortOrder
-    blockHash?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type BlocksAvgOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type BlocksMaxOrderByAggregateInput = {
-    id?: SortOrder
-    blockHash?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type BlocksMinOrderByAggregateInput = {
-    id?: SortOrder
-    blockHash?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type BlocksSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
   export type EnumLocalStateTypeNullableFilter<$PrismaModel = never> = {
@@ -6237,9 +4851,14 @@ export namespace Prisma {
     not?: NestedEnumLocalStateTypeNullableFilter<$PrismaModel> | $Enums.LocalStateType | null
   }
 
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
+  export type TransactionListRelationFilter = {
+    every?: TransactionWhereInput
+    some?: TransactionWhereInput
+    none?: TransactionWhereInput
+  }
+
+  export type TransactionOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type AddressToWatchCountOrderByAggregateInput = {
@@ -6281,50 +4900,52 @@ export namespace Prisma {
     _max?: NestedEnumLocalStateTypeNullableFilter<$PrismaModel>
   }
 
-  export type BlocksCreateNestedOneWithoutAddressesInput = {
-    create?: XOR<BlocksCreateWithoutAddressesInput, BlocksUncheckedCreateWithoutAddressesInput>
-    connectOrCreate?: BlocksCreateOrConnectWithoutAddressesInput
-    connect?: BlocksWhereUniqueInput
+  export type AddressToWatchSyncTipCountOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
   }
 
-  export type TransactionCreateNestedManyWithoutBlockAddressInput = {
-    create?: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput> | TransactionCreateWithoutBlockAddressInput[] | TransactionUncheckedCreateWithoutBlockAddressInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutBlockAddressInput | TransactionCreateOrConnectWithoutBlockAddressInput[]
-    createMany?: TransactionCreateManyBlockAddressInputEnvelope
-    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  export type AddressToWatchSyncTipAvgOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
   }
 
-  export type TransactionUncheckedCreateNestedManyWithoutBlockAddressInput = {
-    create?: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput> | TransactionCreateWithoutBlockAddressInput[] | TransactionUncheckedCreateWithoutBlockAddressInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutBlockAddressInput | TransactionCreateOrConnectWithoutBlockAddressInput[]
-    createMany?: TransactionCreateManyBlockAddressInputEnvelope
-    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  export type AddressToWatchSyncTipMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type AddressToWatchSyncTipMinOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type AddressToWatchSyncTipSumOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+  }
+
+  export type AddressToWatchCreateNestedOneWithoutTransactionsInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput
+    connect?: AddressToWatchWhereUniqueInput
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
-  export type BlocksUpdateOneRequiredWithoutAddressesNestedInput = {
-    create?: XOR<BlocksCreateWithoutAddressesInput, BlocksUncheckedCreateWithoutAddressesInput>
-    connectOrCreate?: BlocksCreateOrConnectWithoutAddressesInput
-    upsert?: BlocksUpsertWithoutAddressesInput
-    connect?: BlocksWhereUniqueInput
-    update?: XOR<XOR<BlocksUpdateToOneWithWhereWithoutAddressesInput, BlocksUpdateWithoutAddressesInput>, BlocksUncheckedUpdateWithoutAddressesInput>
-  }
-
-  export type TransactionUpdateManyWithoutBlockAddressNestedInput = {
-    create?: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput> | TransactionCreateWithoutBlockAddressInput[] | TransactionUncheckedCreateWithoutBlockAddressInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutBlockAddressInput | TransactionCreateOrConnectWithoutBlockAddressInput[]
-    upsert?: TransactionUpsertWithWhereUniqueWithoutBlockAddressInput | TransactionUpsertWithWhereUniqueWithoutBlockAddressInput[]
-    createMany?: TransactionCreateManyBlockAddressInputEnvelope
-    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    update?: TransactionUpdateWithWhereUniqueWithoutBlockAddressInput | TransactionUpdateWithWhereUniqueWithoutBlockAddressInput[]
-    updateMany?: TransactionUpdateManyWithWhereWithoutBlockAddressInput | TransactionUpdateManyWithWhereWithoutBlockAddressInput[]
-    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  export type AddressToWatchUpdateOneWithoutTransactionsNestedInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput
+    upsert?: AddressToWatchUpsertWithoutTransactionsInput
+    disconnect?: AddressToWatchWhereInput | boolean
+    delete?: AddressToWatchWhereInput | boolean
+    connect?: AddressToWatchWhereUniqueInput
+    update?: XOR<XOR<AddressToWatchUpdateToOneWithWhereWithoutTransactionsInput, AddressToWatchUpdateWithoutTransactionsInput>, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -6335,82 +4956,58 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type TransactionUncheckedUpdateManyWithoutBlockAddressNestedInput = {
-    create?: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput> | TransactionCreateWithoutBlockAddressInput[] | TransactionUncheckedCreateWithoutBlockAddressInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutBlockAddressInput | TransactionCreateOrConnectWithoutBlockAddressInput[]
-    upsert?: TransactionUpsertWithWhereUniqueWithoutBlockAddressInput | TransactionUpsertWithWhereUniqueWithoutBlockAddressInput[]
-    createMany?: TransactionCreateManyBlockAddressInputEnvelope
-    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type TransactionCreateNestedManyWithoutAddressToWatchInput = {
+    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
+    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    update?: TransactionUpdateWithWhereUniqueWithoutBlockAddressInput | TransactionUpdateWithWhereUniqueWithoutBlockAddressInput[]
-    updateMany?: TransactionUpdateManyWithWhereWithoutBlockAddressInput | TransactionUpdateManyWithWhereWithoutBlockAddressInput[]
-    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
-  export type BlockAddressCreateNestedOneWithoutTransactionsInput = {
-    create?: XOR<BlockAddressCreateWithoutTransactionsInput, BlockAddressUncheckedCreateWithoutTransactionsInput>
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutTransactionsInput
-    connect?: BlockAddressWhereUniqueInput
-  }
-
-  export type BlockAddressUpdateOneRequiredWithoutTransactionsNestedInput = {
-    create?: XOR<BlockAddressCreateWithoutTransactionsInput, BlockAddressUncheckedCreateWithoutTransactionsInput>
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutTransactionsInput
-    upsert?: BlockAddressUpsertWithoutTransactionsInput
-    connect?: BlockAddressWhereUniqueInput
-    update?: XOR<XOR<BlockAddressUpdateToOneWithWhereWithoutTransactionsInput, BlockAddressUpdateWithoutTransactionsInput>, BlockAddressUncheckedUpdateWithoutTransactionsInput>
-  }
-
-  export type BlockAddressCreateNestedManyWithoutBlockInput = {
-    create?: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput> | BlockAddressCreateWithoutBlockInput[] | BlockAddressUncheckedCreateWithoutBlockInput[]
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutBlockInput | BlockAddressCreateOrConnectWithoutBlockInput[]
-    createMany?: BlockAddressCreateManyBlockInputEnvelope
-    connect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-  }
-
-  export type BlockAddressUncheckedCreateNestedManyWithoutBlockInput = {
-    create?: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput> | BlockAddressCreateWithoutBlockInput[] | BlockAddressUncheckedCreateWithoutBlockInput[]
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutBlockInput | BlockAddressCreateOrConnectWithoutBlockInput[]
-    createMany?: BlockAddressCreateManyBlockInputEnvelope
-    connect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-  }
-
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
-  export type BlockAddressUpdateManyWithoutBlockNestedInput = {
-    create?: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput> | BlockAddressCreateWithoutBlockInput[] | BlockAddressUncheckedCreateWithoutBlockInput[]
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutBlockInput | BlockAddressCreateOrConnectWithoutBlockInput[]
-    upsert?: BlockAddressUpsertWithWhereUniqueWithoutBlockInput | BlockAddressUpsertWithWhereUniqueWithoutBlockInput[]
-    createMany?: BlockAddressCreateManyBlockInputEnvelope
-    set?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    disconnect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    delete?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    connect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    update?: BlockAddressUpdateWithWhereUniqueWithoutBlockInput | BlockAddressUpdateWithWhereUniqueWithoutBlockInput[]
-    updateMany?: BlockAddressUpdateManyWithWhereWithoutBlockInput | BlockAddressUpdateManyWithWhereWithoutBlockInput[]
-    deleteMany?: BlockAddressScalarWhereInput | BlockAddressScalarWhereInput[]
-  }
-
-  export type BlockAddressUncheckedUpdateManyWithoutBlockNestedInput = {
-    create?: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput> | BlockAddressCreateWithoutBlockInput[] | BlockAddressUncheckedCreateWithoutBlockInput[]
-    connectOrCreate?: BlockAddressCreateOrConnectWithoutBlockInput | BlockAddressCreateOrConnectWithoutBlockInput[]
-    upsert?: BlockAddressUpsertWithWhereUniqueWithoutBlockInput | BlockAddressUpsertWithWhereUniqueWithoutBlockInput[]
-    createMany?: BlockAddressCreateManyBlockInputEnvelope
-    set?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    disconnect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    delete?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    connect?: BlockAddressWhereUniqueInput | BlockAddressWhereUniqueInput[]
-    update?: BlockAddressUpdateWithWhereUniqueWithoutBlockInput | BlockAddressUpdateWithWhereUniqueWithoutBlockInput[]
-    updateMany?: BlockAddressUpdateManyWithWhereWithoutBlockInput | BlockAddressUpdateManyWithWhereWithoutBlockInput[]
-    deleteMany?: BlockAddressScalarWhereInput | BlockAddressScalarWhereInput[]
+  export type TransactionUncheckedCreateNestedManyWithoutAddressToWatchInput = {
+    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
+    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
   export type NullableEnumLocalStateTypeFieldUpdateOperationsInput = {
     set?: $Enums.LocalStateType | null
+  }
+
+  export type TransactionUpdateManyWithoutAddressToWatchNestedInput = {
+    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput | TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput[]
+    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput | TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAddressToWatchInput | TransactionUpdateManyWithWhereWithoutAddressToWatchInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type TransactionUncheckedUpdateManyWithoutAddressToWatchNestedInput = {
+    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput | TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput[]
+    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+    set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput | TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAddressToWatchInput | TransactionUpdateManyWithWhereWithoutAddressToWatchInput[]
+    deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -6436,6 +5033,17 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -6482,29 +5090,31 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedEnumLocalStateTypeNullableFilter<$PrismaModel = never> = {
@@ -6524,90 +5134,83 @@ export namespace Prisma {
     _max?: NestedEnumLocalStateTypeNullableFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  export type AddressToWatchCreateWithoutTransactionsInput = {
+    key: string
+    value: string
+    type?: $Enums.LocalStateType | null
   }
 
-  export type BlocksCreateWithoutAddressesInput = {
-    blockHash: string
-    createdAt?: Date | string
-  }
-
-  export type BlocksUncheckedCreateWithoutAddressesInput = {
+  export type AddressToWatchUncheckedCreateWithoutTransactionsInput = {
     id?: number
-    blockHash: string
-    createdAt?: Date | string
+    key: string
+    value: string
+    type?: $Enums.LocalStateType | null
   }
 
-  export type BlocksCreateOrConnectWithoutAddressesInput = {
-    where: BlocksWhereUniqueInput
-    create: XOR<BlocksCreateWithoutAddressesInput, BlocksUncheckedCreateWithoutAddressesInput>
+  export type AddressToWatchCreateOrConnectWithoutTransactionsInput = {
+    where: AddressToWatchWhereUniqueInput
+    create: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
   }
 
-  export type TransactionCreateWithoutBlockAddressInput = {
+  export type AddressToWatchUpsertWithoutTransactionsInput = {
+    update: XOR<AddressToWatchUpdateWithoutTransactionsInput, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
+    create: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
+    where?: AddressToWatchWhereInput
+  }
+
+  export type AddressToWatchUpdateToOneWithWhereWithoutTransactionsInput = {
+    where?: AddressToWatchWhereInput
+    data: XOR<AddressToWatchUpdateWithoutTransactionsInput, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type AddressToWatchUpdateWithoutTransactionsInput = {
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
+  }
+
+  export type AddressToWatchUncheckedUpdateWithoutTransactionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
+  }
+
+  export type TransactionCreateWithoutAddressToWatchInput = {
     txHash: string
     cbor: string
   }
 
-  export type TransactionUncheckedCreateWithoutBlockAddressInput = {
+  export type TransactionUncheckedCreateWithoutAddressToWatchInput = {
     id?: number
     txHash: string
     cbor: string
   }
 
-  export type TransactionCreateOrConnectWithoutBlockAddressInput = {
+  export type TransactionCreateOrConnectWithoutAddressToWatchInput = {
     where: TransactionWhereUniqueInput
-    create: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput>
+    create: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput>
   }
 
-  export type TransactionCreateManyBlockAddressInputEnvelope = {
-    data: TransactionCreateManyBlockAddressInput | TransactionCreateManyBlockAddressInput[]
+  export type TransactionCreateManyAddressToWatchInputEnvelope = {
+    data: TransactionCreateManyAddressToWatchInput | TransactionCreateManyAddressToWatchInput[]
     skipDuplicates?: boolean
   }
 
-  export type BlocksUpsertWithoutAddressesInput = {
-    update: XOR<BlocksUpdateWithoutAddressesInput, BlocksUncheckedUpdateWithoutAddressesInput>
-    create: XOR<BlocksCreateWithoutAddressesInput, BlocksUncheckedCreateWithoutAddressesInput>
-    where?: BlocksWhereInput
-  }
-
-  export type BlocksUpdateToOneWithWhereWithoutAddressesInput = {
-    where?: BlocksWhereInput
-    data: XOR<BlocksUpdateWithoutAddressesInput, BlocksUncheckedUpdateWithoutAddressesInput>
-  }
-
-  export type BlocksUpdateWithoutAddressesInput = {
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type BlocksUncheckedUpdateWithoutAddressesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    blockHash?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type TransactionUpsertWithWhereUniqueWithoutBlockAddressInput = {
+  export type TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput = {
     where: TransactionWhereUniqueInput
-    update: XOR<TransactionUpdateWithoutBlockAddressInput, TransactionUncheckedUpdateWithoutBlockAddressInput>
-    create: XOR<TransactionCreateWithoutBlockAddressInput, TransactionUncheckedCreateWithoutBlockAddressInput>
+    update: XOR<TransactionUpdateWithoutAddressToWatchInput, TransactionUncheckedUpdateWithoutAddressToWatchInput>
+    create: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput>
   }
 
-  export type TransactionUpdateWithWhereUniqueWithoutBlockAddressInput = {
+  export type TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput = {
     where: TransactionWhereUniqueInput
-    data: XOR<TransactionUpdateWithoutBlockAddressInput, TransactionUncheckedUpdateWithoutBlockAddressInput>
+    data: XOR<TransactionUpdateWithoutAddressToWatchInput, TransactionUncheckedUpdateWithoutAddressToWatchInput>
   }
 
-  export type TransactionUpdateManyWithWhereWithoutBlockAddressInput = {
+  export type TransactionUpdateManyWithWhereWithoutAddressToWatchInput = {
     where: TransactionScalarWhereInput
-    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutBlockAddressInput>
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAddressToWatchInput>
   }
 
   export type TransactionScalarWhereInput = {
@@ -6616,136 +5219,31 @@ export namespace Prisma {
     NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
     id?: IntFilter<"Transaction"> | number
     txHash?: StringFilter<"Transaction"> | string
-    blockAddressId?: IntFilter<"Transaction"> | number
     cbor?: StringFilter<"Transaction"> | string
+    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
   }
 
-  export type BlockAddressCreateWithoutTransactionsInput = {
-    address: string
-    block: BlocksCreateNestedOneWithoutAddressesInput
-  }
-
-  export type BlockAddressUncheckedCreateWithoutTransactionsInput = {
-    id?: number
-    address: string
-    blockId: number
-  }
-
-  export type BlockAddressCreateOrConnectWithoutTransactionsInput = {
-    where: BlockAddressWhereUniqueInput
-    create: XOR<BlockAddressCreateWithoutTransactionsInput, BlockAddressUncheckedCreateWithoutTransactionsInput>
-  }
-
-  export type BlockAddressUpsertWithoutTransactionsInput = {
-    update: XOR<BlockAddressUpdateWithoutTransactionsInput, BlockAddressUncheckedUpdateWithoutTransactionsInput>
-    create: XOR<BlockAddressCreateWithoutTransactionsInput, BlockAddressUncheckedCreateWithoutTransactionsInput>
-    where?: BlockAddressWhereInput
-  }
-
-  export type BlockAddressUpdateToOneWithWhereWithoutTransactionsInput = {
-    where?: BlockAddressWhereInput
-    data: XOR<BlockAddressUpdateWithoutTransactionsInput, BlockAddressUncheckedUpdateWithoutTransactionsInput>
-  }
-
-  export type BlockAddressUpdateWithoutTransactionsInput = {
-    address?: StringFieldUpdateOperationsInput | string
-    block?: BlocksUpdateOneRequiredWithoutAddressesNestedInput
-  }
-
-  export type BlockAddressUncheckedUpdateWithoutTransactionsInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    address?: StringFieldUpdateOperationsInput | string
-    blockId?: IntFieldUpdateOperationsInput | number
-  }
-
-  export type BlockAddressCreateWithoutBlockInput = {
-    address: string
-    transactions?: TransactionCreateNestedManyWithoutBlockAddressInput
-  }
-
-  export type BlockAddressUncheckedCreateWithoutBlockInput = {
-    id?: number
-    address: string
-    transactions?: TransactionUncheckedCreateNestedManyWithoutBlockAddressInput
-  }
-
-  export type BlockAddressCreateOrConnectWithoutBlockInput = {
-    where: BlockAddressWhereUniqueInput
-    create: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput>
-  }
-
-  export type BlockAddressCreateManyBlockInputEnvelope = {
-    data: BlockAddressCreateManyBlockInput | BlockAddressCreateManyBlockInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type BlockAddressUpsertWithWhereUniqueWithoutBlockInput = {
-    where: BlockAddressWhereUniqueInput
-    update: XOR<BlockAddressUpdateWithoutBlockInput, BlockAddressUncheckedUpdateWithoutBlockInput>
-    create: XOR<BlockAddressCreateWithoutBlockInput, BlockAddressUncheckedCreateWithoutBlockInput>
-  }
-
-  export type BlockAddressUpdateWithWhereUniqueWithoutBlockInput = {
-    where: BlockAddressWhereUniqueInput
-    data: XOR<BlockAddressUpdateWithoutBlockInput, BlockAddressUncheckedUpdateWithoutBlockInput>
-  }
-
-  export type BlockAddressUpdateManyWithWhereWithoutBlockInput = {
-    where: BlockAddressScalarWhereInput
-    data: XOR<BlockAddressUpdateManyMutationInput, BlockAddressUncheckedUpdateManyWithoutBlockInput>
-  }
-
-  export type BlockAddressScalarWhereInput = {
-    AND?: BlockAddressScalarWhereInput | BlockAddressScalarWhereInput[]
-    OR?: BlockAddressScalarWhereInput[]
-    NOT?: BlockAddressScalarWhereInput | BlockAddressScalarWhereInput[]
-    id?: IntFilter<"BlockAddress"> | number
-    address?: StringFilter<"BlockAddress"> | string
-    blockId?: IntFilter<"BlockAddress"> | number
-  }
-
-  export type TransactionCreateManyBlockAddressInput = {
+  export type TransactionCreateManyAddressToWatchInput = {
     id?: number
     txHash: string
     cbor: string
   }
 
-  export type TransactionUpdateWithoutBlockAddressInput = {
+  export type TransactionUpdateWithoutAddressToWatchInput = {
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
   }
 
-  export type TransactionUncheckedUpdateWithoutBlockAddressInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    txHash?: StringFieldUpdateOperationsInput | string
-    cbor?: StringFieldUpdateOperationsInput | string
-  }
-
-  export type TransactionUncheckedUpdateManyWithoutBlockAddressInput = {
+  export type TransactionUncheckedUpdateWithoutAddressToWatchInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
   }
 
-  export type BlockAddressCreateManyBlockInput = {
-    id?: number
-    address: string
-  }
-
-  export type BlockAddressUpdateWithoutBlockInput = {
-    address?: StringFieldUpdateOperationsInput | string
-    transactions?: TransactionUpdateManyWithoutBlockAddressNestedInput
-  }
-
-  export type BlockAddressUncheckedUpdateWithoutBlockInput = {
+  export type TransactionUncheckedUpdateManyWithoutAddressToWatchInput = {
     id?: IntFieldUpdateOperationsInput | number
-    address?: StringFieldUpdateOperationsInput | string
-    transactions?: TransactionUncheckedUpdateManyWithoutBlockAddressNestedInput
-  }
-
-  export type BlockAddressUncheckedUpdateManyWithoutBlockInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    address?: StringFieldUpdateOperationsInput | string
+    txHash?: StringFieldUpdateOperationsInput | string
+    cbor?: StringFieldUpdateOperationsInput | string
   }
 
 

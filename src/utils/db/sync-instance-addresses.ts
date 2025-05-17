@@ -1,4 +1,4 @@
-import { PrismaClient } from "../../../prisma/generated/client";
+import { LocalStateType, PrismaClient } from "../../../prisma/generated/client";
 import { fetchBlockAddresses, fetchNextBlocks, fetchPreviousBlocks, fetchTxCbor } from "../dolos/mini-bf";
 import seed from "../../seed.json";
 import { logger } from "../../logger";
@@ -9,24 +9,17 @@ import { Transaction } from "./transaction";
 import { deriveInstanceAddress } from "../derive-instance-address";
 import { hexToString } from "@meshsdk/common";
 
-export async function syncTreasuryAddresses() {
+export async function syncInstanceAddresses() {
     const prisma = new PrismaClient()
 
     let blockHash;
     let nextBlocks;
 
     // Get the latest block hash from the database
-    const latestBlock = await prisma.blocks.findFirst({
-        orderBy: {
-            id: 'desc'
-        },
-        select: {
-            blockHash: true
-        }
-    });
+    const tip = (await prisma.addressToWatchSyncTip.findMany())[0];
 
-    if (latestBlock) {
-        blockHash = latestBlock.blockHash;
+    if (tip) {
+        blockHash = tip.blockHash;
         nextBlocks = await fetchNextBlocks(blockHash);
     } else {
         blockHash = seed.blockHash;
@@ -78,32 +71,70 @@ export async function syncTreasuryAddresses() {
 
                     const instanceScriptUtxos = txJs.body.outputs.filter((output) => {
                         if (!output.amount.multiasset) return false;
-                        
+
                         const assets = output.amount.multiasset[instanceTokenPolicy];
-                        return assets && Object.keys(assets).some(assetName => hexToString(assetName) === "TreasuryScripts");
+                        if (!assets) return false;
+
+                        return Object.keys(assets).some(assetName => {
+                            const tokenName = hexToString(assetName);
+                            return tokenName === "TreasuryScripts" ||
+                                tokenName === "ModuleScripts" ||
+                                tokenName === "CourseStateScripts" ||
+                                tokenName === "AssignmentValidator" ||
+                                tokenName === "Escrow1" ||
+                                tokenName === "ContributorStateScripts";
+                        });
                     });
 
                     for (const instanceScriptUtxo of instanceScriptUtxos) {
                         const datum = JSON.parse(instanceScriptUtxo.plutus_data!.Data);
                         const address = deriveInstanceAddress(instanceScriptUtxo.script_ref!.PlutusScript);
                         try {
+                            // Find the token name to determine the type
+                            let type: LocalStateType = "Unspecified"; // Default type
+
+                            if (instanceScriptUtxo.amount.multiasset && instanceScriptUtxo.amount.multiasset[instanceTokenPolicy]) {
+                                for (const assetName of Object.keys(instanceScriptUtxo.amount.multiasset[instanceTokenPolicy])) {
+                                    const tokenName = hexToString(assetName);
+                                    type = tokenName === "ModuleScripts" ? "ModuleRef" :
+                                        tokenName === "CourseStateScripts" ? "Course" :
+                                            tokenName === "AssignmentValidator" ? "Assignment" :
+                                                tokenName === "TreasuryScripts" ? "Treasury" :
+                                                    tokenName === "Escrow1" ? "Escrow" :
+                                                        tokenName === "ContributorStateScripts" ? "ContributorState" :
+                                                            "Unspecified";
+                                    break;
+                                }
+                            }
+
                             await prisma.addressToWatch.create({
                                 data: {
                                     key: datum.bytes,
                                     value: address,
-                                    type: "Treasury"
+                                    type: type
                                 }
-                            })
-                            logger.log(`✨ Found instance creation transaction in block: ${block.hash}`);
+                            });
+
                         } catch (error) {
                             logger.error(`Failed to create addressToWatch entry: ${error}`);
                         }
                     }
-
-
+                    
                 }
+                logger.log(`✨ Found instance creation transaction in block: ${block.hash}`);
 
             }
+            // Update or create the sync slot record
+            await prisma.addressToWatchSyncTip.upsert({
+                where: { id: 1 }, // Assuming there's only one record
+                update: {
+                    slot: block.slot,
+                },
+                create: {
+                    slot: block.slot,
+                    blockHash: block.hash
+                }
+            });
         }
 
         // Get next batch of blocks using the last processed block's hash
