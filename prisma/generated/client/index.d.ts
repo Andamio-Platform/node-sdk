@@ -39,6 +39,7 @@ export type AddressToWatch = $Result.DefaultSelection<Prisma.$AddressToWatchPayl
  */
 export namespace $Enums {
   export const LocalStateType: {
+  Unspecified: 'Unspecified',
   Course: 'Course',
   Assignment: 'Assignment',
   ModuleRef: 'ModuleRef',
@@ -5823,13 +5824,13 @@ export namespace Prisma {
 
   export type AddressToWatchWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    key?: string
+    value?: string
     AND?: AddressToWatchWhereInput | AddressToWatchWhereInput[]
     OR?: AddressToWatchWhereInput[]
     NOT?: AddressToWatchWhereInput | AddressToWatchWhereInput[]
-    value?: StringFilter<"AddressToWatch"> | string
+    key?: StringFilter<"AddressToWatch"> | string
     type?: EnumLocalStateTypeNullableFilter<"AddressToWatch"> | $Enums.LocalStateType | null
-  }, "id" | "key">
+  }, "id" | "value">
 
   export type AddressToWatchOrderByWithAggregationInput = {
     id?: SortOrder

@@ -38,6 +38,7 @@ model Blocks {
 }
 
 enum LocalStateType {
+  Unspecified
   Course
   Assignment
   ModuleRef
@@ -49,9 +50,10 @@ enum LocalStateType {
 // AddressToWatch is a table to store addresses we want to watch
 model AddressToWatch {
   id    Int             @id @default(autoincrement())
-  key   String          @unique
-  value String
+  key   String
+  value String          @unique
   type  LocalStateType? // Optional enum field
 
+  @@index([key])
   @@index([type])
 }

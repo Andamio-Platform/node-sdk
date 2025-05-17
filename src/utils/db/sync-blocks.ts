@@ -1,10 +1,13 @@
-import { BlockAddress, PrismaClient } from "../../../prisma/generated/client";
+import { PrismaClient } from "../../../prisma/generated/client";
+import { fetchBlockAddresses, fetchNextBlocks, fetchPreviousBlocks, fetchTxCbor } from "../dolos/mini-bf";
+import seed from "../../seed.json";
 import { logger } from "../../logger";
-import NetworkInitConfig from "../../network-init-config.json";
-
-const prisma = new PrismaClient()
+import { addressesToWatch } from "./addresses-to-watch";
+import { catchInstanceCreation } from "./catch-instance-creation";
 
 export async function syncBlocks() {
+    const prisma = new PrismaClient()
+
     let blockHash;
     let nextBlocks;
 
@@ -22,7 +25,7 @@ export async function syncBlocks() {
         blockHash = latestBlock.blockHash;
         nextBlocks = await fetchNextBlocks(blockHash);
     } else {
-        blockHash = NetworkInitConfig.blockHash;
+        blockHash = seed.blockHash;
         // Fetch the previous block to start the sync
         const previousBlocks = await fetchPreviousBlocks(blockHash);
         blockHash = previousBlocks[previousBlocks.length - 1].hash;
@@ -31,8 +34,8 @@ export async function syncBlocks() {
 
     while (nextBlocks.length > 0) {
         // Process blocks sequentially to avoid race conditions
+        logger.log(`Syncing ⏳⏳⏳ [ Slot: ${nextBlocks[0].slot} - Block: ${nextBlocks[0].hash} ]`);
         for (const block of nextBlocks) {
-            logger.log(`Syncing ⏳⏳⏳ [ Slot: ${block.slot} - Block: ${block.hash} ]`);
 
             // // Query the addresses affected in the block
             // const addresses = await fetchBlockAddresses(block.hash);
@@ -48,7 +51,7 @@ export async function syncBlocks() {
             }
 
             // Get the andamio addresses to watch from the database
-            const addresses_to_watch = await addressesToWatch();
+            const addresses_to_watch = await addressesToWatch(prisma);
 
             // Find all addresses that match any entry in addresses_to_watch
             const relevantAddresses = [];
@@ -59,7 +62,7 @@ export async function syncBlocks() {
                 );
 
                 if (matchingAddresses.length > 0) {
-                    logger.log(`✨ Found match for: ${watchAddress.key} ✨`);
+                    // logger.log(`✨ Found match for: ${watchAddress.key} ✨`);
                     relevantAddresses.push(...matchingAddresses);
                 }
             }
@@ -92,14 +95,24 @@ export async function syncBlocks() {
                     },
                 };
 
-                await prisma.blocks.create({
+                const createdBlock = await prisma.blocks.create({
                     data: blockData,
+                    include: {
+                        addresses: {
+                            include: {
+                                transactions: true,
+                            },
+                        },
+                    },
                 });
 
+
                 // logger.log(`✅ Created block record for hash: ${block.hash}`);
+                const instance_validator_address = addresses_to_watch.find((address) => address.key === "instance_validator")!.value;
+                catchInstanceCreation(prisma, createdBlock, instance_validator_address);
             } catch (error) {
                 logger.error(`❌ Failed to create block record: ${error} - Block Hash: ${block.hash}`);
-            }
+            } ``
 
         }
 
@@ -114,97 +127,3 @@ export async function syncBlocks() {
         }
     }
 }
-
-export async function fetchTxCbor(txHash: string) {
-    const txCbor = await fetch(
-        `http://192.168.1.7:50052/txs/${txHash}/cbor`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        }
-    )
-        .then((response) => {
-            if (!response.ok) {
-                logger.error(`Failed to fetch transaction CBOR: ${response.statusText}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-
-    return txCbor
-}
-
-export async function fetchPreviousBlocks(blockHash: string) {
-    const blocks = await fetch(
-        `http://192.168.1.7:50052/blocks/${blockHash}/previous`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        }
-    )
-        .then((response) => {
-            if (!response.ok) {
-                logger.error(`Failed to fetch previous blocks: ${response.statusText}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-
-    return blocks
-}
-
-export async function fetchNextBlocks(blockHash: string) {
-    const blocks = await fetch(
-        `http://192.168.1.7:50052/blocks/${blockHash}/next`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        }
-    )
-        .then((response) => {
-            if (!response.ok) {
-                logger.error(`Failed to fetch next blocks: ${response.statusText}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-
-    return blocks
-}
-
-export async function fetchBlockAddresses(blockHash: string) {
-    const addresses = await fetch(
-        `http://192.168.1.7:50052/blocks/${blockHash}/addresses`,
-        {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json",
-            },
-        }
-    )
-        .then((response) => {
-            if (!response.ok) {
-                logger.error(`Failed to fetch block addresses: ${response.statusText} - Block Hash: ${blockHash}`);
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-        })
-
-    return addresses
-}
-
-export async function addressesToWatch() {
-    const addresses = await prisma.addressToWatch.findMany({})
-
-    return addresses
-};

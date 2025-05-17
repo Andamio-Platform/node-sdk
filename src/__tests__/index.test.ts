@@ -1,7 +1,11 @@
 // src/__tests__/index.test.ts
 import { AndamioSDK } from '../index';
+import { syncBlocks } from '../utils/db/sync-blocks';
+import { syncTreasuryAddresses } from '../utils/db/sync-instance-addresses';
+import { readTip } from '../utils/u5c/read-tip';
+import { searchInstanceTx } from '../utils/u5c/dump-instance-blocks';
 
-jest.setTimeout(150000);
+jest.setTimeout(10000000);
 
 describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
@@ -13,17 +17,20 @@ describe('AndamioSDK', () => {
   describe('get utxos', () => {
     it('fetch network utxos from grpc', async () => {
 
-      const blocks = await sdk.provider.network.andamioTxs("")
-      
+      // const blocks = await syncBlocks();
+      const sync = await syncTreasuryAddresses();
+      // const tip = await searchInstanceTx();
+      // const tip = await readTip();
+
 
       // const projects = (await sdk.provider.network.getAllInstancesList()).projects;
       // console.log("projects : ", JSON.stringify(projects, null, 4))
 
       // for (const project of projects) {
       //   try {
-        // const txs = await sdk.provider.network.treasuryTxs("caffc76e84584da3f7be51e72a271b159e62f5ee0cece5c1c0c061f6")
-  
-        // console.log("txs : ", JSON.stringify(txs, null, 4))
+      // const txs = await sdk.provider.network.treasuryTxs("caffc76e84584da3f7be51e72a271b159e62f5ee0cece5c1c0c061f6")
+
+      // console.log("txs : ", JSON.stringify(txs, null, 4))
       //   } catch (error) {
       //     continue;
       //   }

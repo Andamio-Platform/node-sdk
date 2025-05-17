@@ -161,6 +161,7 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 exports.LocalStateType = exports.$Enums.LocalStateType = {
+  Unspecified: 'Unspecified',
   Course: 'Course',
   Assignment: 'Assignment',
   ModuleRef: 'ModuleRef',

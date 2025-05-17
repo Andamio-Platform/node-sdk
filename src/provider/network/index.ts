@@ -2,8 +2,6 @@ import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 import { SdkError } from "../../error";
 import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
-import { deserializeTx } from "@meshsdk/core-csl";
-import { addressesToWatch, fetchBlockAddresses, fetchNextBlocks, syncBlocks } from "./tx-history";
 
 /**
  * Network class for querying Andamio network data.
@@ -127,64 +125,7 @@ export class Network {
     }
   }
 
-
-  async treasuryTxs(projectNftPolicy: string): Promise<{ txs: tx[] }> {
-    try {
-      const utxos = await this.core.project.treasury.getUtxos(projectNftPolicy)
-      console.log("utxos : ", utxos)
-      const txPromises = utxos.map(async (utxo) => {
-        const txHash = bytesToHex(utxo.txoRef.hash)
-        console.log("txHash : ", txHash)
-        const cbor = await fetch(
-          `http://192.168.1.7:50052/txs/${txHash}/cbor`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-            },
-          }
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
-          })
-
-        return {
-          txHash: txHash,
-          cbor: cbor
-        };
-      });
-
-      const txs = await Promise.all(txPromises);
-
-      return { txs };
-    } catch (err) {
-      throw new SdkError(`Failed to fetch treasury transactions: ${err}`);
-    }
-  }
-
-
-  async andamioTxs(txHash: string) {
-    try {
-      const sync = await syncBlocks();
-
-    } catch (err) {
-      throw new SdkError(`Failed to fetch Andamio transactions: ${err}`);
-    }
-
-  }
 }
-
-type tx = {
-  txHash: string;
-  cbor: string;
-}
-
-
-
 
 /**
  * Represents an instance with policy ID, challenges, and completion status.
