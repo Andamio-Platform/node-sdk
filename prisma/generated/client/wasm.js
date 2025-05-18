@@ -123,8 +123,13 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.TransactionScalarFieldEnum = {
   id: 'id',
   txHash: 'txHash',
-  cbor: 'cbor',
-  addressToWatchId: 'addressToWatchId'
+  cbor: 'cbor'
+};
+
+exports.Prisma.TransactionSyncTipScalarFieldEnum = {
+  id: 'id',
+  slot: 'slot',
+  blockHash: 'blockHash'
 };
 
 exports.Prisma.AddressToWatchScalarFieldEnum = {
@@ -166,6 +171,7 @@ exports.LocalStateType = exports.$Enums.LocalStateType = {
 
 exports.Prisma.ModelName = {
   Transaction: 'Transaction',
+  TransactionSyncTip: 'TransactionSyncTip',
   AddressToWatch: 'AddressToWatch',
   AddressToWatchSyncTip: 'AddressToWatchSyncTip'
 };

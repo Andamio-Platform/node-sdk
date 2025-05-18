@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Transaction = $Result.DefaultSelection<Prisma.$TransactionPayload>
 /**
+ * Model TransactionSyncTip
+ * 
+ */
+export type TransactionSyncTip = $Result.DefaultSelection<Prisma.$TransactionSyncTipPayload>
+/**
  * Model AddressToWatch
  * 
  */
@@ -185,6 +190,16 @@ export class PrismaClient<
     * ```
     */
   get transaction(): Prisma.TransactionDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.transactionSyncTip`: Exposes CRUD operations for the **TransactionSyncTip** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TransactionSyncTips
+    * const transactionSyncTips = await prisma.transactionSyncTip.findMany()
+    * ```
+    */
+  get transactionSyncTip(): Prisma.TransactionSyncTipDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.addressToWatch`: Exposes CRUD operations for the **AddressToWatch** model.
@@ -646,6 +661,7 @@ export namespace Prisma {
 
   export const ModelName: {
     Transaction: 'Transaction',
+    TransactionSyncTip: 'TransactionSyncTip',
     AddressToWatch: 'AddressToWatch',
     AddressToWatchSyncTip: 'AddressToWatchSyncTip'
   };
@@ -666,7 +682,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "transaction" | "addressToWatch" | "addressToWatchSyncTip"
+      modelProps: "transaction" | "transactionSyncTip" | "addressToWatch" | "addressToWatchSyncTip"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -741,6 +757,80 @@ export namespace Prisma {
           count: {
             args: Prisma.TransactionCountArgs<ExtArgs>
             result: $Utils.Optional<TransactionCountAggregateOutputType> | number
+          }
+        }
+      }
+      TransactionSyncTip: {
+        payload: Prisma.$TransactionSyncTipPayload<ExtArgs>
+        fields: Prisma.TransactionSyncTipFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TransactionSyncTipFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TransactionSyncTipFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          findFirst: {
+            args: Prisma.TransactionSyncTipFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TransactionSyncTipFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          findMany: {
+            args: Prisma.TransactionSyncTipFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>[]
+          }
+          create: {
+            args: Prisma.TransactionSyncTipCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          createMany: {
+            args: Prisma.TransactionSyncTipCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TransactionSyncTipCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>[]
+          }
+          delete: {
+            args: Prisma.TransactionSyncTipDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          update: {
+            args: Prisma.TransactionSyncTipUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          deleteMany: {
+            args: Prisma.TransactionSyncTipDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TransactionSyncTipUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TransactionSyncTipUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>[]
+          }
+          upsert: {
+            args: Prisma.TransactionSyncTipUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TransactionSyncTipPayload>
+          }
+          aggregate: {
+            args: Prisma.TransactionSyncTipAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTransactionSyncTip>
+          }
+          groupBy: {
+            args: Prisma.TransactionSyncTipGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TransactionSyncTipGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TransactionSyncTipCountArgs<ExtArgs>
+            result: $Utils.Optional<TransactionSyncTipCountAggregateOutputType> | number
           }
         }
       }
@@ -977,6 +1067,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     transaction?: TransactionOmit
+    transactionSyncTip?: TransactionSyncTipOmit
     addressToWatch?: AddressToWatchOmit
     addressToWatchSyncTip?: AddressToWatchSyncTipOmit
   }
@@ -1069,6 +1160,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type TransactionCountOutputType
+   */
+
+  export type TransactionCountOutputType = {
+    addresses: number
+  }
+
+  export type TransactionCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    addresses?: boolean | TransactionCountOutputTypeCountAddressesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * TransactionCountOutputType without action
+   */
+  export type TransactionCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionCountOutputType
+     */
+    select?: TransactionCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * TransactionCountOutputType without action
+   */
+  export type TransactionCountOutputTypeCountAddressesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AddressToWatchWhereInput
+  }
+
+
+  /**
    * Count Type AddressToWatchCountOutputType
    */
 
@@ -1117,66 +1239,56 @@ export namespace Prisma {
 
   export type TransactionAvgAggregateOutputType = {
     id: number | null
-    addressToWatchId: number | null
   }
 
   export type TransactionSumAggregateOutputType = {
     id: number | null
-    addressToWatchId: number | null
   }
 
   export type TransactionMinAggregateOutputType = {
     id: number | null
     txHash: string | null
     cbor: string | null
-    addressToWatchId: number | null
   }
 
   export type TransactionMaxAggregateOutputType = {
     id: number | null
     txHash: string | null
     cbor: string | null
-    addressToWatchId: number | null
   }
 
   export type TransactionCountAggregateOutputType = {
     id: number
     txHash: number
     cbor: number
-    addressToWatchId: number
     _all: number
   }
 
 
   export type TransactionAvgAggregateInputType = {
     id?: true
-    addressToWatchId?: true
   }
 
   export type TransactionSumAggregateInputType = {
     id?: true
-    addressToWatchId?: true
   }
 
   export type TransactionMinAggregateInputType = {
     id?: true
     txHash?: true
     cbor?: true
-    addressToWatchId?: true
   }
 
   export type TransactionMaxAggregateInputType = {
     id?: true
     txHash?: true
     cbor?: true
-    addressToWatchId?: true
   }
 
   export type TransactionCountAggregateInputType = {
     id?: true
     txHash?: true
     cbor?: true
-    addressToWatchId?: true
     _all?: true
   }
 
@@ -1270,7 +1382,6 @@ export namespace Prisma {
     id: number
     txHash: string
     cbor: string
-    addressToWatchId: number | null
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -1296,54 +1407,45 @@ export namespace Prisma {
     id?: boolean
     txHash?: boolean
     cbor?: boolean
-    addressToWatchId?: boolean
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
+    addresses?: boolean | Transaction$addressesArgs<ExtArgs>
+    _count?: boolean | TransactionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     txHash?: boolean
     cbor?: boolean
-    addressToWatchId?: boolean
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     txHash?: boolean
     cbor?: boolean
-    addressToWatchId?: boolean
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
   }, ExtArgs["result"]["transaction"]>
 
   export type TransactionSelectScalar = {
     id?: boolean
     txHash?: boolean
     cbor?: boolean
-    addressToWatchId?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "cbor" | "addressToWatchId", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "txHash" | "cbor", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
+    addresses?: boolean | Transaction$addressesArgs<ExtArgs>
+    _count?: boolean | TransactionCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
-  }
-  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    addressToWatch?: boolean | Transaction$addressToWatchArgs<ExtArgs>
-  }
+  export type TransactionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type TransactionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
 
   export type $TransactionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Transaction"
     objects: {
-      addressToWatch: Prisma.$AddressToWatchPayload<ExtArgs> | null
+      addresses: Prisma.$AddressToWatchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       txHash: string
       cbor: string
-      addressToWatchId: number | null
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -1738,7 +1840,7 @@ export namespace Prisma {
    */
   export interface Prisma__TransactionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    addressToWatch<T extends Transaction$addressToWatchArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$addressToWatchArgs<ExtArgs>>): Prisma__AddressToWatchClient<$Result.GetResult<Prisma.$AddressToWatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    addresses<T extends Transaction$addressesArgs<ExtArgs> = {}>(args?: Subset<T, Transaction$addressesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AddressToWatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1771,7 +1873,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Transaction", 'Int'>
     readonly txHash: FieldRef<"Transaction", 'String'>
     readonly cbor: FieldRef<"Transaction", 'String'>
-    readonly addressToWatchId: FieldRef<"Transaction", 'Int'>
   }
     
 
@@ -2021,10 +2122,6 @@ export namespace Prisma {
      */
     data: TransactionCreateManyInput | TransactionCreateManyInput[]
     skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransactionIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2095,10 +2192,6 @@ export namespace Prisma {
      * Limit how many Transactions to update.
      */
     limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: TransactionIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -2168,9 +2261,9 @@ export namespace Prisma {
   }
 
   /**
-   * Transaction.addressToWatch
+   * Transaction.addresses
    */
-  export type Transaction$addressToWatchArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Transaction$addressesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
      * Select specific fields to fetch from the AddressToWatch
      */
@@ -2184,6 +2277,11 @@ export namespace Prisma {
      */
     include?: AddressToWatchInclude<ExtArgs> | null
     where?: AddressToWatchWhereInput
+    orderBy?: AddressToWatchOrderByWithRelationInput | AddressToWatchOrderByWithRelationInput[]
+    cursor?: AddressToWatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AddressToWatchScalarFieldEnum | AddressToWatchScalarFieldEnum[]
   }
 
   /**
@@ -2202,6 +2300,1013 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TransactionInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TransactionSyncTip
+   */
+
+  export type AggregateTransactionSyncTip = {
+    _count: TransactionSyncTipCountAggregateOutputType | null
+    _avg: TransactionSyncTipAvgAggregateOutputType | null
+    _sum: TransactionSyncTipSumAggregateOutputType | null
+    _min: TransactionSyncTipMinAggregateOutputType | null
+    _max: TransactionSyncTipMaxAggregateOutputType | null
+  }
+
+  export type TransactionSyncTipAvgAggregateOutputType = {
+    id: number | null
+    slot: number | null
+  }
+
+  export type TransactionSyncTipSumAggregateOutputType = {
+    id: number | null
+    slot: number | null
+  }
+
+  export type TransactionSyncTipMinAggregateOutputType = {
+    id: number | null
+    slot: number | null
+    blockHash: string | null
+  }
+
+  export type TransactionSyncTipMaxAggregateOutputType = {
+    id: number | null
+    slot: number | null
+    blockHash: string | null
+  }
+
+  export type TransactionSyncTipCountAggregateOutputType = {
+    id: number
+    slot: number
+    blockHash: number
+    _all: number
+  }
+
+
+  export type TransactionSyncTipAvgAggregateInputType = {
+    id?: true
+    slot?: true
+  }
+
+  export type TransactionSyncTipSumAggregateInputType = {
+    id?: true
+    slot?: true
+  }
+
+  export type TransactionSyncTipMinAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+  }
+
+  export type TransactionSyncTipMaxAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+  }
+
+  export type TransactionSyncTipCountAggregateInputType = {
+    id?: true
+    slot?: true
+    blockHash?: true
+    _all?: true
+  }
+
+  export type TransactionSyncTipAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransactionSyncTip to aggregate.
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransactionSyncTips to fetch.
+     */
+    orderBy?: TransactionSyncTipOrderByWithRelationInput | TransactionSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TransactionSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransactionSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransactionSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TransactionSyncTips
+    **/
+    _count?: true | TransactionSyncTipCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TransactionSyncTipAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TransactionSyncTipSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TransactionSyncTipMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TransactionSyncTipMaxAggregateInputType
+  }
+
+  export type GetTransactionSyncTipAggregateType<T extends TransactionSyncTipAggregateArgs> = {
+        [P in keyof T & keyof AggregateTransactionSyncTip]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTransactionSyncTip[P]>
+      : GetScalarType<T[P], AggregateTransactionSyncTip[P]>
+  }
+
+
+
+
+  export type TransactionSyncTipGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TransactionSyncTipWhereInput
+    orderBy?: TransactionSyncTipOrderByWithAggregationInput | TransactionSyncTipOrderByWithAggregationInput[]
+    by: TransactionSyncTipScalarFieldEnum[] | TransactionSyncTipScalarFieldEnum
+    having?: TransactionSyncTipScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TransactionSyncTipCountAggregateInputType | true
+    _avg?: TransactionSyncTipAvgAggregateInputType
+    _sum?: TransactionSyncTipSumAggregateInputType
+    _min?: TransactionSyncTipMinAggregateInputType
+    _max?: TransactionSyncTipMaxAggregateInputType
+  }
+
+  export type TransactionSyncTipGroupByOutputType = {
+    id: number
+    slot: number
+    blockHash: string
+    _count: TransactionSyncTipCountAggregateOutputType | null
+    _avg: TransactionSyncTipAvgAggregateOutputType | null
+    _sum: TransactionSyncTipSumAggregateOutputType | null
+    _min: TransactionSyncTipMinAggregateOutputType | null
+    _max: TransactionSyncTipMaxAggregateOutputType | null
+  }
+
+  type GetTransactionSyncTipGroupByPayload<T extends TransactionSyncTipGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TransactionSyncTipGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TransactionSyncTipGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TransactionSyncTipGroupByOutputType[P]>
+            : GetScalarType<T[P], TransactionSyncTipGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TransactionSyncTipSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["transactionSyncTip"]>
+
+  export type TransactionSyncTipSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["transactionSyncTip"]>
+
+  export type TransactionSyncTipSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }, ExtArgs["result"]["transactionSyncTip"]>
+
+  export type TransactionSyncTipSelectScalar = {
+    id?: boolean
+    slot?: boolean
+    blockHash?: boolean
+  }
+
+  export type TransactionSyncTipOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "slot" | "blockHash", ExtArgs["result"]["transactionSyncTip"]>
+
+  export type $TransactionSyncTipPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TransactionSyncTip"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      slot: number
+      blockHash: string
+    }, ExtArgs["result"]["transactionSyncTip"]>
+    composites: {}
+  }
+
+  type TransactionSyncTipGetPayload<S extends boolean | null | undefined | TransactionSyncTipDefaultArgs> = $Result.GetResult<Prisma.$TransactionSyncTipPayload, S>
+
+  type TransactionSyncTipCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TransactionSyncTipFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TransactionSyncTipCountAggregateInputType | true
+    }
+
+  export interface TransactionSyncTipDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TransactionSyncTip'], meta: { name: 'TransactionSyncTip' } }
+    /**
+     * Find zero or one TransactionSyncTip that matches the filter.
+     * @param {TransactionSyncTipFindUniqueArgs} args - Arguments to find a TransactionSyncTip
+     * @example
+     * // Get one TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TransactionSyncTipFindUniqueArgs>(args: SelectSubset<T, TransactionSyncTipFindUniqueArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TransactionSyncTip that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TransactionSyncTipFindUniqueOrThrowArgs} args - Arguments to find a TransactionSyncTip
+     * @example
+     * // Get one TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TransactionSyncTipFindUniqueOrThrowArgs>(args: SelectSubset<T, TransactionSyncTipFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransactionSyncTip that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipFindFirstArgs} args - Arguments to find a TransactionSyncTip
+     * @example
+     * // Get one TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TransactionSyncTipFindFirstArgs>(args?: SelectSubset<T, TransactionSyncTipFindFirstArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TransactionSyncTip that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipFindFirstOrThrowArgs} args - Arguments to find a TransactionSyncTip
+     * @example
+     * // Get one TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TransactionSyncTipFindFirstOrThrowArgs>(args?: SelectSubset<T, TransactionSyncTipFindFirstOrThrowArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TransactionSyncTips that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TransactionSyncTips
+     * const transactionSyncTips = await prisma.transactionSyncTip.findMany()
+     * 
+     * // Get first 10 TransactionSyncTips
+     * const transactionSyncTips = await prisma.transactionSyncTip.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const transactionSyncTipWithIdOnly = await prisma.transactionSyncTip.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TransactionSyncTipFindManyArgs>(args?: SelectSubset<T, TransactionSyncTipFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TransactionSyncTip.
+     * @param {TransactionSyncTipCreateArgs} args - Arguments to create a TransactionSyncTip.
+     * @example
+     * // Create one TransactionSyncTip
+     * const TransactionSyncTip = await prisma.transactionSyncTip.create({
+     *   data: {
+     *     // ... data to create a TransactionSyncTip
+     *   }
+     * })
+     * 
+     */
+    create<T extends TransactionSyncTipCreateArgs>(args: SelectSubset<T, TransactionSyncTipCreateArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TransactionSyncTips.
+     * @param {TransactionSyncTipCreateManyArgs} args - Arguments to create many TransactionSyncTips.
+     * @example
+     * // Create many TransactionSyncTips
+     * const transactionSyncTip = await prisma.transactionSyncTip.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TransactionSyncTipCreateManyArgs>(args?: SelectSubset<T, TransactionSyncTipCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TransactionSyncTips and returns the data saved in the database.
+     * @param {TransactionSyncTipCreateManyAndReturnArgs} args - Arguments to create many TransactionSyncTips.
+     * @example
+     * // Create many TransactionSyncTips
+     * const transactionSyncTip = await prisma.transactionSyncTip.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TransactionSyncTips and only return the `id`
+     * const transactionSyncTipWithIdOnly = await prisma.transactionSyncTip.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TransactionSyncTipCreateManyAndReturnArgs>(args?: SelectSubset<T, TransactionSyncTipCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TransactionSyncTip.
+     * @param {TransactionSyncTipDeleteArgs} args - Arguments to delete one TransactionSyncTip.
+     * @example
+     * // Delete one TransactionSyncTip
+     * const TransactionSyncTip = await prisma.transactionSyncTip.delete({
+     *   where: {
+     *     // ... filter to delete one TransactionSyncTip
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TransactionSyncTipDeleteArgs>(args: SelectSubset<T, TransactionSyncTipDeleteArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TransactionSyncTip.
+     * @param {TransactionSyncTipUpdateArgs} args - Arguments to update one TransactionSyncTip.
+     * @example
+     * // Update one TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TransactionSyncTipUpdateArgs>(args: SelectSubset<T, TransactionSyncTipUpdateArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TransactionSyncTips.
+     * @param {TransactionSyncTipDeleteManyArgs} args - Arguments to filter TransactionSyncTips to delete.
+     * @example
+     * // Delete a few TransactionSyncTips
+     * const { count } = await prisma.transactionSyncTip.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TransactionSyncTipDeleteManyArgs>(args?: SelectSubset<T, TransactionSyncTipDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransactionSyncTips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TransactionSyncTips
+     * const transactionSyncTip = await prisma.transactionSyncTip.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TransactionSyncTipUpdateManyArgs>(args: SelectSubset<T, TransactionSyncTipUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TransactionSyncTips and returns the data updated in the database.
+     * @param {TransactionSyncTipUpdateManyAndReturnArgs} args - Arguments to update many TransactionSyncTips.
+     * @example
+     * // Update many TransactionSyncTips
+     * const transactionSyncTip = await prisma.transactionSyncTip.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TransactionSyncTips and only return the `id`
+     * const transactionSyncTipWithIdOnly = await prisma.transactionSyncTip.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TransactionSyncTipUpdateManyAndReturnArgs>(args: SelectSubset<T, TransactionSyncTipUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TransactionSyncTip.
+     * @param {TransactionSyncTipUpsertArgs} args - Arguments to update or create a TransactionSyncTip.
+     * @example
+     * // Update or create a TransactionSyncTip
+     * const transactionSyncTip = await prisma.transactionSyncTip.upsert({
+     *   create: {
+     *     // ... data to create a TransactionSyncTip
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TransactionSyncTip we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TransactionSyncTipUpsertArgs>(args: SelectSubset<T, TransactionSyncTipUpsertArgs<ExtArgs>>): Prisma__TransactionSyncTipClient<$Result.GetResult<Prisma.$TransactionSyncTipPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TransactionSyncTips.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipCountArgs} args - Arguments to filter TransactionSyncTips to count.
+     * @example
+     * // Count the number of TransactionSyncTips
+     * const count = await prisma.transactionSyncTip.count({
+     *   where: {
+     *     // ... the filter for the TransactionSyncTips we want to count
+     *   }
+     * })
+    **/
+    count<T extends TransactionSyncTipCountArgs>(
+      args?: Subset<T, TransactionSyncTipCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TransactionSyncTipCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TransactionSyncTip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TransactionSyncTipAggregateArgs>(args: Subset<T, TransactionSyncTipAggregateArgs>): Prisma.PrismaPromise<GetTransactionSyncTipAggregateType<T>>
+
+    /**
+     * Group by TransactionSyncTip.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TransactionSyncTipGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TransactionSyncTipGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TransactionSyncTipGroupByArgs['orderBy'] }
+        : { orderBy?: TransactionSyncTipGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TransactionSyncTipGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTransactionSyncTipGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TransactionSyncTip model
+   */
+  readonly fields: TransactionSyncTipFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TransactionSyncTip.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TransactionSyncTipClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TransactionSyncTip model
+   */
+  interface TransactionSyncTipFieldRefs {
+    readonly id: FieldRef<"TransactionSyncTip", 'Int'>
+    readonly slot: FieldRef<"TransactionSyncTip", 'Int'>
+    readonly blockHash: FieldRef<"TransactionSyncTip", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TransactionSyncTip findUnique
+   */
+  export type TransactionSyncTipFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which TransactionSyncTip to fetch.
+     */
+    where: TransactionSyncTipWhereUniqueInput
+  }
+
+  /**
+   * TransactionSyncTip findUniqueOrThrow
+   */
+  export type TransactionSyncTipFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which TransactionSyncTip to fetch.
+     */
+    where: TransactionSyncTipWhereUniqueInput
+  }
+
+  /**
+   * TransactionSyncTip findFirst
+   */
+  export type TransactionSyncTipFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which TransactionSyncTip to fetch.
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransactionSyncTips to fetch.
+     */
+    orderBy?: TransactionSyncTipOrderByWithRelationInput | TransactionSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransactionSyncTips.
+     */
+    cursor?: TransactionSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransactionSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransactionSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransactionSyncTips.
+     */
+    distinct?: TransactionSyncTipScalarFieldEnum | TransactionSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * TransactionSyncTip findFirstOrThrow
+   */
+  export type TransactionSyncTipFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which TransactionSyncTip to fetch.
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransactionSyncTips to fetch.
+     */
+    orderBy?: TransactionSyncTipOrderByWithRelationInput | TransactionSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TransactionSyncTips.
+     */
+    cursor?: TransactionSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransactionSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransactionSyncTips.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TransactionSyncTips.
+     */
+    distinct?: TransactionSyncTipScalarFieldEnum | TransactionSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * TransactionSyncTip findMany
+   */
+  export type TransactionSyncTipFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter, which TransactionSyncTips to fetch.
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TransactionSyncTips to fetch.
+     */
+    orderBy?: TransactionSyncTipOrderByWithRelationInput | TransactionSyncTipOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TransactionSyncTips.
+     */
+    cursor?: TransactionSyncTipWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TransactionSyncTips from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TransactionSyncTips.
+     */
+    skip?: number
+    distinct?: TransactionSyncTipScalarFieldEnum | TransactionSyncTipScalarFieldEnum[]
+  }
+
+  /**
+   * TransactionSyncTip create
+   */
+  export type TransactionSyncTipCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * The data needed to create a TransactionSyncTip.
+     */
+    data: XOR<TransactionSyncTipCreateInput, TransactionSyncTipUncheckedCreateInput>
+  }
+
+  /**
+   * TransactionSyncTip createMany
+   */
+  export type TransactionSyncTipCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TransactionSyncTips.
+     */
+    data: TransactionSyncTipCreateManyInput | TransactionSyncTipCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TransactionSyncTip createManyAndReturn
+   */
+  export type TransactionSyncTipCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * The data used to create many TransactionSyncTips.
+     */
+    data: TransactionSyncTipCreateManyInput | TransactionSyncTipCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TransactionSyncTip update
+   */
+  export type TransactionSyncTipUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * The data needed to update a TransactionSyncTip.
+     */
+    data: XOR<TransactionSyncTipUpdateInput, TransactionSyncTipUncheckedUpdateInput>
+    /**
+     * Choose, which TransactionSyncTip to update.
+     */
+    where: TransactionSyncTipWhereUniqueInput
+  }
+
+  /**
+   * TransactionSyncTip updateMany
+   */
+  export type TransactionSyncTipUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TransactionSyncTips.
+     */
+    data: XOR<TransactionSyncTipUpdateManyMutationInput, TransactionSyncTipUncheckedUpdateManyInput>
+    /**
+     * Filter which TransactionSyncTips to update
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * Limit how many TransactionSyncTips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransactionSyncTip updateManyAndReturn
+   */
+  export type TransactionSyncTipUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * The data used to update TransactionSyncTips.
+     */
+    data: XOR<TransactionSyncTipUpdateManyMutationInput, TransactionSyncTipUncheckedUpdateManyInput>
+    /**
+     * Filter which TransactionSyncTips to update
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * Limit how many TransactionSyncTips to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransactionSyncTip upsert
+   */
+  export type TransactionSyncTipUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * The filter to search for the TransactionSyncTip to update in case it exists.
+     */
+    where: TransactionSyncTipWhereUniqueInput
+    /**
+     * In case the TransactionSyncTip found by the `where` argument doesn't exist, create a new TransactionSyncTip with this data.
+     */
+    create: XOR<TransactionSyncTipCreateInput, TransactionSyncTipUncheckedCreateInput>
+    /**
+     * In case the TransactionSyncTip was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TransactionSyncTipUpdateInput, TransactionSyncTipUncheckedUpdateInput>
+  }
+
+  /**
+   * TransactionSyncTip delete
+   */
+  export type TransactionSyncTipDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
+    /**
+     * Filter which TransactionSyncTip to delete.
+     */
+    where: TransactionSyncTipWhereUniqueInput
+  }
+
+  /**
+   * TransactionSyncTip deleteMany
+   */
+  export type TransactionSyncTipDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TransactionSyncTips to delete
+     */
+    where?: TransactionSyncTipWhereInput
+    /**
+     * Limit how many TransactionSyncTips to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TransactionSyncTip without action
+   */
+  export type TransactionSyncTipDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TransactionSyncTip
+     */
+    select?: TransactionSyncTipSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TransactionSyncTip
+     */
+    omit?: TransactionSyncTipOmit<ExtArgs> | null
   }
 
 
@@ -4320,11 +5425,19 @@ export namespace Prisma {
   export const TransactionScalarFieldEnum: {
     id: 'id',
     txHash: 'txHash',
-    cbor: 'cbor',
-    addressToWatchId: 'addressToWatchId'
+    cbor: 'cbor'
   };
 
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
+
+
+  export const TransactionSyncTipScalarFieldEnum: {
+    id: 'id',
+    slot: 'slot',
+    blockHash: 'blockHash'
+  };
+
+  export type TransactionSyncTipScalarFieldEnum = (typeof TransactionSyncTipScalarFieldEnum)[keyof typeof TransactionSyncTipScalarFieldEnum]
 
 
   export const AddressToWatchScalarFieldEnum: {
@@ -4441,16 +5554,14 @@ export namespace Prisma {
     id?: IntFilter<"Transaction"> | number
     txHash?: StringFilter<"Transaction"> | string
     cbor?: StringFilter<"Transaction"> | string
-    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
-    addressToWatch?: XOR<AddressToWatchNullableScalarRelationFilter, AddressToWatchWhereInput> | null
+    addresses?: AddressToWatchListRelationFilter
   }
 
   export type TransactionOrderByWithRelationInput = {
     id?: SortOrder
     txHash?: SortOrder
     cbor?: SortOrder
-    addressToWatchId?: SortOrderInput | SortOrder
-    addressToWatch?: AddressToWatchOrderByWithRelationInput
+    addresses?: AddressToWatchOrderByRelationAggregateInput
   }
 
   export type TransactionWhereUniqueInput = Prisma.AtLeast<{
@@ -4460,15 +5571,13 @@ export namespace Prisma {
     OR?: TransactionWhereInput[]
     NOT?: TransactionWhereInput | TransactionWhereInput[]
     cbor?: StringFilter<"Transaction"> | string
-    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
-    addressToWatch?: XOR<AddressToWatchNullableScalarRelationFilter, AddressToWatchWhereInput> | null
+    addresses?: AddressToWatchListRelationFilter
   }, "id" | "txHash">
 
   export type TransactionOrderByWithAggregationInput = {
     id?: SortOrder
     txHash?: SortOrder
     cbor?: SortOrder
-    addressToWatchId?: SortOrderInput | SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
     _max?: TransactionMaxOrderByAggregateInput
@@ -4483,7 +5592,50 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Transaction"> | number
     txHash?: StringWithAggregatesFilter<"Transaction"> | string
     cbor?: StringWithAggregatesFilter<"Transaction"> | string
-    addressToWatchId?: IntNullableWithAggregatesFilter<"Transaction"> | number | null
+  }
+
+  export type TransactionSyncTipWhereInput = {
+    AND?: TransactionSyncTipWhereInput | TransactionSyncTipWhereInput[]
+    OR?: TransactionSyncTipWhereInput[]
+    NOT?: TransactionSyncTipWhereInput | TransactionSyncTipWhereInput[]
+    id?: IntFilter<"TransactionSyncTip"> | number
+    slot?: IntFilter<"TransactionSyncTip"> | number
+    blockHash?: StringFilter<"TransactionSyncTip"> | string
+  }
+
+  export type TransactionSyncTipOrderByWithRelationInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type TransactionSyncTipWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    slot?: number
+    blockHash?: string
+    AND?: TransactionSyncTipWhereInput | TransactionSyncTipWhereInput[]
+    OR?: TransactionSyncTipWhereInput[]
+    NOT?: TransactionSyncTipWhereInput | TransactionSyncTipWhereInput[]
+  }, "id" | "slot" | "blockHash">
+
+  export type TransactionSyncTipOrderByWithAggregationInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+    _count?: TransactionSyncTipCountOrderByAggregateInput
+    _avg?: TransactionSyncTipAvgOrderByAggregateInput
+    _max?: TransactionSyncTipMaxOrderByAggregateInput
+    _min?: TransactionSyncTipMinOrderByAggregateInput
+    _sum?: TransactionSyncTipSumOrderByAggregateInput
+  }
+
+  export type TransactionSyncTipScalarWhereWithAggregatesInput = {
+    AND?: TransactionSyncTipScalarWhereWithAggregatesInput | TransactionSyncTipScalarWhereWithAggregatesInput[]
+    OR?: TransactionSyncTipScalarWhereWithAggregatesInput[]
+    NOT?: TransactionSyncTipScalarWhereWithAggregatesInput | TransactionSyncTipScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"TransactionSyncTip"> | number
+    slot?: IntWithAggregatesFilter<"TransactionSyncTip"> | number
+    blockHash?: StringWithAggregatesFilter<"TransactionSyncTip"> | string
   }
 
   export type AddressToWatchWhereInput = {
@@ -4585,34 +5737,33 @@ export namespace Prisma {
   export type TransactionCreateInput = {
     txHash: string
     cbor: string
-    addressToWatch?: AddressToWatchCreateNestedOneWithoutTransactionsInput
+    addresses?: AddressToWatchCreateNestedManyWithoutTransactionsInput
   }
 
   export type TransactionUncheckedCreateInput = {
     id?: number
     txHash: string
     cbor: string
-    addressToWatchId?: number | null
+    addresses?: AddressToWatchUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
   export type TransactionUpdateInput = {
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
-    addressToWatch?: AddressToWatchUpdateOneWithoutTransactionsNestedInput
+    addresses?: AddressToWatchUpdateManyWithoutTransactionsNestedInput
   }
 
   export type TransactionUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
-    addressToWatchId?: NullableIntFieldUpdateOperationsInput | number | null
+    addresses?: AddressToWatchUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
   export type TransactionCreateManyInput = {
     id?: number
     txHash: string
     cbor: string
-    addressToWatchId?: number | null
   }
 
   export type TransactionUpdateManyMutationInput = {
@@ -4624,14 +5775,52 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
-    addressToWatchId?: NullableIntFieldUpdateOperationsInput | number | null
+  }
+
+  export type TransactionSyncTipCreateInput = {
+    slot: number
+    blockHash: string
+  }
+
+  export type TransactionSyncTipUncheckedCreateInput = {
+    id?: number
+    slot: number
+    blockHash: string
+  }
+
+  export type TransactionSyncTipUpdateInput = {
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TransactionSyncTipUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TransactionSyncTipCreateManyInput = {
+    id?: number
+    slot: number
+    blockHash: string
+  }
+
+  export type TransactionSyncTipUpdateManyMutationInput = {
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type TransactionSyncTipUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    slot?: IntFieldUpdateOperationsInput | number
+    blockHash?: StringFieldUpdateOperationsInput | string
   }
 
   export type AddressToWatchCreateInput = {
     key: string
     value: string
     type?: $Enums.LocalStateType | null
-    transactions?: TransactionCreateNestedManyWithoutAddressToWatchInput
+    transactions?: TransactionCreateNestedManyWithoutAddressesInput
   }
 
   export type AddressToWatchUncheckedCreateInput = {
@@ -4639,14 +5828,14 @@ export namespace Prisma {
     key: string
     value: string
     type?: $Enums.LocalStateType | null
-    transactions?: TransactionUncheckedCreateNestedManyWithoutAddressToWatchInput
+    transactions?: TransactionUncheckedCreateNestedManyWithoutAddressesInput
   }
 
   export type AddressToWatchUpdateInput = {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
-    transactions?: TransactionUpdateManyWithoutAddressToWatchNestedInput
+    transactions?: TransactionUpdateManyWithoutAddressesNestedInput
   }
 
   export type AddressToWatchUncheckedUpdateInput = {
@@ -4654,7 +5843,7 @@ export namespace Prisma {
     key?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
-    transactions?: TransactionUncheckedUpdateManyWithoutAddressToWatchNestedInput
+    transactions?: TransactionUncheckedUpdateManyWithoutAddressesNestedInput
   }
 
   export type AddressToWatchCreateManyInput = {
@@ -4742,56 +5931,40 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
-  export type IntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  export type AddressToWatchListRelationFilter = {
+    every?: AddressToWatchWhereInput
+    some?: AddressToWatchWhereInput
+    none?: AddressToWatchWhereInput
   }
 
-  export type AddressToWatchNullableScalarRelationFilter = {
-    is?: AddressToWatchWhereInput | null
-    isNot?: AddressToWatchWhereInput | null
-  }
-
-  export type SortOrderInput = {
-    sort: SortOrder
-    nulls?: NullsOrder
+  export type AddressToWatchOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type TransactionCountOrderByAggregateInput = {
     id?: SortOrder
     txHash?: SortOrder
     cbor?: SortOrder
-    addressToWatchId?: SortOrder
   }
 
   export type TransactionAvgOrderByAggregateInput = {
     id?: SortOrder
-    addressToWatchId?: SortOrder
   }
 
   export type TransactionMaxOrderByAggregateInput = {
     id?: SortOrder
     txHash?: SortOrder
     cbor?: SortOrder
-    addressToWatchId?: SortOrder
   }
 
   export type TransactionMinOrderByAggregateInput = {
     id?: SortOrder
     txHash?: SortOrder
     cbor?: SortOrder
-    addressToWatchId?: SortOrder
   }
 
   export type TransactionSumOrderByAggregateInput = {
     id?: SortOrder
-    addressToWatchId?: SortOrder
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -4828,20 +6001,32 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
+  export type TransactionSyncTipCountOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type TransactionSyncTipAvgOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+  }
+
+  export type TransactionSyncTipMaxOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type TransactionSyncTipMinOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
+    blockHash?: SortOrder
+  }
+
+  export type TransactionSyncTipSumOrderByAggregateInput = {
+    id?: SortOrder
+    slot?: SortOrder
   }
 
   export type EnumLocalStateTypeNullableFilter<$PrismaModel = never> = {
@@ -4855,6 +6040,11 @@ export namespace Prisma {
     every?: TransactionWhereInput
     some?: TransactionWhereInput
     none?: TransactionWhereInput
+  }
+
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
   }
 
   export type TransactionOrderByRelationAggregateInput = {
@@ -4928,24 +6118,33 @@ export namespace Prisma {
     slot?: SortOrder
   }
 
-  export type AddressToWatchCreateNestedOneWithoutTransactionsInput = {
-    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
-    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput
-    connect?: AddressToWatchWhereUniqueInput
+  export type AddressToWatchCreateNestedManyWithoutTransactionsInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput> | AddressToWatchCreateWithoutTransactionsInput[] | AddressToWatchUncheckedCreateWithoutTransactionsInput[]
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput | AddressToWatchCreateOrConnectWithoutTransactionsInput[]
+    connect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+  }
+
+  export type AddressToWatchUncheckedCreateNestedManyWithoutTransactionsInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput> | AddressToWatchCreateWithoutTransactionsInput[] | AddressToWatchUncheckedCreateWithoutTransactionsInput[]
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput | AddressToWatchCreateOrConnectWithoutTransactionsInput[]
+    connect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
     set?: string
   }
 
-  export type AddressToWatchUpdateOneWithoutTransactionsNestedInput = {
-    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
-    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput
-    upsert?: AddressToWatchUpsertWithoutTransactionsInput
-    disconnect?: AddressToWatchWhereInput | boolean
-    delete?: AddressToWatchWhereInput | boolean
-    connect?: AddressToWatchWhereUniqueInput
-    update?: XOR<XOR<AddressToWatchUpdateToOneWithWhereWithoutTransactionsInput, AddressToWatchUpdateWithoutTransactionsInput>, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
+  export type AddressToWatchUpdateManyWithoutTransactionsNestedInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput> | AddressToWatchCreateWithoutTransactionsInput[] | AddressToWatchUncheckedCreateWithoutTransactionsInput[]
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput | AddressToWatchCreateOrConnectWithoutTransactionsInput[]
+    upsert?: AddressToWatchUpsertWithWhereUniqueWithoutTransactionsInput | AddressToWatchUpsertWithWhereUniqueWithoutTransactionsInput[]
+    set?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    disconnect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    delete?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    connect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    update?: AddressToWatchUpdateWithWhereUniqueWithoutTransactionsInput | AddressToWatchUpdateWithWhereUniqueWithoutTransactionsInput[]
+    updateMany?: AddressToWatchUpdateManyWithWhereWithoutTransactionsInput | AddressToWatchUpdateManyWithWhereWithoutTransactionsInput[]
+    deleteMany?: AddressToWatchScalarWhereInput | AddressToWatchScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -4956,25 +6155,28 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type NullableIntFieldUpdateOperationsInput = {
-    set?: number | null
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type AddressToWatchUncheckedUpdateManyWithoutTransactionsNestedInput = {
+    create?: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput> | AddressToWatchCreateWithoutTransactionsInput[] | AddressToWatchUncheckedCreateWithoutTransactionsInput[]
+    connectOrCreate?: AddressToWatchCreateOrConnectWithoutTransactionsInput | AddressToWatchCreateOrConnectWithoutTransactionsInput[]
+    upsert?: AddressToWatchUpsertWithWhereUniqueWithoutTransactionsInput | AddressToWatchUpsertWithWhereUniqueWithoutTransactionsInput[]
+    set?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    disconnect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    delete?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    connect?: AddressToWatchWhereUniqueInput | AddressToWatchWhereUniqueInput[]
+    update?: AddressToWatchUpdateWithWhereUniqueWithoutTransactionsInput | AddressToWatchUpdateWithWhereUniqueWithoutTransactionsInput[]
+    updateMany?: AddressToWatchUpdateManyWithWhereWithoutTransactionsInput | AddressToWatchUpdateManyWithWhereWithoutTransactionsInput[]
+    deleteMany?: AddressToWatchScalarWhereInput | AddressToWatchScalarWhereInput[]
   }
 
-  export type TransactionCreateNestedManyWithoutAddressToWatchInput = {
-    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
-    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+  export type TransactionCreateNestedManyWithoutAddressesInput = {
+    create?: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput> | TransactionCreateWithoutAddressesInput[] | TransactionUncheckedCreateWithoutAddressesInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressesInput | TransactionCreateOrConnectWithoutAddressesInput[]
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
-  export type TransactionUncheckedCreateNestedManyWithoutAddressToWatchInput = {
-    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
-    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+  export type TransactionUncheckedCreateNestedManyWithoutAddressesInput = {
+    create?: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput> | TransactionCreateWithoutAddressesInput[] | TransactionUncheckedCreateWithoutAddressesInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressesInput | TransactionCreateOrConnectWithoutAddressesInput[]
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
@@ -4982,31 +6184,29 @@ export namespace Prisma {
     set?: $Enums.LocalStateType | null
   }
 
-  export type TransactionUpdateManyWithoutAddressToWatchNestedInput = {
-    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
-    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput | TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput[]
-    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+  export type TransactionUpdateManyWithoutAddressesNestedInput = {
+    create?: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput> | TransactionCreateWithoutAddressesInput[] | TransactionUncheckedCreateWithoutAddressesInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressesInput | TransactionCreateOrConnectWithoutAddressesInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressesInput | TransactionUpsertWithWhereUniqueWithoutAddressesInput[]
     set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    update?: TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput | TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput[]
-    updateMany?: TransactionUpdateManyWithWhereWithoutAddressToWatchInput | TransactionUpdateManyWithWhereWithoutAddressToWatchInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAddressesInput | TransactionUpdateWithWhereUniqueWithoutAddressesInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAddressesInput | TransactionUpdateManyWithWhereWithoutAddressesInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
-  export type TransactionUncheckedUpdateManyWithoutAddressToWatchNestedInput = {
-    create?: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput> | TransactionCreateWithoutAddressToWatchInput[] | TransactionUncheckedCreateWithoutAddressToWatchInput[]
-    connectOrCreate?: TransactionCreateOrConnectWithoutAddressToWatchInput | TransactionCreateOrConnectWithoutAddressToWatchInput[]
-    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput | TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput[]
-    createMany?: TransactionCreateManyAddressToWatchInputEnvelope
+  export type TransactionUncheckedUpdateManyWithoutAddressesNestedInput = {
+    create?: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput> | TransactionCreateWithoutAddressesInput[] | TransactionUncheckedCreateWithoutAddressesInput[]
+    connectOrCreate?: TransactionCreateOrConnectWithoutAddressesInput | TransactionCreateOrConnectWithoutAddressesInput[]
+    upsert?: TransactionUpsertWithWhereUniqueWithoutAddressesInput | TransactionUpsertWithWhereUniqueWithoutAddressesInput[]
     set?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     disconnect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     delete?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-    update?: TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput | TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput[]
-    updateMany?: TransactionUpdateManyWithWhereWithoutAddressToWatchInput | TransactionUpdateManyWithWhereWithoutAddressToWatchInput[]
+    update?: TransactionUpdateWithWhereUniqueWithoutAddressesInput | TransactionUpdateWithWhereUniqueWithoutAddressesInput[]
+    updateMany?: TransactionUpdateManyWithWhereWithoutAddressesInput | TransactionUpdateManyWithWhereWithoutAddressesInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
   }
 
@@ -5033,17 +6233,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringFilter<$PrismaModel> | string
-  }
-
-  export type NestedIntNullableFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -5090,33 +6279,6 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
-  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedFloatNullableFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
-  }
-
   export type NestedEnumLocalStateTypeNullableFilter<$PrismaModel = never> = {
     equals?: $Enums.LocalStateType | EnumLocalStateTypeFieldRefInput<$PrismaModel> | null
     in?: $Enums.LocalStateType[] | ListEnumLocalStateTypeFieldRefInput<$PrismaModel> | null
@@ -5132,6 +6294,17 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumLocalStateTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumLocalStateTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
   export type AddressToWatchCreateWithoutTransactionsInput = {
@@ -5152,15 +6325,71 @@ export namespace Prisma {
     create: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
   }
 
-  export type AddressToWatchUpsertWithoutTransactionsInput = {
+  export type AddressToWatchUpsertWithWhereUniqueWithoutTransactionsInput = {
+    where: AddressToWatchWhereUniqueInput
     update: XOR<AddressToWatchUpdateWithoutTransactionsInput, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
     create: XOR<AddressToWatchCreateWithoutTransactionsInput, AddressToWatchUncheckedCreateWithoutTransactionsInput>
-    where?: AddressToWatchWhereInput
   }
 
-  export type AddressToWatchUpdateToOneWithWhereWithoutTransactionsInput = {
-    where?: AddressToWatchWhereInput
+  export type AddressToWatchUpdateWithWhereUniqueWithoutTransactionsInput = {
+    where: AddressToWatchWhereUniqueInput
     data: XOR<AddressToWatchUpdateWithoutTransactionsInput, AddressToWatchUncheckedUpdateWithoutTransactionsInput>
+  }
+
+  export type AddressToWatchUpdateManyWithWhereWithoutTransactionsInput = {
+    where: AddressToWatchScalarWhereInput
+    data: XOR<AddressToWatchUpdateManyMutationInput, AddressToWatchUncheckedUpdateManyWithoutTransactionsInput>
+  }
+
+  export type AddressToWatchScalarWhereInput = {
+    AND?: AddressToWatchScalarWhereInput | AddressToWatchScalarWhereInput[]
+    OR?: AddressToWatchScalarWhereInput[]
+    NOT?: AddressToWatchScalarWhereInput | AddressToWatchScalarWhereInput[]
+    id?: IntFilter<"AddressToWatch"> | number
+    key?: StringFilter<"AddressToWatch"> | string
+    value?: StringFilter<"AddressToWatch"> | string
+    type?: EnumLocalStateTypeNullableFilter<"AddressToWatch"> | $Enums.LocalStateType | null
+  }
+
+  export type TransactionCreateWithoutAddressesInput = {
+    txHash: string
+    cbor: string
+  }
+
+  export type TransactionUncheckedCreateWithoutAddressesInput = {
+    id?: number
+    txHash: string
+    cbor: string
+  }
+
+  export type TransactionCreateOrConnectWithoutAddressesInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput>
+  }
+
+  export type TransactionUpsertWithWhereUniqueWithoutAddressesInput = {
+    where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutAddressesInput, TransactionUncheckedUpdateWithoutAddressesInput>
+    create: XOR<TransactionCreateWithoutAddressesInput, TransactionUncheckedCreateWithoutAddressesInput>
+  }
+
+  export type TransactionUpdateWithWhereUniqueWithoutAddressesInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutAddressesInput, TransactionUncheckedUpdateWithoutAddressesInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutAddressesInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAddressesInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: IntFilter<"Transaction"> | number
+    txHash?: StringFilter<"Transaction"> | string
+    cbor?: StringFilter<"Transaction"> | string
   }
 
   export type AddressToWatchUpdateWithoutTransactionsInput = {
@@ -5176,71 +6405,25 @@ export namespace Prisma {
     type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
   }
 
-  export type TransactionCreateWithoutAddressToWatchInput = {
-    txHash: string
-    cbor: string
+  export type AddressToWatchUncheckedUpdateManyWithoutTransactionsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: StringFieldUpdateOperationsInput | string
+    value?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumLocalStateTypeFieldUpdateOperationsInput | $Enums.LocalStateType | null
   }
 
-  export type TransactionUncheckedCreateWithoutAddressToWatchInput = {
-    id?: number
-    txHash: string
-    cbor: string
-  }
-
-  export type TransactionCreateOrConnectWithoutAddressToWatchInput = {
-    where: TransactionWhereUniqueInput
-    create: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput>
-  }
-
-  export type TransactionCreateManyAddressToWatchInputEnvelope = {
-    data: TransactionCreateManyAddressToWatchInput | TransactionCreateManyAddressToWatchInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type TransactionUpsertWithWhereUniqueWithoutAddressToWatchInput = {
-    where: TransactionWhereUniqueInput
-    update: XOR<TransactionUpdateWithoutAddressToWatchInput, TransactionUncheckedUpdateWithoutAddressToWatchInput>
-    create: XOR<TransactionCreateWithoutAddressToWatchInput, TransactionUncheckedCreateWithoutAddressToWatchInput>
-  }
-
-  export type TransactionUpdateWithWhereUniqueWithoutAddressToWatchInput = {
-    where: TransactionWhereUniqueInput
-    data: XOR<TransactionUpdateWithoutAddressToWatchInput, TransactionUncheckedUpdateWithoutAddressToWatchInput>
-  }
-
-  export type TransactionUpdateManyWithWhereWithoutAddressToWatchInput = {
-    where: TransactionScalarWhereInput
-    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutAddressToWatchInput>
-  }
-
-  export type TransactionScalarWhereInput = {
-    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    OR?: TransactionScalarWhereInput[]
-    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    id?: IntFilter<"Transaction"> | number
-    txHash?: StringFilter<"Transaction"> | string
-    cbor?: StringFilter<"Transaction"> | string
-    addressToWatchId?: IntNullableFilter<"Transaction"> | number | null
-  }
-
-  export type TransactionCreateManyAddressToWatchInput = {
-    id?: number
-    txHash: string
-    cbor: string
-  }
-
-  export type TransactionUpdateWithoutAddressToWatchInput = {
+  export type TransactionUpdateWithoutAddressesInput = {
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
   }
 
-  export type TransactionUncheckedUpdateWithoutAddressToWatchInput = {
+  export type TransactionUncheckedUpdateWithoutAddressesInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string
   }
 
-  export type TransactionUncheckedUpdateManyWithoutAddressToWatchInput = {
+  export type TransactionUncheckedUpdateManyWithoutAddressesInput = {
     id?: IntFieldUpdateOperationsInput | number
     txHash?: StringFieldUpdateOperationsInput | string
     cbor?: StringFieldUpdateOperationsInput | string

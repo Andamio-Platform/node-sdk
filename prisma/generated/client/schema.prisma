@@ -9,15 +9,18 @@ datasource db {
 }
 
 model Transaction {
-  id     Int    @id @default(autoincrement())
-  txHash String @unique
-  cbor   String
+  id        Int              @id @default(autoincrement())
+  txHash    String           @unique
+  cbor      String
+  addresses AddressToWatch[]
 
-  addressToWatch   AddressToWatch? @relation(fields: [addressToWatchId], references: [id])
-  addressToWatchId Int?
-
-  @@index([addressToWatchId])
   @@index([txHash])
+}
+
+model TransactionSyncTip {
+  id        Int    @id @default(autoincrement())
+  slot      Int    @unique
+  blockHash String @unique
 }
 
 enum LocalStateType {
@@ -30,7 +33,6 @@ enum LocalStateType {
   ContributorState
 }
 
-// AddressToWatch is a table to store addresses we want to watch
 model AddressToWatch {
   id           Int             @id @default(autoincrement())
   key          String

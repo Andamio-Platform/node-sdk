@@ -4,9 +4,11 @@ const prisma = new PrismaClient()
 
 // Register all models here once
 const models = {
-    addressToWatch: prisma.addressToWatch,
+    // addressToWatch: prisma.addressToWatch,
     // blockAddress: prisma.blockAddress
-    // addressToWatchSyncTip: prisma.addressToWatchSyncTip,
+    addressToWatchSyncTip: prisma.addressToWatchSyncTip,
+    // transaction: prisma.transaction,
+    transactionSyncTip: prisma.transactionSyncTip,
     // Add more models as needed
 }
 
@@ -24,11 +26,15 @@ async function main() {
                 orderBy: {
                     id: 'desc'
                 },
-                // take: 5,
+                take: 1,
+                // If you need to include relations, uncomment and specify properly:
+                // include: {
+                //     addresses: true
+                // }
             });
 
             console.log(`📄 ${name.toUpperCase()}:`)
-            console.dir(data.length, { depth: null })
+            console.dir(data, { depth: null })
             console.log('\n---\n')
 
         } catch (err) {

@@ -4,8 +4,9 @@ import { syncBlocks } from '../utils/db/sync-blocks';
 import { syncInstanceAddresses } from '../utils/db/sync-instance-addresses';
 import { readTip } from '../utils/u5c/read-tip';
 import { searchInstanceTx } from '../utils/u5c/dump-instance-blocks';
+import { syncTxs } from '../utils/db/sync-txs';
 
-jest.setTimeout(50000000);
+jest.setTimeout(500000000);
 
 describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
@@ -18,7 +19,8 @@ describe('AndamioSDK', () => {
     it('fetch network utxos from grpc', async () => {
 
       // const blocks = await syncBlocks();
-      const sync = await syncInstanceAddresses();
+      // const sync = await syncInstanceAddresses();
+      const sync = await syncTxs();
       // const tip = await searchInstanceTx();
       // const tip = await readTip();
 
