@@ -1,15 +1,15 @@
 import { LocalStateType, PrismaClient } from "../../../prisma/generated/client";
-import { fetchBlockAddresses, fetchNextBlocks, fetchPreviousBlocks, fetchTxCbor } from "../dolos/mini-bf";
 import seed from "../../seed.json";
 import { logger } from "../../logger";
-import { addressesToWatch } from "./addresses-to-watch";
-import { catchInstanceCreation } from "./catch-instance-creation";
 import { deserializeTx } from "@meshsdk/core-csl";
 import { Transaction } from "./transaction";
 import { deriveInstanceAddress } from "../derive-instance-address";
 import { hexToString } from "@meshsdk/common";
+import { MiniBlockfrost } from "../dolos/mini-bf";
+import { Network } from "../../network";
+import { AndamioConfig } from "../../andamio-config";
 
-export async function syncInstanceAddresses() {
+export async function syncInstanceAddresses(miniBlockfrost: MiniBlockfrost, network: Network, andamioConfig: AndamioConfig) {
     const prisma = new PrismaClient()
 
     let blockHash;
@@ -20,13 +20,13 @@ export async function syncInstanceAddresses() {
 
     if (tip) {
         blockHash = tip.blockHash;
-        nextBlocks = await fetchNextBlocks(blockHash);
+        nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
     } else {
         blockHash = seed.blockHash;
         // Fetch the previous block to start the sync
-        const previousBlocks = await fetchPreviousBlocks(blockHash);
+        const previousBlocks = await miniBlockfrost.fetchPreviousBlocks(blockHash);
         blockHash = previousBlocks[previousBlocks.length - 1].hash;
-        nextBlocks = await fetchNextBlocks(blockHash);
+        nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
     }
 
     let i = 0;
@@ -45,15 +45,15 @@ export async function syncInstanceAddresses() {
             // Query the addresses affected in the block
             let blockAddresses;
             try {
-                blockAddresses = await fetchBlockAddresses(block.hash);
+                blockAddresses = await miniBlockfrost.fetchBlockAddresses(block.hash);
             } catch (error) {
                 logger.error(`Failed to fetch addresses for block ${block.hash}: ${error}`);
                 // Skip this block and continue with the next one
                 continue;
             }
 
-            const instanceValidatorAddress = "addr_test1xpyga27u94rsgnzdgu4df3w8mes538dymt5dhqlszgmfxeyke8x9mpjf7aerjt3n3nfd5tnzkfhlprp09mpf4sdy8dzqcrqkuk";
-            const instanceTokenPolicy = "488eabdc2d47044c4d472ad4c5c7de61489da4dae8db83f012369364"
+            const instanceValidatorAddress = andamioConfig.instanceMS.mSCAddress;
+            const instanceTokenPolicy = andamioConfig.instanceMS.mSCPolicyID;
 
 
             const instanceValidatorBlockAddress = blockAddresses.find((blockAddress: any) =>
@@ -64,7 +64,7 @@ export async function syncInstanceAddresses() {
 
                 for (const tx of instanceValidatorBlockAddress.transactions) {
 
-                    const cbor = await fetchTxCbor(tx.tx_hash)
+                    const cbor = await miniBlockfrost.fetchTxCbor(tx.tx_hash)
 
                     const txJson = deserializeTx(cbor.cbor).to_json();
                     const txJs: Transaction = JSON.parse(txJson);
@@ -88,7 +88,7 @@ export async function syncInstanceAddresses() {
 
                     for (const instanceScriptUtxo of instanceScriptUtxos) {
                         const datum = JSON.parse(instanceScriptUtxo.plutus_data!.Data);
-                        const address = deriveInstanceAddress(instanceScriptUtxo.script_ref!.PlutusScript);
+                        const address = deriveInstanceAddress(instanceScriptUtxo.script_ref!.PlutusScript, network, andamioConfig);
                         try {
                             // Find the token name to determine the type
                             let type: LocalStateType = "Unspecified"; // Default type
@@ -139,7 +139,7 @@ export async function syncInstanceAddresses() {
 
         // Get next batch of blocks using the last processed block's hash
         blockHash = nextBlocks[nextBlocks.length - 1].hash;
-        nextBlocks = await fetchNextBlocks(blockHash);
+        nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
 
         // Safety check to avoid infinite loop if we reach the chain tip
         if (nextBlocks.length === 0) {

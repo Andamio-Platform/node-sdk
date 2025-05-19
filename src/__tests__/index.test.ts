@@ -1,6 +1,5 @@
 // src/__tests__/index.test.ts
 import { AndamioSDK } from '../index';
-import { syncBlocks } from '../utils/db/sync-blocks';
 import { syncInstanceAddresses } from '../utils/db/sync-instance-addresses';
 import { readTip } from '../utils/u5c/read-tip';
 import { searchInstanceTx } from '../utils/u5c/dump-instance-blocks';
@@ -12,7 +11,7 @@ describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
 
   beforeEach(() => {
-    sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc15dnupstcsym5xjd7yha0eccta5x6s353");
+    sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc15dnupstcsym5xjd7yha0eccta5x6s353", "http://192.168.1.7:50052");
   });
 
   describe('get utxos', () => {
@@ -20,7 +19,7 @@ describe('AndamioSDK', () => {
 
       // const blocks = await syncBlocks();
       // const sync = await syncInstanceAddresses();
-      const sync = await syncTxs();
+      const sync = await sdk.utils.syncInstanceAddresses();
       // const tip = await searchInstanceTx();
       // const tip = await readTip();
 

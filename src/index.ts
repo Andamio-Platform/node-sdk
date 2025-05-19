@@ -5,6 +5,9 @@ import AndamioConfigPreprod from "./andamio-config-preprod.json";
 import AndamioConfigMainnet from "./andamio-config-mainnet.json";
 import { SdkError } from "./error";
 import { Transaction } from "./tx";
+import { Utils } from "./utils";
+import { MiniBlockfrost } from "./utils/dolos/mini-bf";
+import { AndamioConfig } from "./andamio-config";
 
 /**
  * Main class for the Andamio SDK.
@@ -17,16 +20,19 @@ import { Transaction } from "./tx";
  * ```
  */
 export class AndamioSDK {
-  public config = AndamioConfigMainnet;
+  public config: AndamioConfig = AndamioConfigMainnet;
 
   private client: UtxorpcClient;
+  private miniBlockfrost?: MiniBlockfrost;
   public provider: Provider;
   public transaction: Transaction;
+  public utils: Utils;
 
   constructor(
     private readonly baseUrl: string,
     private readonly network: Network,
-    private readonly dmtr_api_key?: string
+    private readonly dmtr_api_key?: string,
+    private readonly miniBlockfrostUrl?: string
   ) {
     if (this.network === "Preview") {
       throw new SdkError("Preview network is not supported by Andamio");
@@ -39,8 +45,12 @@ export class AndamioSDK {
       this.network,
       this.dmtr_api_key
     );
+    if (this.miniBlockfrostUrl) {
+      this.miniBlockfrost = new MiniBlockfrost(this.miniBlockfrostUrl);
+    }
     this.provider = new Provider(this.client);
     this.transaction = new Transaction();
+    this.utils = new Utils(this.network, this.miniBlockfrost);
   }
 }
 

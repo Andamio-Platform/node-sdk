@@ -4,11 +4,11 @@ const prisma = new PrismaClient()
 
 // Register all models here once
 const models = {
-    // addressToWatch: prisma.addressToWatch,
+    addressToWatch: prisma.addressToWatch,
     // blockAddress: prisma.blockAddress
-    addressToWatchSyncTip: prisma.addressToWatchSyncTip,
+    // addressToWatchSyncTip: prisma.addressToWatchSyncTip,
     // transaction: prisma.transaction,
-    transactionSyncTip: prisma.transactionSyncTip,
+    // transactionSyncTip: prisma.transactionSyncTip,
     // Add more models as needed
 }
 

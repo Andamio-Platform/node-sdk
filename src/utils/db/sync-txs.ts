@@ -1,9 +1,9 @@
 import { PrismaClient } from "../../../prisma/generated/client";
-import { fetchBlockAddresses, fetchNextBlocks, fetchPreviousBlocks, fetchTxCbor } from "../dolos/mini-bf";
 import seed from "../../seed.json";
 import { logger } from "../../logger";
+import { MiniBlockfrost } from "../dolos/mini-bf";
 
-export async function syncTxs() {
+export async function syncTxs(miniBlockfrost: MiniBlockfrost) {
     const prisma = new PrismaClient();
     try {
         let blockHash;
@@ -15,12 +15,12 @@ export async function syncTxs() {
 
         if (transactionSyncTip) {
             blockHash = transactionSyncTip.blockHash;
-            nextBlocks = await fetchNextBlocks(blockHash);
+            nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
         } else {
             blockHash = seed.blockHash;
-            const previousBlocks = await fetchPreviousBlocks(blockHash);
+            const previousBlocks = await miniBlockfrost.fetchPreviousBlocks(blockHash);
             blockHash = previousBlocks[previousBlocks.length - 1].hash;
-            nextBlocks = await fetchNextBlocks(blockHash);
+            nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
         }
 
         const addressesToWatch = await prisma.addressToWatch.findMany();
@@ -55,7 +55,7 @@ export async function syncTxs() {
 
                 let blockAddresses;
                 try {
-                    blockAddresses = await fetchBlockAddresses(block.hash);
+                    blockAddresses = await miniBlockfrost.fetchBlockAddresses(block.hash);
                 } catch (error) {
                     logger.error(`Failed to fetch addresses for block ${block.hash}: ${error}`);
                     continue;
@@ -79,7 +79,7 @@ export async function syncTxs() {
                         const addressConnects = blockAddress.matchingAddressesToWatch.map((match: any) => ({ id: match.id }));
                         for (const tx of blockAddress.transactions) {
                             try {
-                                const cbor = await fetchTxCbor(tx.tx_hash);
+                                const cbor = await miniBlockfrost.fetchTxCbor(tx.tx_hash);
 
                                 for (const match of blockAddress.matchingAddressesToWatch) {
 
@@ -136,7 +136,7 @@ export async function syncTxs() {
             }
 
             blockHash = nextBlocks[nextBlocks.length - 1].hash;
-            nextBlocks = await fetchNextBlocks(blockHash);
+            nextBlocks = await miniBlockfrost.fetchNextBlocks(blockHash);
             i++;
         }
 
