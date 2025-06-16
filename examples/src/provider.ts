@@ -10,6 +10,7 @@ import { moduleRef, summarizeModuleRefInfo } from "./provider/core/course/module
 import { courseState, summarizeCourseStateInfo } from "./provider/core/course/course-state";
 import { assignmentState, summarizeAssignmentStateInfo } from "./provider/core/course/assignment-state";
 import { Network, summarizeNetworkStateInfo } from "./provider/network";
+import { Project } from "./provider/network/project";
 
 async function network(sdk: AndamioSDK) {
 
@@ -57,8 +58,11 @@ async function course(sdk: AndamioSDK) {
 
 async function networkAggregate(sdk: AndamioSDK) {
 
-    const networkInfo = await Network(sdk);
-    summarizeNetworkStateInfo(networkInfo);
+    // const networkInfo = await Network(sdk);
+    // summarizeNetworkStateInfo(networkInfo);
+
+    const treasuryTokenPolicy = await Project(sdk, "07ce13dd93e5c2721cbf3241f83a11a65a50fc2281d15490a3c961af");
+    console.log("Treasury Token Policy:", treasuryTokenPolicy);
 
 }
 

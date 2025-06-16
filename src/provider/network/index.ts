@@ -2,6 +2,7 @@ import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 import { SdkError } from "../../error";
 import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
+import { Project } from "./project";
 
 /**
  * Represents an instance with policy ID, challenges, and completion status.
@@ -24,7 +25,12 @@ type AliasData = {
  * Provides network-level utilities to query aliases and instances on Andamio.
  */
 export class Network {
-  constructor(private readonly core: Core) { }
+
+  public project: Project;
+
+  constructor(private readonly core: Core) {
+    this.project = new Project(this.core);
+  }
 
   /**
    * Fetches all known aliases from the network.
