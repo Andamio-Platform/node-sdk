@@ -4,94 +4,103 @@ import { Core } from "../core";
 import { cardano } from "@utxorpc/spec";
 
 /**
- * Network class for querying Andamio network data.
+ * Represents an instance with policy ID, challenges, and completion status.
+ */
+type Instance = {
+  policy: string;
+  challenges: string[];
+  completed: boolean;
+};
+
+/**
+ * Structure containing user's courses and projects data.
+ */
+type AliasData = {
+  courses: Instance[];
+  projects: Instance[];
+};
+
+/**
+ * Provides network-level utilities to query aliases and instances on Andamio.
  */
 export class Network {
-
-  /**
-   * Constructs a new Network instance.
-   *
-   * @param core - The Core instance used to interact with the blockchain.
-   */
   constructor(private readonly core: Core) { }
 
   /**
-   * Retrieves all aliases from the network.
-   * 
-   * @returns A promise that resolves to an array of alias strings.
-   * @throws {SdkError} If the operation fails.
+   * Fetches all known aliases from the network.
    */
   async getAllAliases(): Promise<string[]> {
     try {
       const utxos = await this.core.network.globalState.getUtxos();
-      const aliases: string[] = [];
 
-      utxos.forEach((utxo) => {
-        const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
-        const alias = (datum.fields[1] as cardano.PlutusData).plutusData.value as Uint8Array
-        aliases.push(
-          hexToString(bytesToHex(alias)),
-        );
+      return utxos.map((utxo) => {
+        const aliasBytes = (
+          (utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr)
+            .fields[1] as cardano.PlutusData
+        ).plutusData.value as Uint8Array;
+
+        return hexToString(bytesToHex(aliasBytes));
       });
-
-      return aliases;
     } catch (err) {
       throw new SdkError(`Failed to fetch all aliases: ${err}`);
     }
   }
 
   /**
-   * Retrieves user data for a specific alias.
-   * 
-   * @param alias - The alias to fetch data for.
-   * @returns A promise that resolves to an object containing user info and data.
-   * @throws {SdkError} If the operation fails.
+   * Fetches user data associated with a specific alias.
    */
-  async getUserData(alias: string): Promise<{ info: string, data: aliasData }> {
+  async getUserData(alias: string): Promise<{ info: string; data: AliasData }> {
     try {
       const utxo = await this.core.network.globalState.getUtxoByAlias(alias);
       const allInstances = await this.getAllInstancesList();
 
-      const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
-      const info = (datum.fields[3] as cardano.PlutusData).plutusData.value as Uint8Array
-      const data = (datum.fields[2] as cardano.PlutusData).plutusData.value as cardano.PlutusDataArray
+      const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr;
 
-      let courses: instance[] = [];
-      let projects: instance[] = [];
+      const infoBytes = (datum.fields[3] as cardano.PlutusData).plutusData.value as Uint8Array;
+      const dataArray = (datum.fields[2] as cardano.PlutusData).plutusData
+        .value as cardano.PlutusDataArray;
 
-      data.items.map((item) => {
-        const policy = bytesToHex((item.plutusData.value as cardano.Constr).fields[0].plutusData.value as Uint8Array)
-        const instance = {
-          policy: policy,
-          challenges: ((item.plutusData.value as cardano.Constr).fields[1].plutusData.value as cardano.PlutusDataArray).items.map((item) => 
-            bytesToHex(item.plutusData.value as Uint8Array)
-          ),
-          completed: ((item.plutusData.value as cardano.Constr).fields[2].plutusData.value as cardano.Constr).tag === 121 ? true : false
-        }
+      const dataItems = dataArray.items ?? [];
+
+      const courses: Instance[] = [];
+      const projects: Instance[] = [];
+
+      for (const item of dataItems) {
+        const [policyField, challengesField, completedField] = (item.plutusData
+          .value as cardano.Constr).fields;
+
+        const policy = bytesToHex(
+          (policyField as cardano.PlutusData).plutusData.value as Uint8Array
+        );
+
+        const challenges = ((challengesField as cardano.PlutusData).plutusData
+          .value as cardano.PlutusDataArray).items.map((c) =>
+            bytesToHex(c.plutusData.value as Uint8Array)
+          );
+
+        const completed =
+          ((completedField as cardano.PlutusData).plutusData.value as cardano.Constr).tag === 121;
+
+        const instance: Instance = { policy, challenges, completed };
+
         if (allInstances.courses.includes(policy)) {
           courses.push(instance);
         } else if (allInstances.projects.includes(policy)) {
           projects.push(instance);
         }
-      });
+      }
 
       return {
-        info: hexToString(bytesToHex(info)),
-        data: {
-          courses: courses,
-          projects: projects
-        }
-      }
+        info: hexToString(bytesToHex(infoBytes)),
+        data: { courses, projects },
+      };
     } catch (err) {
       throw new SdkError(`Failed to fetch user data: ${err}`);
     }
   }
 
   /**
-   * Retrieves all available instances categorized as courses or projects.
-   * 
-   * @returns A promise that resolves to an object containing arrays of course and project policy IDs.
-   * @throws {SdkError} If the operation fails.
+   * Fetches all policy IDs categorized as courses or projects.
    */
   async getAllInstancesList(): Promise<{ courses: string[]; projects: string[] }> {
     try {
@@ -99,51 +108,29 @@ export class Network {
       const courses: string[] = [];
       const projects: string[] = [];
 
-      utxos.forEach((utxo) => {
-        utxo.parsedValued?.assets.forEach((asset) => {
-          asset.assets.forEach((item) => {
-            const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr
-            const instancePolicy = (datum.fields[1] as cardano.PlutusData).plutusData
-            if (instancePolicy.case === "boundedBytes") {
+      for (const utxo of utxos) {
+        const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr;
 
-              const assetName = bytesToHex(item.name);
+        const instancePolicyField = datum.fields[1] as cardano.PlutusData;
+        if (instancePolicyField.plutusData.case !== "boundedBytes") continue;
 
-              if (assetName === stringToHex("CourseNFT")) {
-                courses.push(bytesToHex(instancePolicy.value));
-              } else if (assetName === stringToHex("ProjectNFT")) {
-                projects.push(bytesToHex(instancePolicy.value));
-              }
+        const policy = bytesToHex(instancePolicyField.plutusData.value);
+        const assetNameHexes = utxo.parsedValued?.assets.flatMap((asset) =>
+          asset.assets.map((item) => bytesToHex(item.name))
+        );
 
-            }
-          });
-        });
-      });
+        if (!assetNameHexes) continue;
+
+        if (assetNameHexes.includes(stringToHex("CourseNFT"))) {
+          courses.push(policy);
+        } else if (assetNameHexes.includes(stringToHex("ProjectNFT"))) {
+          projects.push(policy);
+        }
+      }
 
       return { courses, projects };
     } catch (err) {
       throw new SdkError(`Failed to fetch all instances: ${err}`);
     }
   }
-}
-
-/**
- * Represents an instance with policy ID, challenges, and completion status.
- */
-type instance = {
-  /** The policy ID of the instance */
-  policy: string;
-  /** Array of challenge identifiers */
-  challenges: string[];
-  /** Whether the instance is completed */
-  completed: boolean;
-}
-
-/**
- * Structure containing user's courses and projects data.
- */
-type aliasData = {
-  /** Array of course instances */
-  courses: instance[];
-  /** Array of project instances */
-  projects: instance[];
 }
