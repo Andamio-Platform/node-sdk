@@ -12,7 +12,7 @@ describe('AndamioSDK', () => {
 
   describe('get utxos', () => {
     it('fetch network utxos from grpc', async () => {
-      const tx = await sdk.transaction.mintAccessToken({ userAddress: "addr_test1qzx4yysnpp9t2692g08gdmvykl22w4fyfqyp2clzrqrx5tdk88srfmghu2rk9nh87744pdaew9x9tz80mqz0pszlhvrs6zlvrg", alias: "hanuman" });
+      const tx = await sdk.transaction.mintAccessToken({ userAddress: "addr_test1qzsmfkvwmnzvur6w3ug77uuy0e3yl9xp0tcrqw3jk7hd7a0nlch7q9agnsve2sf5wknuk9uka62ne7xx9lyuet4u2c7sw9q0d2", alias: "meshTx" });
       console.log("tx cbor : ", JSON.stringify(tx, null, 4))
       // expect((await sdk.provider.core.network.aliasIndex.getUtxos())).toBeTruthy();
       // expect((await sdk.provider.core.network.globalState.getUtxos())).toBeTruthy();

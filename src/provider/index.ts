@@ -1,3 +1,4 @@
+import { SdkError } from "../error";
 import { UtxorpcClient } from "../u5c";
 import { Core } from "./core";
 import { Network } from "./network";
@@ -23,19 +24,32 @@ import { Network } from "./network";
  * ```
  */
 export class Provider {
-    /** Core blockchain operations */
-    public core: Core;
-    
-    /** Network-related functionality */
-    public network: Network;
+  /** Core blockchain operations */
+  public core: Core;
 
-    /**
-     * Creates an instance of the `Provider` class.
-     *
-     * @param client - The initialized UtxorpcClient instance to use for API communications
-     */
-    constructor(private readonly client: UtxorpcClient) {
-      this.core = new Core(this.client);
-      this.network = new Network(this.core);
+  /** Network-related functionality */
+  public network: Network;
+
+  /**
+   * Creates an instance of the `Provider` class.
+   *
+   * @param client - The initialized UtxorpcClient instance to use for API communications
+   */
+  constructor(private readonly client: UtxorpcClient) {
+    this.core = new Core(this.client);
+    this.network = new Network(this.core);
+  }
+
+  public async aliasAvailability(alias: string): Promise<boolean> {
+    try {
+      const utxo = await this.core.network.aliasIndex.getUtxoByNewAlias(alias);
+      if (utxo) return true; // Alias exists, so not available
+      throw new SdkError(`Unknown case: UTXO found but alias availability unclear for "${alias}"`);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Alias already exists')) {
+        return false; // Alias exists, so not available
+      }
+      throw new SdkError(`Failed to check alias availability: ${error}`);
     }
+  }
 }

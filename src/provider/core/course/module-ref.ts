@@ -3,6 +3,7 @@ import { SdkError } from "../../../error";
 import { UtxorpcClient } from "../../../u5c";
 import { getAddress } from "../utils";
 import { logger } from "../../../logger";
+import { bytesToHex, hexToString } from "@meshsdk/common";
 
 
 /**
@@ -50,6 +51,23 @@ export class ModuleRef {
       return await this.client.getUtxos(address);
     } catch (error) {
       throw new SdkError(`Failed to fetch UTXOs: ${error}`);
+    }
+  }
+
+  async getUtxoByModuleTokenName(courseId: string, moduleTokenName: string): Promise<Utxo> {
+    try {
+      const utxos = await this.getUtxos();
+      const utxo = utxos.find((utxo) =>
+        utxo.parsedValued?.assets.some((asset) =>
+          asset.assets.some((a) => hexToString(bytesToHex(a.name)) === moduleTokenName)
+        )
+      );
+      if (!utxo) {
+        throw new SdkError(`No UTXO found with the specified courseId and moduleTokenName: ${courseId}, ${moduleTokenName}`);
+      }
+      return utxo;
+    } catch (error) {
+      throw new SdkError(`Failed to fetch UTXO by module token name: ${error}`);
     }
   }
 }

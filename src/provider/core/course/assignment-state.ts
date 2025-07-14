@@ -3,6 +3,7 @@ import { SdkError } from "../../../error";
 import { UtxorpcClient } from "../../../u5c";
 import { getAddress } from "../utils";
 import { logger } from "../../../logger";
+import { bytesToHex, hexToString } from "@meshsdk/common";
 
 
 /**
@@ -48,6 +49,23 @@ export class AssignmentState {
         logger.log(`AssignmentState address: ${address}`);
       }
       return await this.client.getUtxos(address);
+    } catch (error) {
+      throw new SdkError(`Failed to fetch UTXOs: ${error}`);
+    }
+  }
+
+  async getUtxoByAlias(courseId: string, alias: string): Promise<Utxo> {
+    try {
+      const utxos = await this.getUtxos();
+      const utxo = utxos.find((utxo) =>
+        utxo.parsedValued?.assets.some((asset) =>
+          asset.assets.some((a) => hexToString(bytesToHex(a.name)) === alias)
+        )
+      );
+      if (!utxo) {
+        throw new SdkError(`No UTXO found with the specified courseId and alias: ${courseId}, ${alias}`);
+      }
+      return utxo;
     } catch (error) {
       throw new SdkError(`Failed to fetch UTXOs: ${error}`);
     }
