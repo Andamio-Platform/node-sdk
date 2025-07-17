@@ -1,4 +1,4 @@
-import { UtxorpcClient } from "../../../u5c";
+import { UtxorpcClient } from "../../../../common/u5c";
 import { AssignmentState } from "./assignment-state";
 import { CourseState } from "./course-state";
 import { ModuleRef } from "./module-ref";

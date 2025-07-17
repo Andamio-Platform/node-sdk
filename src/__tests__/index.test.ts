@@ -1,7 +1,7 @@
 // src/__tests__/index.test.ts
 import { AndamioSDK } from '../index';
 
-jest.setTimeout(50000);
+jest.setTimeout(500000);
 
 describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
@@ -12,8 +12,15 @@ describe('AndamioSDK', () => {
 
   describe('get utxos', () => {
     it('fetch network utxos from grpc', async () => {
-      const tx = await sdk.transaction.mintAccessToken({ userAddress: "addr_test1qzsmfkvwmnzvur6w3ug77uuy0e3yl9xp0tcrqw3jk7hd7a0nlch7q9agnsve2sf5wknuk9uka62ne7xx9lyuet4u2c7sw9q0d2", alias: "meshTx" });
+      const tx = await sdk.transaction.sponsorMintAccessToken({ userAddress: "addr_test1qzsmfkvwmnzvur6w3ug77uuy0e3yl9xp0tcrqw3jk7hd7a0nlch7q9agnsve2sf5wknuk9uka62ne7xx9lyuet4u2c7sw9q0d2", alias: "sponsorshipTx" });
       console.log("tx cbor : ", JSON.stringify(tx, null, 4))
+      // const enrollee = await sdk.provider.overview.getAllAliases()
+      // const enrollee = await sdk.provider.overview.stats.getEnrolleeCount([
+      //   'cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd',
+      //   '56fccd878c2b536b52533343a54f7f4365dfb31bf2395677c441c386',
+      //   '19b37c7b723ab2758481f88f36213256a0e387e537d70ad2acb745d8'
+      // ])
+      // console.log("enrollee count: ", JSON.stringify(enrollee, null, 4));
       // expect((await sdk.provider.core.network.aliasIndex.getUtxos())).toBeTruthy();
       // expect((await sdk.provider.core.network.globalState.getUtxos())).toBeTruthy();
       // expect((await sdk.provider.core.network.governance.getUtxos())).toBeTruthy();

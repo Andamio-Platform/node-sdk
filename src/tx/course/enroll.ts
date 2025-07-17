@@ -2,10 +2,10 @@ import { BlockfrostProvider, builtinByteString, conStr0, list, MaestroProvider, 
 import { MeshWallet } from '@meshsdk/core';
 import { CSLSerializer } from "@meshsdk/core-csl";
 import AndamioSDK from "../..";
-import { rpcUtxoToMeshUtxo } from "../../utxo";
+import { rpcUtxoToMeshUtxo } from "../../common/utxo";
 import { AliasIndexDatum, parseAliasIndexDatum } from "../../utils/alias-index";
 import { bytesToHex } from "@meshsdk/common";
-import { UtxorpcClient } from "../../u5c";
+import { UtxorpcClient } from "../../common/u5c";
 import * as spec from "@utxorpc/spec";
 
 
@@ -23,14 +23,14 @@ export async function buildTx({ userAddress, alias }: { userAddress: string, ali
     })
 
     const client = new UtxorpcClient(
-          "https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc15dnupstcsym5xjd7yha0eccta5x6s353"
-        );
+        "https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc15dnupstcsym5xjd7yha0eccta5x6s353"
+    );
 
-        const maestro = new MaestroProvider({
-            network: "Preprod",
-            apiKey: "2jsBm5RaWPpwleGmimPSbGeDPHOG4R7d",
-            turboSubmit: false
-        })
+    const maestro = new MaestroProvider({
+        network: "Preprod",
+        apiKey: "2jsBm5RaWPpwleGmimPSbGeDPHOG4R7d",
+        turboSubmit: false
+    })
 
     const txBuilder = new MeshTxBuilder({
         fetcher: maestro,
@@ -59,7 +59,7 @@ export async function buildTx({ userAddress, alias }: { userAddress: string, ali
 
     const mintRedeemer = builtinByteString(tokenNameHex)
 
-    const indexUtxo = await andamioProvider.core.network.aliasIndex.getUtxoByNewAlias(alias)
+    const indexUtxo = await andamioProvider.core.aliasIndex.getUtxoByNewAlias(alias)
     const indexUtxoMesh = rpcUtxoToMeshUtxo(indexUtxo)
 
     // const utxo = await u5c.fetchUTxOs("a4f8080e8e34992977fae292c0f5d843c6c78f837fa69c624e66b6aab868745e", 0)
@@ -76,12 +76,12 @@ export async function buildTx({ userAddress, alias }: { userAddress: string, ali
         txIndex: Number(andamioConfig.indexMS.mSCTxRef.substring(65)),
     }
     if (!indexUtxo.parsedValued?.datum?.payload?.plutusData) {
-        return ;
+        return;
     }
 
     const datum = parseAliasIndexDatum(indexUtxo.parsedValued.datum.payload.plutusData as unknown as spec.cardano.PlutusData);
     if (datum === null) {
-        return ;
+        return;
     }
 
     const txCbor = await txBuilder

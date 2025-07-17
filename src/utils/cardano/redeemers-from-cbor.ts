@@ -1,5 +1,5 @@
 import { deserializeTx } from "@meshsdk/core-csl";
-import { SdkError } from "../../error";
+import { SdkError } from "../../common/error";
 
 export default function redeemersFromCbor(cbor: string) {
     const txJsBody = deserializeTx(cbor).to_js_value();

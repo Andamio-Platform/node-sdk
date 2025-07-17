@@ -11,7 +11,7 @@ import { Provider } from "../provider";
 
 
 
-export async function buildTx({ client, provider, userAddress, alias }: { client: UtxorpcClient, provider: Provider, userAddress: string, alias: string }) {
+export async function buildTxSponsor({ client, provider, userAddress, alias }: { client: UtxorpcClient, provider: Provider, userAddress: string, alias: string }) {
 
     const u5c = new U5CProvider({
         url: client.baseUrl,
@@ -78,8 +78,35 @@ export async function buildTx({ client, provider, userAddress, alias }: { client
         return;
     }
 
+    const universalStaticUtxo = {
+        input: {
+            outputIndex: 0,
+            txHash: "b280c64936f71a909b395cb46f84e8e22ed04e929e02b0b0ded06a7a805981c0",
+        },
+        output: {
+            address: "addr_test1qqdv0gjenpa6rujd54e8hwyr8vma20vn3e0s5yuernxpj2r3cya2a7t7st0dntg4ljdf24ft0yzzqz20t0drdstszvsqm4u0qs",
+            amount: [{ unit: "lovelace", quantity: "5000000" }],
+        },
+    };
+
+    const universalStaticChangeAddress = "addr_test1qqdv0gjenpa6rujd54e8hwyr8vma20vn3e0s5yuernxpj2r3cya2a7t7st0dntg4ljdf24ft0yzzqz20t0drdstszvsqm4u0qs";
+
     const txCbor = await txBuilder
-        .txInCollateral(uUtxosMesh[0].input.txHash, uUtxosMesh[0].input.outputIndex)
+        .changeAddress(universalStaticChangeAddress)
+        .txIn(
+            universalStaticUtxo.input.txHash,
+            universalStaticUtxo.input.outputIndex,
+            universalStaticUtxo.output.amount,
+            universalStaticUtxo.output.address,
+            0,
+        )
+        .txInCollateral(
+            universalStaticUtxo.input.txHash,
+            universalStaticUtxo.input.outputIndex,
+            universalStaticUtxo.output.amount,
+            universalStaticUtxo.output.address,
+        )
+        // .txInCollateral(uUtxosMesh[0].input.txHash, uUtxosMesh[0].input.outputIndex)
         // withdrawal
         .withdrawalPlutusScriptV3()
         .withdrawal("stake_test17q7dwpfsxsgzdnws8kxn3afatxf4qwl3yhed44vwm5mhexgr3a09v", "0")
@@ -173,7 +200,7 @@ export async function buildTx({ client, provider, userAddress, alias }: { client
             ]
         )
         .changeAddress(userAddress)
-        .selectUtxosFrom(uUtxosMesh)
+        // .selectUtxosFrom(uUtxosMesh)
         .complete()
 
     return txCbor

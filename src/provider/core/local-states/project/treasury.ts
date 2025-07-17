@@ -1,8 +1,8 @@
-import { Utxo } from "../../../utxo";
-import { SdkError } from "../../../error";
-import { UtxorpcClient } from "../../../u5c";
-import { getAddress } from "../utils";
-import { logger } from "../../../logger";
+import { Utxo } from "../../../../common/utxo";
+import { SdkError } from "../../../../common/error";
+import { UtxorpcClient } from "../../../../common/u5c";
+import { getAddress } from "../../../../utils/utils";
+import { logger } from "../../../../common/logger";
 
 
 /**

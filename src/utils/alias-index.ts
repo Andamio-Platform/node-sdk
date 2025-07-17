@@ -1,4 +1,4 @@
-import { logger } from "../logger";
+import { logger } from "../common/logger";
 
 export interface AliasIndexDatum {
     tag: number;

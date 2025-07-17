@@ -1,9 +1,9 @@
-import { Network } from "./network";
-import { UtxorpcClient } from "./u5c";
+import { Network } from "./common/network";
+import { UtxorpcClient } from "./common/u5c";
 import { Provider } from "./provider";
-import AndamioConfigPreprod from "./andamio-config-preprod.json";
-import AndamioConfigMainnet from "./andamio-config-mainnet.json";
-import { SdkError } from "./error";
+import AndamioConfigPreprod from "./common/andamio-config-preprod.json";
+import AndamioConfigMainnet from "./common/andamio-config-mainnet.json";
+import { SdkError } from "./common/error";
 import { Transaction } from "./tx";
 
 /**
@@ -40,7 +40,7 @@ export class AndamioSDK {
       this.dmtr_api_key
     );
     this.provider = new Provider(this.client);
-    this.transaction = new Transaction();
+    this.transaction = new Transaction(this.client, this.provider);
   }
 }
 

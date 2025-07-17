@@ -1,35 +1,28 @@
-import { UtxorpcClient } from "../../u5c";
-import { Course } from "./course";
-import { Network } from "./network";
-import { Project } from "./project";
+import { UtxorpcClient } from "../../common/u5c";
+import { AliasIndex } from "./alias-index";
+import { GlobalState } from "./global-state";
+import { LocalStates } from "./local-states";
 
 /**
  * The Core class serves as the main entry point for querying various core Andamio utxo data.
  */
 export class Core {
-  /**
-   * An instance of Network for querying network-related utxo data.
-   */
-  public network: Network;
 
-  /**
-   * An instance of Course for querying course-related utxo data.
-   */
-  public course: Course;
+  public readonly andamioConfig;
+  public readonly network;
 
-  /**
-   * An instance of Project for querying project-related utxo data.
-   */
-  public project: Project;
+  public aliasIndex: AliasIndex;
+  public globalState: GlobalState;
 
-  /**
-   * Constructs a new Core instance and initializes its components.
-   *
-   * @param client - The UtxorpcClient instance used to initialize the components.
-   */
+  public localStates: LocalStates;
+
   constructor(private readonly client: UtxorpcClient) {
-    this.network = new Network(this.client);
-    this.course = new Course(this.client);
-    this.project = new Project(this.client);
+    this.andamioConfig = this.client.andamioConfig;
+    this.network = this.client.network;
+
+    this.aliasIndex = new AliasIndex(this.client);
+    this.globalState = new GlobalState(this.client);
+
+    this.localStates = new LocalStates(this.client);
   }
 }

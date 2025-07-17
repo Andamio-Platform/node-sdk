@@ -1,12 +1,11 @@
-import { UtxorpcClient } from "../../u5c";
-import { Instance } from "./network/instance";
-import { InstanceFilter } from "./network/instance";
+import { UtxorpcClient } from "../common/u5c";
+import { Instance, InstanceFilter } from "../provider/core/local-states/instance";
 import { bytesToHex, PlutusScript } from "@meshsdk/common";
 import cbor from "cbor";
-import { NetworkId } from "../../network";
-import { SdkError } from "../../error";
+import { NetworkId } from "../common/network";
+import { SdkError } from "../common/error";
 import { deserializePlutusScript, scriptHashToBech32 } from "@meshsdk/core-cst";
-import { logger } from "../../logger";
+import { logger } from "../common/logger";
 
 const serializePlutusScript = (
     script: PlutusScript,

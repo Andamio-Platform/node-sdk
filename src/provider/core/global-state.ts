@@ -1,6 +1,6 @@
-import { UtxorpcClient } from "../../../u5c";
-import { SdkError } from "../../../error";
-import { Utxo } from "../../../utxo";
+import { UtxorpcClient } from "../../common/u5c";
+import { SdkError } from "../../common/error";
+import { Utxo } from "../../common/utxo";
 import { bytesToHex, hexToString } from "@meshsdk/common";
 
 /**

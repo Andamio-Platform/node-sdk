@@ -1,4 +1,4 @@
-import { UtxorpcClient } from "../../../u5c";
+import { UtxorpcClient } from "../../../../common/u5c";
 import { ContributorState } from "./contributor-state";
 import { Escrow } from "./escrow";
 import { Treasury } from "./treasury";

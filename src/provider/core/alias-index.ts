@@ -1,9 +1,9 @@
-import { UtxorpcClient } from "../../../u5c";
-import { SdkError } from "../../../error";
-import { Utxo } from "../../../utxo";
-import { AliasIndexDatum, parseAliasIndexDatum } from "../../../utils/alias-index";
+import { UtxorpcClient } from "../../common/u5c";
+import { SdkError } from "../../common/error";
+import { Utxo } from "../../common/utxo";
+import { AliasIndexDatum, parseAliasIndexDatum } from "../../utils/alias-index";
 import { bytesToHex, stringToHex } from "@meshsdk/common";
-import { logger } from "../../../logger";
+import { logger } from "../../common/logger";
 import * as spec from "@utxorpc/spec";
 
 
@@ -57,7 +57,7 @@ export class AliasIndex {
             if (!utxo.parsedValued?.datum?.payload?.plutusData) {
                 return false;
             }
-            
+
             const datum = parseAliasIndexDatum(utxo.parsedValued.datum.payload.plutusData as unknown as spec.cardano.PlutusData);
             if (datum === null) {
                 return false;

@@ -1,6 +1,6 @@
-import { UtxorpcClient } from "../../../u5c";
-import { SdkError } from "../../../error";
-import { Utxo } from "../../../utxo";
+import { UtxorpcClient } from "../../../common/u5c";
+import { SdkError } from "../../../common/error";
+import { Utxo } from "../../../common/utxo";
 import { cardano } from "@utxorpc/spec";
 import { bytesToHex } from "@meshsdk/common";
 
@@ -9,7 +9,7 @@ import { bytesToHex } from "@meshsdk/common";
  * Provides functionality to interact with the governance entity's UTXOs.
  * @internal
  */
-export class Governance {
+export class InstanceGovernance {
     /**
      * The address of the governance smart contract.
      */
