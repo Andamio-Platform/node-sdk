@@ -8,7 +8,7 @@ export class Stats {
 
     async getEnrolleeCount(policies: string[]) { return await enrolleeCount(this.core, policies) }
 
-    async getCommitmentsCount(policies: string[]) { return await commitmentCount(this.core, policies) }
+    async getCommitmentCount(policies: string[]) { return await commitmentCount(this.core, policies) }
 
-    async getCommitmentsCountUnderAlias(alias: string) { return await commitmentCountUnderAlias(this.core, alias) }
+    async getCommitmentCountUnderAlias(alias: string) { return await commitmentCountUnderAlias(this.core, alias) }
 }
