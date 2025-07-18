@@ -3,6 +3,7 @@ import { SdkError } from "../../../common/error";
 import { Utxo } from "../../../common/utxo";
 import { cardano } from "@utxorpc/spec";
 import { bytesToHex } from "@meshsdk/common";
+import { isInstanceGovernanceDatum } from "../../../utils/parser/datum/local-states/instance-governance";
 
 /**
  * Represents a Governance entity for managing the governance smart contract.
@@ -32,7 +33,7 @@ export class InstanceGovernance {
     async getUtxos(): Promise<Utxo[]> {
         try {
             let utxos = await this.client.getUtxos(this.address);
-            utxos = filterByDatumStructure(utxos);
+            utxos = utxos.filter(utxo => utxo.parsedValued?.datum?.payload && isInstanceGovernanceDatum(utxo.parsedValued.datum.payload));
             return utxos;
         } catch (err) {
             throw new SdkError(`Failed to fetch UTXOs: ${err}`);
@@ -57,17 +58,4 @@ export class InstanceGovernance {
             throw new SdkError(`Failed to fetch UTXOs: ${err}`);
         }
     }
-}
-
-function filterByDatumStructure(utxos: Utxo[]): Utxo[] {
-    return utxos.filter((utxo) => {
-        const datum = utxo.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr | undefined;
-        return (
-            datum &&
-            datum.fields[0] instanceof cardano.PlutusData &&
-            datum.fields[0].plutusData.case === "array" &&
-            datum.fields[1] instanceof cardano.PlutusData &&
-            datum.fields[1].plutusData.case === "boundedBytes"
-        );
-    });
 }

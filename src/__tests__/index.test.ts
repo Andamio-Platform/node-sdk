@@ -16,19 +16,22 @@ describe('AndamioSDK', () => {
       // console.log("overview: ", JSON.stringify(overview, null, 4));
       // expect(overview).toBeTruthy();
 
-      const enrollee = await sdk.provider.overview.stats.getEnrolleeCount([
-        'cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd',
-        '56fccd878c2b536b52533343a54f7f4365dfb31bf2395677c441c386',
-        '19b37c7b723ab2758481f88f36213256a0e387e537d70ad2acb745d8'
-      ])
-      console.log("enrollee count: ", JSON.stringify(enrollee, null, 4));
+      // const enrollee = await sdk.provider.overview.stats.getEnrolleeCount([
+      //   'cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd',
+      //   '56fccd878c2b536b52533343a54f7f4365dfb31bf2395677c441c386',
+      //   '19b37c7b723ab2758481f88f36213256a0e387e537d70ad2acb745d8'
+      // ])
+      // console.log("enrollee count: ", JSON.stringify(enrollee, null, 4));
 
-      const commitments = await sdk.provider.overview.stats.getCommitmentsCount([
-        'cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd',
-        '56fccd878c2b536b52533343a54f7f4365dfb31bf2395677c441c386',
-        '19b37c7b723ab2758481f88f36213256a0e387e537d70ad2acb745d8'
-      ])
-      console.log("commitments count: ", JSON.stringify(commitments, null, 4));
+      // const commitments = await sdk.provider.overview.stats.getCommitmentsCount([
+      //   'cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd',
+      //   '56fccd878c2b536b52533343a54f7f4365dfb31bf2395677c441c386',
+      //   '19b37c7b723ab2758481f88f36213256a0e387e537d70ad2acb745d8'
+      // ])
+      // console.log("commitments count: ", JSON.stringify(commitments, null, 4));
+
+      const commitmentsUnderAlias = await sdk.provider.overview.stats.getCommitmentsCountUnderAlias("manager-001")
+      console.log("commitments count under alias: ", JSON.stringify(commitmentsUnderAlias, null, 4));
     });
   })
 

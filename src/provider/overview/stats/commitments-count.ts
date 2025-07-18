@@ -1,8 +1,9 @@
 import { InstanceAddresses } from "../../../utils/instance-validator";
+import { instanceGovernanceDatumForPolicy, instanceGovernancePoliciesForAlias } from "../../../utils/parser/datum/local-states/instance-governance";
 import { Core } from "../../core";
 
 
-export async function commitmentsCount(core: Core, policies: string[]): Promise<{
+export async function commitmentCount(core: Core, policies: string[]): Promise<{
     policy: string;
     state: string;
     committed: number;
@@ -52,4 +53,16 @@ export async function commitmentsCount(core: Core, policies: string[]): Promise<
         console.error(`❌ Error getting commitments count for policies ${policies}:`, error);
         return [];
     }
+}
+
+
+export async function commitmentCountUnderAlias(core: Core, alias: string): Promise<{
+    policy: string;
+    state: string;
+    committed: number;
+}[]> {
+    const governanceUtxos = await core.localStates.instanceGovernance.getUtxos();
+    const policies = instanceGovernancePoliciesForAlias(governanceUtxos, alias);
+    const commitments = await commitmentCount(core, policies);
+    return commitments
 }
