@@ -3,6 +3,7 @@ import { DatumForAlias } from "../../../utils/parser/datum/global-state";
 import { SdkError } from "../../../common/error";
 import { InstanceAddresses } from "../../../utils/instance-validator";
 import { Core } from "../../core";
+import { Utxo } from "../../../utxo";
 
 export async function CompletedLocalStates(core: Core) {
     try {
@@ -81,60 +82,81 @@ export async function enrolleeCount(core: Core, policies: string[]): Promise<{
             address.state === 'AssignmentValidator'
         );
 
-        const utxoMap: Record<string, { course: number; project: number }> = {};
+        // Helper function to count unique assets in UTXOs
+        const countUniqueAssets = (utxos: Utxo[]): number => {
+            const seenAssets = new Set<string>();
+            let counted = 0;
+
+            for (const utxo of utxos) {
+                const assetGroups = utxo.parsedValued?.assets ?? [];
+                const currentAssetKeys = assetGroups.flatMap(group =>
+                    group.assets.map(asset =>
+                        `${group.policyId}:${hexToString(bytesToHex(asset.name))}`
+                    )
+                );
+
+                const isAllNew = currentAssetKeys.every(key => !seenAssets.has(key));
+                if (isAllNew) {
+                    counted++;
+                    currentAssetKeys.forEach(key => seenAssets.add(key));
+                }
+            }
+            return counted;
+        };
+
+        // Process addresses and build policy data
+        const policyData = new Map<string, {
+            state: string;
+            course: number;
+            project: number;
+        }>();
 
         for (const address of filteredAddresses) {
-            const utxos = await core.localStates.course.courseState.getUtxos('', address.address);
+            const utxos = await core.client.getUtxos(address.address);
 
-            if (!utxoMap[address.policy]) {
-                utxoMap[address.policy] = { course: 0, project: 0 };
+            if (!policyData.has(address.policy)) {
+                policyData.set(address.policy, {
+                    state: address.state,
+                    course: 0,
+                    project: 0
+                });
             }
 
+            const data = policyData.get(address.policy)!;
+
             if (address.state === 'ContributorStateScripts') {
-                const seenAssets = new Set<string>();
-                let counted = 0;
-
-                for (const utxo of utxos) {
-                    const assetGroups = utxo.parsedValued?.assets ?? [];
-
-                    const currentAssetKeys: string[] = [];
-
-                    for (const group of assetGroups) {
-                        for (const asset of group.assets) {
-                            const assetKey = `${group.policyId}:${hexToString(bytesToHex(asset.name))}`;
-                            currentAssetKeys.push(assetKey);
-                        }
-                    }
-
-                    // If ANY asset in the UTXO was seen before, skip this UTXO
-                    const isAllNew = currentAssetKeys.every(key => !seenAssets.has(key));
-
-                    if (isAllNew) {
-                        counted += 1;
-                        currentAssetKeys.forEach(key => seenAssets.add(key));
-                    }
-                }
-
-                utxoMap[address.policy].project += counted;
+                data.project += countUniqueAssets(utxos);
             } else if (address.state === 'CourseStateScripts' || address.state === 'AssignmentValidator') {
-                const count = utxos.length;
-                utxoMap[address.policy].course += count;
+                data.course += utxos.length;
             }
         }
 
-        // Now structure the final array
-        const result = Object.entries(utxoMap).flatMap(([policy, { course, project }]) => {
-            const entries: { policy: string; state: string; enrolled: number, completed: number }[] = [];
-            if (course > 0) {
-                entries.push({ policy, state: 'Course', enrolled: course, completed: completed.find(c => c.policy === policy)?.aliases.length || 0 });
+        // Transform to final result
+        return Array.from(policyData.entries()).flatMap(([policy, data]) => {
+            const completedCount = completed?.find(c => c.policy === policy)?.aliases.length || 0;
+            const entries = [];
+
+            if (data.state === 'CourseStateScripts' || data.state === 'AssignmentValidator') {
+                entries.push({
+                    policy,
+                    state: 'Course',
+                    enrolled: data.course,
+                    completed: completedCount
+                });
             }
-            if (project > 0) {
-                entries.push({ policy, state: 'Project', enrolled: project, completed: completed.find(c => c.policy === policy)?.aliases.length || 0 });
+
+            if (data.state === 'ContributorStateScripts') {
+                entries.push({
+                    policy,
+                    state: 'Project',
+                    enrolled: data.project,
+                    completed: completedCount
+                });
             }
+
             return entries;
         });
 
-        return result
     } catch (err) {
         throw new SdkError(`Failed to fetch enrollee count: ${err}`);
     }

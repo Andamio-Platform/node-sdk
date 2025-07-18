@@ -36,6 +36,11 @@ export function InstanceAddresses(instanceUtxos: Utxo[], stakingSH: string, netw
 
     for (const [category, utxos] of Object.entries(sortedUtxos)) {
         for (const utxo of utxos) {
+            if (policies) {
+                if (!policies.includes(bytesToHex(utxo.parsedValued?.datum?.payload?.plutusData.value as Uint8Array<ArrayBufferLike>))) {
+                    continue;
+                }
+            }
             const cborHex = bytesToHex(utxo.parsedValued?.script?.script?.value as Uint8Array<ArrayBufferLike>) || ''
             const doubleEncodedCborHex = cbor
                 .encode(Buffer.from(cborHex, "hex"))
@@ -54,10 +59,6 @@ export function InstanceAddresses(instanceUtxos: Utxo[], stakingSH: string, netw
                 policy: bytesToHex(utxo.parsedValued?.datum?.payload?.plutusData.value as Uint8Array<ArrayBufferLike>) || ''
             });
         }
-    }
-
-    if (policies) {
-        return addresses.filter(address => policies.includes(address.policy));
     }
 
     return addresses;

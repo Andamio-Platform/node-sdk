@@ -81,15 +81,36 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
     const universalStaticUtxo = {
         input: {
             outputIndex: 0,
-            txHash: "b280c64936f71a909b395cb46f84e8e22ed04e929e02b0b0ded06a7a805981c0",
+            txHash: "8222b0327a95e8c357016a5df64d93d7cf8a585a07c55327ae618a7e00d58d9e"
         },
         output: {
-            address: "addr_test1qqdv0gjenpa6rujd54e8hwyr8vma20vn3e0s5yuernxpj2r3cya2a7t7st0dntg4ljdf24ft0yzzqz20t0drdstszvsqm4u0qs",
-            amount: [{ unit: "lovelace", quantity: "5000000" }],
-        },
-    };
+            address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
+            amount: [
+                {
+                    unit: "lovelace",
+                    quantity: "99000000"
+                }
+            ]
+        }
+    }
 
-    const universalStaticChangeAddress = "addr_test1qqdv0gjenpa6rujd54e8hwyr8vma20vn3e0s5yuernxpj2r3cya2a7t7st0dntg4ljdf24ft0yzzqz20t0drdstszvsqm4u0qs";
+    const collateral = {
+        input: {
+            outputIndex: 0,
+            txHash: "5a1edf7da58eff2059030abd456947a96cb2d16b9d8c3822ffff58d167ed8bfc"
+        },
+        output: {
+            address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
+            amount: [
+                {
+                    unit: "lovelace",
+                    quantity: "5000000"
+                }
+            ]
+        }
+    }
+
+    const universalStaticChangeAddress = "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz";
 
     const txCbor = await txBuilder
         .changeAddress(universalStaticChangeAddress)
@@ -101,10 +122,10 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
             0,
         )
         .txInCollateral(
-            universalStaticUtxo.input.txHash,
-            universalStaticUtxo.input.outputIndex,
-            universalStaticUtxo.output.amount,
-            universalStaticUtxo.output.address,
+            collateral.input.txHash,
+            collateral.input.outputIndex,
+            collateral.output.amount,
+            collateral.output.address,
         )
         // .txInCollateral(uUtxosMesh[0].input.txHash, uUtxosMesh[0].input.outputIndex)
         // withdrawal
@@ -199,7 +220,8 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
                 }
             ]
         )
-        .changeAddress(userAddress)
+        .changeAddress(universalStaticChangeAddress)
+        // .changeAddress(userAddress)
         // .selectUtxosFrom(uUtxosMesh)
         .complete()
 

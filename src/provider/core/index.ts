@@ -16,7 +16,7 @@ export class Core {
 
   public localStates: LocalStates;
 
-  constructor(private readonly client: UtxorpcClient) {
+  constructor(public readonly client: UtxorpcClient) {
     this.andamioConfig = this.client.andamioConfig;
     this.network = this.client.network;
 
