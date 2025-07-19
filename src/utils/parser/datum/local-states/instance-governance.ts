@@ -1,5 +1,5 @@
 import { cardano } from "@utxorpc/spec";
-import { Utxo } from "../../../../utxo";
+import { Utxo } from "../../../../common/utxo";
 import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 
 type InstanceGovernanceDatum = {

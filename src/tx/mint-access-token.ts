@@ -78,11 +78,15 @@ export async function buildTx({ client, provider, userAddress, alias }: { client
         return;
     }
 
+    const observerStakeAddress = await provider.core.indesxReference.getObserverStakeAddress();
+    const protocolTreasuryAddress = await provider.core.indesxReference.getProtocolTreasuryAddress();
+    const protocolFeeAmountInLovelace = await provider.core.indesxReference.getProtocolFeeAmountInLovelace();
+
     const txCbor = await txBuilder
         .txInCollateral(uUtxosMesh[0].input.txHash, uUtxosMesh[0].input.outputIndex)
         // withdrawal
         .withdrawalPlutusScriptV3()
-        .withdrawal("stake_test17q7dwpfsxsgzdnws8kxn3afatxf4qwl3yhed44vwm5mhexgr3a09v", "0")
+        .withdrawal(observerStakeAddress, "0")
         .withdrawalTxInReference(provider.core.andamioConfig.v1GlobalStateObsTxRef.substring(0, 64), Number(provider.core.andamioConfig.v1GlobalStateObsTxRef.substring(65)))
         .withdrawalRedeemerValue(conStr0([
             builtinByteString(tokenNameHex),
@@ -111,11 +115,11 @@ export async function buildTx({ client, provider, userAddress, alias }: { client
         .mintRedeemerValue(mintRedeemer, "JSON")
         // to specified treasury address
         .txOut(
-            "addr_test1qpuwf43fgc6wx3ed20c6wgm267t84ypxdc02qrdnjqkwgtlxakhvwf2dxzsqncufwrrau2ftmv79kh5dl9djq4jly3xspgyfcz",
+            protocolTreasuryAddress,
             [
                 {
                     unit: "lovelace",
-                    quantity: "5000000",
+                    quantity: protocolFeeAmountInLovelace,
                 }
             ]
         )

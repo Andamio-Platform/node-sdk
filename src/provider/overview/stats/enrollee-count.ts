@@ -3,7 +3,7 @@ import { DatumForAlias } from "../../../utils/parser/datum/global-state";
 import { SdkError } from "../../../common/error";
 import { InstanceAddresses } from "../../../utils/instance-validator";
 import { Core } from "../../core";
-import { Utxo } from "../../../utxo";
+import { Utxo } from "../../../common/utxo";
 
 export async function CompletedLocalStates(core: Core) {
     try {

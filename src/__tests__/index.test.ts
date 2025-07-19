@@ -12,6 +12,8 @@ describe('AndamioSDK', () => {
 
   describe('overview endpoints', () => {
     it('test', async () => {
+      const test = await sdk.provider.core.indesxReference.getProtocolFeeAmountInLovelace();
+      console.log("Protocol Fee Amount in Lovelace: ", test);
       // const overview = await sdk.provider.overview.getAllAliases();
       // console.log("overview: ", JSON.stringify(overview, null, 4));
       // expect(overview).toBeTruthy();
@@ -30,15 +32,15 @@ describe('AndamioSDK', () => {
       // ])
       // console.log("commitments count: ", JSON.stringify(commitments, null, 4));
 
-      const commitmentsUnderAlias = await sdk.provider.overview.stats.getCommitmentsCountUnderAlias("manager-001")
-      console.log("commitments count under alias: ", JSON.stringify(commitmentsUnderAlias, null, 4));
+      // const commitmentsUnderAlias = await sdk.provider.overview.stats.getCommitmentCountUnderAlias("manager-001")
+      // console.log("commitments count under alias: ", JSON.stringify(commitmentsUnderAlias, null, 4));
     });
   })
 
   describe('core endpoints', () => {
     it('fetch network utxos from grpc', async () => {
-      // const tx = await sdk.transaction.sponsorMintAccessToken({ userAddress: "addr_test1qrd8h489r5d6tft7h765kxcx9pwrjsg2luq7dutjzgg56khct2wh5xzek2krylzk7kf78zpps92ucr8j0narvwcsnupqrmzjy3", alias: "sponsorshipTx" });
-      // console.log("tx cbor : ", JSON.stringify(tx, null, 4))
+      const tx = await sdk.transaction.sponsorMintAccessToken({ userAddress: "addr_test1qrd8h489r5d6tft7h765kxcx9pwrjsg2luq7dutjzgg56khct2wh5xzek2krylzk7kf78zpps92ucr8j0narvwcsnupqrmzjy3", alias: "obs" });
+      console.log("tx cbor : ", JSON.stringify(tx, null, 4))
       // const enrollee = await sdk.provider.overview.getAllAliases()
 
       // expect((await sdk.provider.core.network.aliasIndex.getUtxos())).toBeTruthy();

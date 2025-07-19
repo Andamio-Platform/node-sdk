@@ -9,6 +9,39 @@ import { UtxorpcClient } from "../common/u5c";
 import * as spec from "@utxorpc/spec";
 import { Provider } from "../provider";
 
+const universalStaticUtxo = {
+    input: {
+        outputIndex: 0,
+        txHash: "8222b0327a95e8c357016a5df64d93d7cf8a585a07c55327ae618a7e00d58d9e"
+    },
+    output: {
+        address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
+        amount: [
+            {
+                unit: "lovelace",
+                quantity: "99000000"
+            }
+        ]
+    }
+}
+
+const universalStaticCollateral = {
+    input: {
+        outputIndex: 0,
+        txHash: "5a1edf7da58eff2059030abd456947a96cb2d16b9d8c3822ffff58d167ed8bfc"
+    },
+    output: {
+        address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
+        amount: [
+            {
+                unit: "lovelace",
+                quantity: "5000000"
+            }
+        ]
+    }
+}
+
+const universalStaticChangeAddress = "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz";
 
 
 export async function buildTxSponsor({ client, provider, userAddress, alias }: { client: UtxorpcClient, provider: Provider, userAddress: string, alias: string }) {
@@ -78,42 +111,11 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
         return;
     }
 
-    const universalStaticUtxo = {
-        input: {
-            outputIndex: 0,
-            txHash: "8222b0327a95e8c357016a5df64d93d7cf8a585a07c55327ae618a7e00d58d9e"
-        },
-        output: {
-            address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
-            amount: [
-                {
-                    unit: "lovelace",
-                    quantity: "99000000"
-                }
-            ]
-        }
-    }
-
-    const collateral = {
-        input: {
-            outputIndex: 0,
-            txHash: "5a1edf7da58eff2059030abd456947a96cb2d16b9d8c3822ffff58d167ed8bfc"
-        },
-        output: {
-            address: "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz",
-            amount: [
-                {
-                    unit: "lovelace",
-                    quantity: "5000000"
-                }
-            ]
-        }
-    }
-
-    const universalStaticChangeAddress = "addr_test1qrsj3xj6q99m4g9tu9mm2lzzdafy04035eya7hjhpus55r204nlu6dmhgpruq7df228h9gpujt0mtnfcnkcaj3wj457q5zv6kz";
+    const observerStakeAddress = await provider.core.indesxReference.getObserverStakeAddress();
+    const protocolTreasuryAddress = await provider.core.indesxReference.getProtocolTreasuryAddress();
+    const protocolFeeAmountInLovelace = await provider.core.indesxReference.getProtocolFeeAmountInLovelace();
 
     const txCbor = await txBuilder
-        .changeAddress(universalStaticChangeAddress)
         .txIn(
             universalStaticUtxo.input.txHash,
             universalStaticUtxo.input.outputIndex,
@@ -122,15 +124,15 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
             0,
         )
         .txInCollateral(
-            collateral.input.txHash,
-            collateral.input.outputIndex,
-            collateral.output.amount,
-            collateral.output.address,
+            universalStaticCollateral.input.txHash,
+            universalStaticCollateral.input.outputIndex,
+            universalStaticCollateral.output.amount,
+            universalStaticCollateral.output.address,
         )
         // .txInCollateral(uUtxosMesh[0].input.txHash, uUtxosMesh[0].input.outputIndex)
         // withdrawal
         .withdrawalPlutusScriptV3()
-        .withdrawal("stake_test17q7dwpfsxsgzdnws8kxn3afatxf4qwl3yhed44vwm5mhexgr3a09v", "0")
+        .withdrawal(observerStakeAddress, "0")
         .withdrawalTxInReference(provider.core.andamioConfig.v1GlobalStateObsTxRef.substring(0, 64), Number(provider.core.andamioConfig.v1GlobalStateObsTxRef.substring(65)))
         .withdrawalRedeemerValue(conStr0([
             builtinByteString(tokenNameHex),
@@ -159,11 +161,11 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
         .mintRedeemerValue(mintRedeemer, "JSON")
         // to specified treasury address
         .txOut(
-            "addr_test1qpuwf43fgc6wx3ed20c6wgm267t84ypxdc02qrdnjqkwgtlxakhvwf2dxzsqncufwrrau2ftmv79kh5dl9djq4jly3xspgyfcz",
+            protocolTreasuryAddress,
             [
                 {
                     unit: "lovelace",
-                    quantity: "5000000",
+                    quantity: protocolFeeAmountInLovelace,
                 }
             ]
         )
@@ -221,8 +223,6 @@ export async function buildTxSponsor({ client, provider, userAddress, alias }: {
             ]
         )
         .changeAddress(universalStaticChangeAddress)
-        // .changeAddress(userAddress)
-        // .selectUtxosFrom(uUtxosMesh)
         .complete()
 
     return txCbor

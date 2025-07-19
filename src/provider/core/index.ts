@@ -1,6 +1,7 @@
 import { UtxorpcClient } from "../../common/u5c";
 import { AliasIndex } from "./alias-index";
 import { GlobalState } from "./global-state";
+import { IndexReference } from "./index-reference";
 import { LocalStates } from "./local-states";
 
 /**
@@ -13,6 +14,7 @@ export class Core {
 
   public aliasIndex: AliasIndex;
   public globalState: GlobalState;
+  public indesxReference: IndexReference;
 
   public localStates: LocalStates;
 
@@ -22,6 +24,7 @@ export class Core {
 
     this.aliasIndex = new AliasIndex(this.client);
     this.globalState = new GlobalState(this.client);
+    this.indesxReference = new IndexReference(this.client);
 
     this.localStates = new LocalStates(this.client);
   }
