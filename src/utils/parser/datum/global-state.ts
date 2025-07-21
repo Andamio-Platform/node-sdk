@@ -1,6 +1,7 @@
 import { cardano } from "@utxorpc/spec";
 import { Utxo } from "../../../common/utxo";
-import { bytesToHex, hexToString } from "@meshsdk/common";
+import { builtinByteString, bytesToHex, conStr0, conStr1, hexToString, list, stringToHex } from "@meshsdk/common";
+import { UtxorpcClient } from "../../../common/u5c";
 
 type Credentials = {
     plutusData: {
@@ -129,3 +130,50 @@ export function DatumForAlias(utxos: Utxo[]): Array<{ alias: string; datum: Glob
     });
     return datums.filter(datum => datum !== undefined);
 }
+
+
+export function meshGlobalStateDatum(client: UtxorpcClient, alias: string, info?: string) {
+    const accessTokenPolicyId = client.andamioConfig.indexMS.mSCPolicyID;
+    const tokenNameHex = stringToHex(alias);
+    const infoHex = info ? stringToHex(info) : "20";
+    return conStr0([
+        builtinByteString(accessTokenPolicyId),
+        builtinByteString(tokenNameHex),
+        list([]),
+        builtinByteString(infoHex)
+    ])
+}
+
+
+export function toMeshGlobalStateDatum(
+    datum: GlobalStateDatum,
+    newLocalStatePolicy?: string
+) {
+    let credentialsPart = []
+    for (const credential of datum.plutusData.value.fields[2].plutusData.value.items) {
+        const parseIsCompletedPart = JSON.parse(JSON.stringify(credential.plutusData.value.fields[2].plutusData.value));
+        const isCompleted = parseIsCompletedPart.tag === 121;
+        const credentialData = conStr0([
+            builtinByteString(bytesToHex(credential.plutusData.value.fields[0].plutusData.value)),
+            list(credential.plutusData.value.fields[1].plutusData.value.items.map(item => {
+                return builtinByteString(bytesToHex(item.plutusData.value))
+            })),
+            isCompleted ? conStr0([]) : conStr1([])
+        ])
+        credentialsPart.push(credentialData);
+    }
+    if (newLocalStatePolicy) {
+        credentialsPart.push(conStr0([
+            builtinByteString(newLocalStatePolicy),
+            list([]),
+            conStr1([]),
+        ]));
+    }
+    return conStr0([
+        builtinByteString(bytesToHex(datum.plutusData.value.fields[0].plutusData.value)),
+        builtinByteString(bytesToHex(datum.plutusData.value.fields[1].plutusData.value)),
+        list(credentialsPart),
+        builtinByteString(bytesToHex(datum.plutusData.value.fields[3].plutusData.value))
+    ])
+}
+

@@ -51,7 +51,20 @@ export class UtxorpcClient {
         return utxos;
     }
 
-
+    async getUtxosByAsset(
+        policy: string,
+        asset_name: string,
+    ): Promise<Utxo[]> {
+        try {
+            const response = await this.cardanoQueryClient.searchUtxosByAsset(
+                undefined, hexToBytes(policy + asset_name)
+            )
+            return response;
+        } catch (error) {
+            logger.error(JSON.stringify(error, null, 2));
+            throw new SdkError("Failed to fetch UTXOs by asset.");
+        }
+    }
 
     private async fetchUtxosFromGrpc(
         address: string,

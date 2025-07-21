@@ -15,6 +15,8 @@
     - [x] Assignment Utxo by Alias
     - [x] Course Utxo by Alias
     - [x] Module Ref Utxo by Module Token Name
+    - [x] User Access Token Utxo by Alias
+    - [x] Address Holding Access Token by Alias
 
 # Utils
     - [ ] Global State Utxo Datum Parser
@@ -22,6 +24,11 @@
     - [ ] Assignment Utxo Datum Parser
     - [ ] Course Utxo Datum Parser
     - [ ] Module Ref Utxo Datum Parser
+
+# Txs
+    - [ ] Commit To Assignment - Student
+    - [ ] Mint Course Module - Course Creator
+    - [ ] Accept Assignment - Course Creator
 
 
 

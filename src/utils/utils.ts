@@ -6,6 +6,7 @@ import { NetworkId } from "../common/network";
 import { SdkError } from "../common/error";
 import { deserializePlutusScript, scriptHashToBech32 } from "@meshsdk/core-cst";
 import { logger } from "../common/logger";
+import { deserializeAddress } from "@meshsdk/core";
 
 const serializePlutusScript = (
     script: PlutusScript,
@@ -57,4 +58,9 @@ export async function getAddress(client: UtxorpcClient, courseNftPolicy: string,
     } catch (error) {
         throw new SdkError(`Failed to derive address: ${error}`);
     }
+}
+
+export async function getLocalStatePolicy(client: UtxorpcClient, courseNftPolicy: string, filter: InstanceFilter): Promise<string> {
+    const address = await getAddress(client, courseNftPolicy, filter);
+    return deserializeAddress(address).scriptHash;
 }
