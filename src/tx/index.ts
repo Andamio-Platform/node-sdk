@@ -1,5 +1,6 @@
 import { UtxorpcClient } from "../common/u5c";
 import { Provider } from "../provider";
+import { commitToAsignmentTx } from "./course/commit-to-assignment";
 import { enrollCourseTx } from "./course/enroll";
 import { buildTx } from "./mint-access-token";
 import { buildTxSponsor } from "./sponsor-mint-access-token";
@@ -13,4 +14,6 @@ export class Transaction {
     public sponsorMintAccessToken = async ({ userAddress, alias }: { userAddress: string, alias: string }) => buildTxSponsor({ client: this.client, provider: this.provider, userAddress, alias })
 
     public enrollCourse = async ({ alias, courseId }: { alias: string, courseId: string }) => enrollCourseTx({ client: this.client, provider: this.provider, alias, courseId })
+
+    public commitAssignment = async ({ alias, courseId, moduleTokenName, assignmentEvidenceInHex }: { alias: string, courseId: string, moduleTokenName: string, assignmentEvidenceInHex?: string }) => commitToAsignmentTx({ client: this.client, provider: this.provider, alias, courseId, moduleTokenName, assignmentEvidenceInHex })
 }

@@ -56,7 +56,7 @@ export class ModuleRef {
 
   async getUtxoByModuleTokenName(courseId: string, moduleTokenName: string): Promise<Utxo> {
     try {
-      const utxos = await this.getUtxos();
+      const utxos = await this.getUtxos(courseId);
       const utxo = utxos.find((utxo) =>
         utxo.parsedValued?.assets.some((asset) =>
           asset.assets.some((a) => hexToString(bytesToHex(a.name)) === moduleTokenName)
