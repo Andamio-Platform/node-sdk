@@ -12,7 +12,7 @@ export const metadata = {
 const banner = <Banner storageKey="some-key">This project is an early work in progress. Funded by Project Catalyst.</Banner>
 const navbar = (
     <Navbar
-        logo={<img src="/images/general/logo.svg" alt="Logo" width={150} height={40}/>}
+        logo={<img src="/images/general/sdk.png" alt="Logo" width={50} height={50}/>}
         // ... Your additional navbar options
     />
 )
@@ -31,7 +31,7 @@ export default async function RootLayout({children}) {
         <Head
             // ... Your additional head options
         >
-            <link rel="shortcut icon" href="/images/general/icon.svg"/>
+            <link rel="shortcut icon" href="/images/general/favicon.ico"/>
             {/* Your additional tags should be passed as `children` of `<Head>` element */}
         </Head>
         <body>
