@@ -1,4 +1,4 @@
-import { builtinByteString, conStr0, conStr1, deserializeAddress, list, stringToHex } from "@meshsdk/core";
+import { BuiltinByteString, builtinByteString, conStr0, conStr1, deserializeAddress, List, list, stringToHex } from "@meshsdk/core";
 
 export function SerializeAddressToDatumStakedScriptAddress(address: string) {
     const addressObj = deserializeAddress(address);
@@ -17,7 +17,7 @@ export function SerializeAddressToDatumStakedScriptAddress(address: string) {
 
 
 
-export function CommitAssignmentDatum(moduleTokenName: string, courseStateTokenPolicy: string, alias: string, courseStateAddress: string, assignmentEvidenceInHex?: string) {
+export function AssignmentStateDatum(moduleTokenName: string, courseStateTokenPolicy: string, alias: string, courseStateAddress: string, courseStateDatum: List<BuiltinByteString>, assignmentEvidenceInHex?: string) {
     const courseStateAddressDatum = SerializeAddressToDatumStakedScriptAddress(courseStateAddress);
     return conStr0([
         builtinByteString(stringToHex(moduleTokenName)),
@@ -25,6 +25,6 @@ export function CommitAssignmentDatum(moduleTokenName: string, courseStateTokenP
         builtinByteString(courseStateTokenPolicy),
         builtinByteString(stringToHex(alias)),
         courseStateAddressDatum,
-        list([])
+        courseStateDatum
     ])
 }
