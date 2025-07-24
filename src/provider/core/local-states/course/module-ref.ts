@@ -1,7 +1,7 @@
 import { Utxo } from "../../../../common/utxo";
 import { SdkError } from "../../../../common/error";
 import { UtxorpcClient } from "../../../../common/u5c";
-import { getAddress } from "../../../../utils/utils";
+import { getAddress, getLocalStatePolicy } from "../../../../utils/utils";
 import { logger } from "../../../../common/logger";
 import { bytesToHex, hexToString } from "@meshsdk/common";
 
@@ -29,6 +29,14 @@ export class ModuleRef {
       return await getAddress(this.client, courseNftPolicy, "ModuleScripts");
     } catch (error) {
       throw new SdkError(`Failed to derive address: ${error}`);
+    }
+  }
+
+  async getModuleReferenceTokenPolicy(courseNftPolicy: string): Promise<string> {
+    try {
+      return await getLocalStatePolicy(this.client, courseNftPolicy, "ModuleScripts");
+    } catch (error) {
+      throw new SdkError(`Failed to get course state token policy: ${error}`);
     }
   }
 
