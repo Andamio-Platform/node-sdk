@@ -21,11 +21,11 @@ export function isCourseStateDatum(datum: any): datum is cardano.PlutusData & Co
 
 export function toMeshCourseStateDatum(
     datum: CourseStateDatum,
-    newCompletedAssignments?: string
+    newCompletedAssignment?: string
 ) {
     const completedAssignmentsList = datum.plutusData.value.items.map(item => builtinByteString(bytesToHex(item.plutusData.value)))
-    if (newCompletedAssignments) {
-        completedAssignmentsList.push(builtinByteString(stringToHex(newCompletedAssignments)));
+    if (newCompletedAssignment) {
+        completedAssignmentsList.unshift(builtinByteString(stringToHex(newCompletedAssignment)));
     }
     return list(completedAssignmentsList)
 }
