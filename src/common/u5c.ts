@@ -77,7 +77,9 @@ export class UtxorpcClient {
 
             let response: Utxo[];
 
-            if (policy || name) {
+            if (policy && name) {
+                response = await this.fetchUtxosWithAsset(addressBytes, undefined, policy + name);
+            } else if (policy || name) {
                 response = await this.fetchUtxosWithAsset(addressBytes, policy, name);
             } else {
                 response =

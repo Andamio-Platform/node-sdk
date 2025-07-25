@@ -1,6 +1,6 @@
 // src/__tests__/index.test.ts
 require('dotenv').config()
-import { BlockfrostProvider, TxParser } from '@meshsdk/core';
+import { BlockfrostProvider, bytesToHex, TxParser } from '@meshsdk/core';
 import { AndamioSDK } from '../index';
 import { CSLSerializer } from '@meshsdk/core-csl';
 import { isGlobalStateDatum, toMeshGlobalStateDatum } from '../utils/parser/datum/global-state';
@@ -33,7 +33,7 @@ describe('AndamioSDK', () => {
 
     it('should fetch overview data', async () => {
       console.log(process.env.DMTR_API_KEY);
-      const data = await sdk.provider.core.localStates.course.assignmentState.getUtxoByAlias("cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd", "Zeus");
+      const data = await sdk.provider.overview.getUserData("Zeus")
       console.log("Overview Data:", JSON.stringify(data, null, 2));
     });
 

@@ -1,7 +1,7 @@
 import { UtxorpcClient } from "../../common/u5c";
 import { SdkError } from "../../common/error";
 import { Utxo } from "../../common/utxo";
-import { bytesToHex, hexToString } from "@meshsdk/common";
+import { bytesToHex, hexToString, stringToHex } from "@meshsdk/common";
 
 /**
  * Represents the global state of the system.
@@ -51,11 +51,11 @@ export class GlobalState {
      */
     async getUtxoByAlias(alias: string): Promise<Utxo> {
         try {
-            let utxo = await this.client.getUtxos(this.address, this.policy, alias);
-            utxo = byAlias({
-                utxos: utxo,
-                alias,
-            });
+            let utxo = await this.client.getUtxos(this.address, this.policy, "313030" + stringToHex(alias));
+            // utxo = byAlias({
+            //     utxos: utxo,
+            //     alias,
+            // });
             if (utxo.length === 0) {
                 throw new SdkError(`No UTXO found for alias: ${alias}`);
             } else {
@@ -66,24 +66,3 @@ export class GlobalState {
         }
     }
 }
-
-
-
-
-// remove when utxorpc node-sdk gets updated
-function byAlias({
-    utxos,
-    alias,
-}: {
-    utxos: Utxo[];
-    alias: string;
-}): Utxo[] {
-    const aliasUtxo = utxos.filter((utxo) =>
-        utxo.parsedValued?.assets?.some((asset) =>
-            asset.assets.some((a) => hexToString(bytesToHex(a.name).substring(6)) === alias),
-        ),
-    );
-
-    return aliasUtxo;
-}
-// till here

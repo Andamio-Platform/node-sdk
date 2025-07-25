@@ -3,6 +3,7 @@ import { Core } from "../core";
 import { allInstances as allInstancesList } from "./all-instances";
 import { bytesToHex, hexToString } from "@meshsdk/common";
 import { SdkError } from "../../common/error";
+import { isCourseStateDatum } from "../../utils/parser/datum/local-states/course-state";
 
 /**
  * Structure containing user's courses and projects data.
@@ -19,6 +20,7 @@ type Instance = {
     policy: string;
     challenges: string[];
     completed: boolean;
+    completedChallengesInLocalState: string[] | null;
 };
 
 
@@ -46,6 +48,11 @@ export async function userData(core: Core, alias: string): Promise<{ info: strin
             const policy = bytesToHex(
                 (policyField as cardano.PlutusData).plutusData.value as Uint8Array
             );
+            const localStateType: "course" | "project" | "unknown" = allInstances.courses.includes(policy)
+                ? "course"
+                : allInstances.projects.includes(policy)
+                    ? "project"
+                    : "unknown";
 
             const challenges = ((challengesField as cardano.PlutusData).plutusData
                 .value as cardano.PlutusDataArray).items.map((c) =>
@@ -55,11 +62,16 @@ export async function userData(core: Core, alias: string): Promise<{ info: strin
             const completed =
                 ((completedField as cardano.PlutusData).plutusData.value as cardano.Constr).tag === 121;
 
-            const instance: Instance = { policy, challenges, completed };
+            let completedChallengesInLocalState: string[] | null = null;
+            if (!completed) {
+                completedChallengesInLocalState = await getCompletedLocalStateChallenges(core, policy, localStateType, alias);
+            }
 
-            if (allInstances.courses.includes(policy)) {
+            const instance: Instance = { policy, challenges, completed, completedChallengesInLocalState };
+
+            if (localStateType === "course") {
                 courses.push(instance);
-            } else if (allInstances.projects.includes(policy)) {
+            } else if (localStateType === "project") {
                 projects.push(instance);
             }
         }
@@ -71,4 +83,35 @@ export async function userData(core: Core, alias: string): Promise<{ info: strin
     } catch (err) {
         throw new SdkError(`Failed to fetch user data: ${err}`);
     }
+}
+
+async function getCompletedLocalStateChallenges(
+    core: Core,
+    policy: string,
+    localStateType: "course" | "project" | "unknown",
+    alias: string
+): Promise<string[]> {
+    const completedLocalStateChallenges: string[] = [];
+    if (localStateType === "course") {
+        try {
+            const courseState = await core.localStates.course.courseState.getUtxoByAlias(policy, alias);
+            const datum = courseState.parsedValued?.datum?.payload;
+            if (isCourseStateDatum(datum)) {
+                datum.plutusData.value.items.map(item => completedLocalStateChallenges.push(hexToString(bytesToHex(item.plutusData.value as Uint8Array))));
+            }
+        } catch (err) {
+            if (err instanceof SdkError && err.message.includes("No UTXO found with the specified courseId and alias")) {
+                const assignmentState = await core.localStates.course.assignmentState.getUtxoByAlias(policy, alias);
+                const datum = assignmentState.parsedValued?.datum?.payload?.plutusData.value as cardano.Constr;
+                const courseStateDatum = datum.fields[5] as cardano.PlutusData;
+                if (isCourseStateDatum(courseStateDatum)) {
+                    courseStateDatum.plutusData.value.items.map(item => completedLocalStateChallenges.push(hexToString(bytesToHex(item.plutusData.value as Uint8Array))));
+                }
+            }
+            throw err;
+        }
+    } else if (localStateType === "project") {
+        // TODO: Implement project local state challenge fetching
+    }
+    return completedLocalStateChallenges;
 }
