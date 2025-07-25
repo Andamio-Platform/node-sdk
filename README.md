@@ -1,12 +1,12 @@
 # Andamio Platform Node SDK
 
-![Andamio SDK](docs/public/images/general/sdk.jpeg)
+<img src="docs/public/images/general/sdk.jpeg" alt="Andamio SDK" style="width: 30%; height: auto;">
 
 [![npm version](https://badge.fury.io/js/@andamiojs%2Fsdk.svg)](https://badge.fury.io/js/@andamiojs%2Fsdk)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-%230074c1.svg)](http://www.typescriptlang.org/)
 
-The official Node.js SDK for the Andamio Platform - empowering organizations to teach skills that connect to contribution opportunities through blockchain-based education and collaboration tools.
+The official Node.js SDK for the Andamio Protocol - empowering organizations to teach skills and distribute contribution opportunities through blockchain-based education and collaboration tools.
 
 ## 🚀 Quick Start
 
@@ -135,6 +135,4 @@ This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENS
 
 <div align="center">
   <strong>Learn skills · Contribute value · Cultivate community</strong>
-  <br>
-  Built with ❤️ by the Andamio team
 </div>
