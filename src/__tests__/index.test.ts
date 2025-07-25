@@ -1,4 +1,5 @@
 // src/__tests__/index.test.ts
+require('dotenv').config()
 import { BlockfrostProvider, TxParser } from '@meshsdk/core';
 import { AndamioSDK } from '../index';
 import { CSLSerializer } from '@meshsdk/core-csl';
@@ -10,7 +11,7 @@ describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
 
   beforeEach(() => {
-    sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc15dnupstcsym5xjd7yha0eccta5x6s353");
+    sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", process.env.DMTR_API_KEY || "");
   });
 
   describe('overview endpoints', () => {
@@ -30,40 +31,41 @@ describe('AndamioSDK', () => {
     //   console.log("Overview Data:", data);
     // });
 
-    // it('should fetch overview data', async () => {
-    //   const data = await sdk.provider.core.localStates.course.assignmentState.getUtxoByAlias("cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd", "Zeus");
-    //   console.log("Overview Data:", JSON.stringify(data, null, 2));
-    // });
-
     it('should fetch overview data', async () => {
-      const data = await sdk.transaction.mintModuleTokens({
-        alias: "meshTx",
-        courseId: "cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd",
-        listOfModuleDetails: [{
-          moduleTokenName: "404",
-          slts: [{
-            sltId: "0",
-            sltDescription: "Not Found"
-          }],
-          assignment: {
-            assignmentDescription: "Do Nothing",
-            prerequisites: []
-          }
-        },
-        {
-          moduleTokenName: "500",
-          slts: [{
-            sltId: "0",
-            sltDescription: "Internal Server Error"
-          }],
-          assignment: {
-            assignmentDescription: "Also Do Nothing",
-            prerequisites: []
-          }
-        }]
-      });
-      console.log("Course State Token Policy:", JSON.stringify(data, null, 2));
+      console.log(process.env.DMTR_API_KEY);
+      const data = await sdk.provider.core.localStates.course.assignmentState.getUtxoByAlias("cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd", "Zeus");
+      console.log("Overview Data:", JSON.stringify(data, null, 2));
     });
+
+    // it('should fetch overview data', async () => {
+    //   const data = await sdk.transaction.mintModuleTokens({
+    //     alias: "meshTx",
+    //     courseId: "cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd",
+    //     listOfModuleDetails: [{
+    //       moduleTokenName: "404",
+    //       slts: [{
+    //         sltId: "0",
+    //         sltDescription: "Not Found"
+    //       }],
+    //       assignment: {
+    //         assignmentDescription: "Do Nothing",
+    //         prerequisites: []
+    //       }
+    //     },
+    //     {
+    //       moduleTokenName: "500",
+    //       slts: [{
+    //         sltId: "0",
+    //         sltDescription: "Internal Server Error"
+    //       }],
+    //       assignment: {
+    //         assignmentDescription: "Also Do Nothing",
+    //         prerequisites: []
+    //       }
+    //     }]
+    //   });
+    //   console.log("Course State Token Policy:", JSON.stringify(data, null, 2));
+    // });
 
     // it('test', async () => {
     //   const blockfrost = new BlockfrostProvider("https://blockfrost1fnqnszsgxy7f6xm0e9a.blockfrost-m1.demeter.run")

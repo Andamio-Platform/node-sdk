@@ -33,6 +33,9 @@ importers:
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
       jest:
         specifier: ^30.0.4
         version: 30.0.4(@types/node@24.0.10)
@@ -1671,6 +1674,10 @@ packages:
 
   dom-walk@0.1.2:
     resolution: {integrity: sha512-6QvTW9mrGeIegrFXdtQi9pk7O/nSK6lSdXW2eqUspN5LWD7UTji2Fqw5V2YLjBpHEoU9Xl/eUWNpDeZvoyOv2w==}
+
+  dotenv@17.2.1:
+    resolution: {integrity: sha512-kQhDYKZecqnM0fCnzI5eIv5L4cAe/iRI+HqMbO/hbRdTAeXDG+M9FjipUxNfbARuEg4iHIbhnhs78BCHNbSxEQ==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -5475,6 +5482,8 @@ snapshots:
       '@leichtgewicht/ip-codec': 2.0.5
 
   dom-walk@0.1.2: {}
+
+  dotenv@17.2.1: {}
 
   dunder-proto@1.0.1:
     dependencies:

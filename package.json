@@ -10,10 +10,7 @@
   ],
   "scripts": {
     "build": "rm -rf dist && tsc && tsc -p tsconfig.cjs.json",
-    "prepublishOnly": "pnpm run build",
-    "test": "jest",
-    "link": "pnpm link --global",
-    "unlink": "pnpm unlink --global"
+    "test": "jest"
   },
   "keywords": [
     "andamio",
@@ -24,6 +21,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "dotenv": "^17.2.1",
     "jest": "^30.0.4",
     "ts-jest": "^29.4.0",
     "typescript": "^5.8.3"
