@@ -1,0 +1,11 @@
+{"level":30,"time":1753462472867,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m Fetching UTXOs from gRPC..."}
+{"level":30,"time":1753462474271,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m UTXOs fetched"}
+{"level":30,"time":1753462474271,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m Fetching UTXOs from gRPC..."}
+{"level":30,"time":1753462475221,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m UTXOs fetched"}
+{"level":30,"time":1753462475224,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m Fetching UTXOs from gRPC..."}
+{"level":30,"time":1753462489132,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m UTXOs fetched"}
+{"level":30,"time":1753462489134,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m Serializing validator address..."}
+{"level":30,"time":1753462489142,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m CourseState address: addr_test1xqeyd3jh7kxfflm4pgw6zl5w5f40ckxgsry0tqpjrs8hvs5ke8x9mpjf7aerjt3n3nfd5tnzkfhlprp09mpf4sdy8dzqny37dw"}
+{"level":30,"time":1753462489142,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m Fetching UTXOs from gRPC..."}
+{"level":30,"time":1753462489525,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"\u001b[36m[SDK]\u001b[0m UTXOs fetched"}
+{"level":30,"time":1753462489526,"pid":22127,"hostname":"Nelsons-MacBook-Air.local","msg":"Credentials After Assignment: {\n  \"info\": \" \",\n  \"data\": {\n    \"courses\": [\n      {\n        \"policy\": \"cb69f0e1aa2c2173df2bb5274c7ce628883fb031e9161107285eaddd\",\n        \"challenges\": [],\n        \"completed\": false,\n        \"completedChallengesInLocalState\": [\n          \"200\",\n          \"101\"\n        ]\n      }\n    ],\n    \"projects\": []\n  }\n}"}
