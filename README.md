@@ -1,4 +1,4 @@
-# Andamio Platform Node SDK
+# Andamio Node SDK
 
 <div align="center">
   <img src="docs/public/images/general/sdk.jpeg" alt="Andamio SDK" style="width: 30%; height: auto;">
