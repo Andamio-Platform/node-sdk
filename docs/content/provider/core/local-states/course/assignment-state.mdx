@@ -1,0 +1,136 @@
+# Assignment State
+
+The Assignment State provides functionality for managing and querying assignment-related blockchain data within courses. This enables tracking of assignment submissions, validations, and student progress.
+
+## Overview
+
+Assignment State manages UTXOs that contain information about assignments within specific courses. Each course has its own assignment validator address derived from the course NFT policy, and assignments are identified by student aliases.
+
+## Methods
+
+### getAddress(courseNftPolicy)
+
+Derives the blockchain address for a course's assignment validator based on the course NFT policy.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.course.assignmentState.getAddress(courseNftPolicy)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string) - The policy ID of the course NFT
+
+**Returns:**
+- `Promise<string>` - The derived assignment validator address for the course
+
+**Example:**
+```typescript
+try {
+  const coursePolicy = "a1b2c3d4e5f6...";
+  const address = await sdk.provider.core.course.assignmentState.getAddress(coursePolicy);
+  console.log('Assignment validator address:', address);
+  // Example output: addr1q9x2kw...
+} catch (error) {
+  console.error('Failed to derive address:', error);
+}
+```
+
+**Throws:**
+- `SdkError` - When address derivation fails
+
+---
+
+### getUtxos(courseNftPolicy?, address?)
+
+Retrieves UTXOs related to assignments for a specific course. Can use either a course policy to derive the address or a direct address.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.assignmentState.getUtxos(courseNftPolicy?, address?)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string, optional) - The policy ID of the course NFT
+- `address` (string, optional) - Direct address to fetch UTXOs from
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of assignment-related UTXOs
+
+**Example:**
+```typescript
+// Using course policy (address will be derived)
+try {
+  const coursePolicy = "a1b2c3d4e5f6...";
+  const utxos = await sdk.provider.core.course.assignmentState.getUtxos(coursePolicy);
+  console.log(`Found ${utxos.length} assignment UTXOs`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+
+// Using direct address
+try {
+  const address = "addr1q9x2kw...";
+  const utxos = await sdk.provider.core.course.assignmentState.getUtxos(undefined, address);
+  console.log(`Found ${utxos.length} assignment UTXOs at address`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+```
+
+**Behavior:**
+- If only `courseNftPolicy` is provided, derives the assignment validator address first
+- If `address` is provided, uses it directly for UTXO queries
+- At least one parameter must be provided
+
+**Throws:**
+- `SdkError` - When neither parameter is provided or when UTXO fetching fails
+
+---
+
+### getUtxoByAlias(courseId, alias)
+
+Retrieves a specific assignment UTXO by course ID and student alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.assignmentState.getUtxoByAlias(courseId, alias)
+```
+
+**Parameters:**
+- `courseId` (string) - The course NFT policy ID
+- `alias` (string) - The student's alias
+
+**Returns:**
+- `Promise<Utxo>` - The assignment UTXO for the specified student and course
+
+**Example:**
+```typescript
+try {
+  const courseId = "a1b2c3d4e5f6...";
+  const studentAlias = "student123";
+  
+  const utxo = await sdk.provider.core.course.assignmentState.getUtxoByAlias(courseId, studentAlias);
+  console.log('Found assignment for student:', utxo.txHash);
+  console.log('Assignment assets:', utxo.parsedValued?.assets);
+} catch (error) {
+  if (error.message.includes('No UTXO found')) {
+    console.error('No assignment found for student:', studentAlias);
+  } else {
+    console.error('Error retrieving assignment:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Retrieves all assignment UTXOs for the specified course using `getUtxos()`
+2. Searches through UTXOs for assets containing the specified alias name
+3. Returns the first matching UTXO found
+4. Asset names are decoded from hexadecimal format for comparison
+
+**Throws:**
+- `SdkError` - When no UTXO is found for the specified course and alias, or when the fetch operation fails
+
+**Use Cases:**
+- Checking assignment submission status for a specific student
+- Retrieving assignment data for grading purposes
+- Validating student progress within a course

@@ -1,0 +1,143 @@
+# Module Reference
+
+The ModuleRef class provides functionality for managing and querying course module-related blockchain data. It allows clients to retrieve module addresses, module-specific UTXOs, and token policies associated with course modules.
+
+## Overview
+
+Each module within a course is represented on-chain and has an associated validator address derived from the course's NFT policy. This class facilitates retrieval of UTXOs linked to modules, either directly by address or through a module token name.
+
+## Methods
+
+### getAddress(courseNftPolicy)
+
+Derives the blockchain address for a module validator using the course NFT policy.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.course.moduleRef.getAddress(courseNftPolicy)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string) – The policy ID of the course NFT
+
+**Returns:**
+- `Promise<string>` – The derived address for the course module validator
+
+**Example:**
+```typescript
+try {
+  const address = await sdk.provider.core.course.moduleRef.getAddress("a1b2c3d4...");
+  console.log("Module address:", address);
+} catch (error) {
+  console.error("Failed to derive module address:", error);
+}
+```
+
+**Throws:**
+- `SdkError` – When address derivation fails
+
+---
+
+### getModuleReferenceTokenPolicy(courseNftPolicy)
+
+Fetches the policy ID of the local state token associated with a course module.
+
+**Syntax:**
+```typescript
+const policyId = await sdk.provider.core.course.moduleRef.getModuleReferenceTokenPolicy(courseNftPolicy)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string) – The policy ID of the course NFT
+
+**Returns:**
+- `Promise<string>` – The token policy ID for the course module reference
+
+**Example:**
+```typescript
+try {
+  const policyId = await sdk.provider.core.course.moduleRef.getModuleReferenceTokenPolicy("a1b2c3d4...");
+  console.log("Module reference token policy ID:", policyId);
+} catch (error) {
+  console.error("Failed to get module reference token policy:", error);
+}
+```
+
+**Throws:**
+- `SdkError` – When token policy derivation fails
+
+---
+
+### getUtxos(courseNftPolicy?, address?)
+
+Retrieves UTXOs related to a course module using either a course policy or a direct address.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.moduleRef.getUtxos(courseNftPolicy?, address?)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string, optional) – The course NFT policy ID
+- `address` (string, optional) – Direct module address
+
+**Returns:**
+- `Promise<Utxo[]>` – Array of module-related UTXOs
+
+**Example:**
+```typescript
+try {
+  const utxos = await sdk.provider.core.course.moduleRef.getUtxos("a1b2c3d4...");
+  console.log(`Found ${utxos.length} module UTXOs`);
+} catch (error) {
+  console.error("Error retrieving module UTXOs:", error);
+}
+```
+
+**Behavior:**
+- If `address` is not provided, derives it using the provided `courseNftPolicy`
+- Requires at least one of the two parameters
+
+**Throws:**
+- `SdkError` – If parameters are missing or fetching fails
+
+---
+
+### getUtxoByModuleTokenName(courseId, moduleTokenName)
+
+Retrieves a specific module UTXO by its module token name.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.moduleRef.getUtxoByModuleTokenName(courseId, moduleTokenName)
+```
+
+**Parameters:**
+- `courseId` (string) – The course NFT policy ID
+- `moduleTokenName` (string) – The name of the module token (string-encoded, not hex)
+
+**Returns:**
+- `Promise<Utxo>` – The matching module UTXO
+
+**Example:**
+```typescript
+try {
+  const utxo = await sdk.provider.core.course.moduleRef.getUtxoByModuleTokenName("a1b2c3d4...", "moduleA");
+  console.log("Module UTXO found:", utxo.txHash);
+} catch (error) {
+  console.error("Failed to fetch module UTXO:", error);
+}
+```
+
+**Behavior:**
+1. Fetches all UTXOs for the course
+2. Searches UTXOs for assets whose token name matches `moduleTokenName`
+3. Converts asset names from hex for comparison
+
+**Throws:**
+- `SdkError` – If no matching UTXO is found or if an error occurs during search
+
+**Use Cases:**
+- Identifying and retrieving module data on-chain
+- Verifying module presence within a course
+- Extracting module-specific metadata for rendering or validation

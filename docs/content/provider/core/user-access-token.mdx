@@ -1,0 +1,89 @@
+# User Access Token
+
+The User Access Token provides functionality for retrieving user access tokens and associated addresses by alias. Access tokens represent user ownership and control over specific aliases in the system.
+
+## Overview
+
+User Access Tokens are NFTs that grant users control over their registered aliases. Each token is uniquely identified by a combination of the policy ID and a token name derived from the alias. These tokens are held in user wallets and serve as proof of alias ownership.
+
+## Methods
+
+### getUtxoByAlias(alias)
+
+Retrieves the UTXO containing the access token for a specific alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.userAccessToken.getUtxoByAlias(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The alias name to search for
+
+**Returns:**
+- `Promise<Utxo>` - The UTXO containing the access token for the specified alias
+
+**Example:**
+```typescript
+try {
+  const alias = "myalias";
+  const utxo = await sdk.provider.core.course.userAccessToken.getUtxoByAlias(alias);
+  console.log('Access token UTXO found:', utxo.txHash);
+  console.log('Token location:', utxo.output.address);
+} catch (error) {
+  if (error.message.includes('No UTXOs found for alias')) {
+    console.error('Access token not found for alias:', alias);
+  } else {
+    console.error('Error retrieving access token:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Constructs the token name by prefixing "323232" to the hexadecimal representation of the alias
+2. Searches for UTXOs containing assets with the constructed token name and policy ID
+3. Returns the first matching UTXO found
+
+**Throws:**
+- `Error` - When no UTXO is found for the specified alias or when the fetch operation fails
+
+---
+
+### getAddressByAlias(alias)
+
+Retrieves the Cardano address where the access token for a specific alias is currently held.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.course.userAccessToken.getAddressByAlias(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The alias name to search for
+
+**Returns:**
+- `Promise<string>` - The Cardano address holding the access token
+
+**Example:**
+```typescript
+try {
+  const alias = "myalias";
+  const address = await sdk.provider.core.course.userAccessToken.getAddressByAlias(alias);
+  console.log('Access token held at address:', address);
+  // Example output: addr1q9x2kw...
+} catch (error) {
+  console.error('Failed to get address for alias:', error);
+}
+```
+
+**Behavior:**
+1. Uses `getUtxoByAlias()` to find the UTXO containing the access token
+2. Extracts and returns the address from the UTXO output
+
+**Throws:**
+- `Error` - When the alias is not found or when address extraction fails
+
+**Use Cases:**
+- Verifying current ownership of an alias
+- Determining where to send transactions related to alias management
+- Checking if an alias is currently active and held by a user

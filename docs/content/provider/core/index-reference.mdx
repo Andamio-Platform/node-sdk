@@ -1,0 +1,98 @@
+# Index Reference
+
+The Index Reference provides access to protocol configuration data stored on-chain. This includes key protocol addresses, fee structures, and observer information required for system operations.
+
+## Overview
+
+The Index Reference maintains a single UTXO that contains critical protocol parameters in its datum. This data includes treasury addresses, stake pool information, and fee configurations that are referenced throughout the system.
+
+## Methods
+
+### getProtocolTreasuryAddress()
+
+Retrieves the protocol treasury address where protocol fees and rewards are collected.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.course.indexReference.getProtocolTreasuryAddress()
+```
+
+**Returns:**
+- `Promise<string>` - The Cardano address of the protocol treasury
+
+**Example:**
+```typescript
+try {
+  const treasuryAddress = await sdk.provider.core.course.indexReference.getProtocolTreasuryAddress();
+  console.log('Protocol treasury address:', treasuryAddress);
+  // Example output: addr1q9x2kw...
+} catch (error) {
+  console.error('Failed to get treasury address:', error);
+}
+```
+
+**Throws:**
+- `Error` - When the treasury address cannot be retrieved or parsed from the datum
+
+---
+
+### getObserverStakeAddress()
+
+Retrieves the stake address of the protocol observer, used for monitoring and validation purposes.
+
+**Syntax:**
+```typescript
+const stakeAddress = await sdk.provider.core.course.indexReference.getObserverStakeAddress()
+```
+
+**Returns:**
+- `Promise<string>` - The stake address of the protocol observer
+
+**Example:**
+```typescript
+try {
+  const observerStakeAddress = await sdk.provider.core.course.indexReference.getObserverStakeAddress();
+  console.log('Observer stake address:', observerStakeAddress);
+  // Example output: stake1u9x2kw...
+} catch (error) {
+  console.error('Failed to get observer stake address:', error);
+}
+```
+
+**Throws:**
+- `Error` - When the observer stake address cannot be retrieved or parsed from the datum
+
+---
+
+### getProtocolFeeAmountInLovelace()
+
+Retrieves the current protocol fee amount in lovelace (the smallest unit of ADA).
+
+**Syntax:**
+```typescript
+const feeAmount = await sdk.provider.core.course.indexReference.getProtocolFeeAmountInLovelace()
+```
+
+**Returns:**
+- `Promise<string>` - The protocol fee amount in lovelace as a string
+
+**Example:**
+```typescript
+try {
+  const feeAmount = await sdk.provider.core.course.indexReference.getProtocolFeeAmountInLovelace();
+  console.log('Protocol fee amount:', feeAmount, 'lovelace');
+  
+  // Convert to ADA for display
+  const feeInAda = parseInt(feeAmount) / 1_000_000;
+  console.log('Protocol fee amount:', feeInAda, 'ADA');
+} catch (error) {
+  console.error('Failed to get protocol fee amount:', error);
+}
+```
+
+**Throws:**
+- `Error` - When the protocol fee amount cannot be retrieved or parsed from the datum
+
+**Notes:**
+- The fee amount is returned as a string to preserve precision for large numbers
+- 1 ADA = 1,000,000 lovelace

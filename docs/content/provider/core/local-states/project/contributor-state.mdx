@@ -1,0 +1,113 @@
+# Contributor State
+
+The Contributor State provides methods to manage and query contributor-related blockchain data within a project. It enables clients to retrieve contributor addresses, query UTXOs, and find specific contributions using student aliases.
+
+## Overview
+
+Each project has an associated contributor validator address derived from the project's NFT policy. Contributor state UTXOs may represent individual contributions, statuses, or metadata tied to specific contributors.
+
+## Methods
+
+### getAddress(projectNftPolicy)
+
+Derives the blockchain address for the contributor validator based on the project NFT policy.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.project.contributorState.getAddress(projectNftPolicy)
+```
+
+**Parameters:**
+- `projectNftPolicy` (string) – The policy ID of the project NFT
+
+**Returns:**
+- `Promise<string>` – The derived contributor address for the project
+
+**Example:**
+```typescript
+try {
+  const address = await sdk.provider.core.project.contributorState.getAddress("a1b2c3d4...");
+  console.log("Contributor address:", address);
+} catch (error) {
+  console.error("Failed to derive contributor address:", error);
+}
+```
+
+**Throws:**
+- `SdkError` – When address derivation fails
+
+---
+
+### getUtxos(projectNftPolicy?, address?)
+
+Retrieves UTXOs associated with a project's contributors.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.project.contributorState.getUtxos(projectNftPolicy?, address?)
+```
+
+**Parameters:**
+- `projectNftPolicy` (string, optional) – The project NFT policy ID
+- `address` (string, optional) – The contributor address
+
+**Returns:**
+- `Promise<Utxo[]>` – An array of contributor UTXOs
+
+**Example:**
+```typescript
+try {
+  const utxos = await sdk.provider.core.project.contributorState.getUtxos("a1b2c3d4...");
+  console.log(`Found ${utxos.length} contributor UTXOs`);
+} catch (error) {
+  console.error("Error fetching contributor UTXOs:", error);
+}
+```
+
+**Behavior:**
+- If `address` is not provided, it is derived from the `projectNftPolicy`
+- At least one of `projectNftPolicy` or `address` must be provided
+
+**Throws:**
+- `SdkError` – When neither input is provided or fetching fails
+
+---
+
+### getUtxoByAlias(projectId, alias)
+
+Retrieves a specific contributor UTXO based on the contributor's alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.project.contributorState.getUtxoByAlias(projectId, alias)
+```
+
+**Parameters:**
+- `projectId` (string) – The project NFT policy ID
+- `alias` (string) – The alias of the contributor
+
+**Returns:**
+- `Promise<Utxo>` – The matching contributor UTXO
+
+**Example:**
+```typescript
+try {
+  const utxo = await sdk.provider.core.project.contributorState.getUtxoByAlias("a1b2c3d4...", "alice42");
+  console.log("Contributor UTXO found:", utxo.txHash);
+} catch (error) {
+  console.error("Failed to fetch contributor UTXO:", error);
+}
+```
+
+**Behavior:**
+1. Calls `getUtxos()` to retrieve all contributor UTXOs
+2. Filters for UTXOs containing an asset name that matches `alias`
+3. Asset names are converted from hex for comparison
+
+**Throws:**
+- `SdkError` – If no matching UTXO is found or if the operation fails
+
+**Use Cases:**
+- Verifying contributions tied to a specific alias
+- Displaying contributor metadata or statuses
+- Validating project involvement for a contributor

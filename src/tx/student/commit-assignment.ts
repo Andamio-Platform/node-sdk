@@ -18,7 +18,7 @@ import { SdkError } from "../../common/error";
 
 
 
-export async function commitToAsignmentTx({ client, provider, alias, courseId, moduleTokenName, assignmentEvidenceInHex }: { client: UtxorpcClient, provider: Provider, alias: string, courseId: string, moduleTokenName: string, assignmentEvidenceInHex?: string }) {
+export async function commitAsignmentTx({ client, provider, alias, courseId, moduleTokenName, assignmentEvidenceInHex }: { client: UtxorpcClient, provider: Provider, alias: string, courseId: string, moduleTokenName: string, assignmentEvidenceInHex?: string }) {
 
     const maestro = new MaestroProvider({
         network: "Preprod",

@@ -1,0 +1,103 @@
+# Instance
+
+The Instance provides functionality for managing and querying UTXOs associated with specific instances in the Andamio network. This enables interaction with various instance components like modules, courses, assignments, and treasury operations.
+
+## Overview
+
+An Instance represents a specific deployment or configuration within the Andamio network. Each instance contains multiple UTXOs that represent different components and scripts, which can be filtered and queried based on their type or associated policy.
+
+## Types
+
+### InstanceFilter
+
+Defines the available filter types for instance UTXOs:
+
+```typescript
+type InstanceFilter =
+    | 'ModuleScripts'
+    | 'CourseStateScripts'
+    | 'AssignmentValidator'
+    | 'TreasuryScripts'
+    | 'TreasuryToken'
+    | 'Escrow1'
+    | 'ContributorStateScripts'
+```
+
+## Methods
+
+### getUtxos(policy?, filter?)
+
+Retrieves UTXOs for the instance with optional filtering by policy ID and component type.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.instance.getUtxos(policy?, filter?)
+```
+
+**Parameters:**
+- `policy` (string, optional) - Policy ID to filter UTXOs by instance policy
+- `filter` (InstanceFilter, optional) - Component type to filter UTXOs by
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of UTXOs matching the specified criteria
+
+**Example:**
+```typescript
+// Get all instance UTXOs
+try {
+  const allUtxos = await sdk.provider.core.course.instance.getUtxos();
+  console.log(`Found ${allUtxos.length} instance UTXOs`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+
+// Get UTXOs filtered by component type
+try {
+  const moduleUtxos = await sdk.provider.core.course.instance.getUtxos(undefined, 'ModuleScripts');
+  console.log(`Found ${moduleUtxos.length} module script UTXOs`);
+} catch (error) {
+  console.error('Failed to fetch module UTXOs:', error);
+}
+
+// Get UTXOs filtered by policy ID
+try {
+  const policyId = "a1b2c3d4e5f6...";
+  const policyUtxos = await sdk.provider.core.course.instance.getUtxos(policyId);
+  console.log(`Found ${policyUtxos.length} UTXOs for policy`);
+} catch (error) {
+  console.error('Failed to fetch policy UTXOs:', error);
+}
+
+// Get UTXOs with both filters
+try {
+  const policyId = "a1b2c3d4e5f6...";
+  const treasuryUtxos = await sdk.provider.core.course.instance.getUtxos(policyId, 'TreasuryScripts');
+  console.log(`Found ${treasuryUtxos.length} treasury UTXOs for policy`);
+} catch (error) {
+  console.error('Failed to fetch filtered UTXOs:', error);
+}
+```
+
+**Behavior:**
+1. Retrieves all UTXOs from the instance address with the instance policy
+2. If a `filter` is provided, filters UTXOs by assets containing the specified component name
+3. If a `policy` is provided, filters UTXOs by matching the policy ID in the datum
+4. Both filters can be applied together for more specific results
+
+**Throws:**
+- `SdkError` - When the UTXO fetch operation fails
+- `Error` - When no UTXOs are found matching the specified filter or policy
+
+**Filter Types:**
+- **ModuleScripts**: UTXOs containing module-related scripts
+- **CourseStateScripts**: UTXOs for course state management
+- **AssignmentValidator**: UTXOs for assignment validation logic
+- **TreasuryScripts**: UTXOs for treasury operations
+- **TreasuryToken**: UTXOs containing treasury tokens
+- **Escrow1**: UTXOs for escrow functionality
+- **ContributorStateScripts**: UTXOs for contributor state management
+
+**Notes:**
+- Filters are applied by matching asset names within UTXOs
+- Policy filtering uses the datum's policy ID field for comparison
+- The method returns an empty array if no UTXOs match the criteria after applying both the instance policy and any additional filters

@@ -1,0 +1,149 @@
+# Course State
+
+The Course State provides functionality for managing and querying course-related blockchain data. This enables the tracking and retrieval of course metadata, local state tokens, and course-level UTXOs.
+
+## Overview
+
+Course State manages UTXOs that represent the on-chain state of a course. Each course is associated with a validator address derived from its NFT policy. Additionally, Course State handles the derivation of local state token policies, allowing you to track the evolution of course-level data.
+
+## Methods
+
+### getAddress(courseNftPolicy)
+
+Derives the blockchain address for a course’s state validator based on the course NFT policy.
+
+**Syntax:**
+```typescript
+const address = await sdk.provider.core.course.courseState.getAddress(courseNftPolicy)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string) – The policy ID of the course NFT
+
+**Returns:**
+- `Promise<string>` – The derived course state validator address
+
+**Example:**
+```typescript
+try {
+  const coursePolicy = "a1b2c3d4e5f6...";
+  const address = await sdk.provider.core.course.courseState.getAddress(coursePolicy);
+  console.log("Course state address:", address);
+} catch (error) {
+  console.error("Failed to derive address:", error);
+}
+```
+
+**Throws:**
+- `SdkError` – When address derivation fails
+
+---
+
+### getCourseStateTokenPolicy(courseNftPolicy)
+
+Derives the policy ID of the local state token associated with a course. This token represents the on-chain state of the course.
+
+**Syntax:**
+```typescript
+const policyId = await sdk.provider.core.course.courseState.getCourseStateTokenPolicy(courseNftPolicy)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string) – The policy ID of the course NFT
+
+**Returns:**
+- `Promise<string>` – The policy ID of the course's local state token
+
+**Example:**
+```typescript
+try {
+  const policy = await sdk.provider.core.course.courseState.getCourseStateTokenPolicy("a1b2c3d4...");
+  console.log("Local state token policy ID:", policy);
+} catch (error) {
+  console.error("Failed to retrieve course state token policy:", error);
+}
+```
+
+**Throws:**
+- `SdkError` – When token policy derivation fails
+
+---
+
+### getUtxos(courseNftPolicy?, address?)
+
+Retrieves UTXOs associated with a course’s state, using either a course policy or a direct address.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.courseState.getUtxos(courseNftPolicy?, address?)
+```
+
+**Parameters:**
+- `courseNftPolicy` (string, optional) – The course NFT policy ID (used to derive address)
+- `address` (string, optional) – Direct address to query UTXOs from
+
+**Returns:**
+- `Promise<Utxo[]>` – Array of course state UTXOs
+
+**Example:**
+```typescript
+try {
+  const coursePolicy = "a1b2c3d4...";
+  const utxos = await sdk.provider.core.course.courseState.getUtxos(coursePolicy);
+  console.log(`Found ${utxos.length} course UTXOs`);
+} catch (error) {
+  console.error("Error retrieving course UTXOs:", error);
+}
+```
+
+**Behavior:**
+- If `address` is not provided, derives the course validator address from `courseNftPolicy`
+- Requires at least one of the parameters
+
+**Throws:**
+- `SdkError` – When no input is provided or when UTXO fetching fails
+
+---
+
+### getUtxoByAlias(courseId, alias)
+
+Retrieves a specific course state UTXO based on a student alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.courseState.getUtxoByAlias(courseId, alias)
+```
+
+**Parameters:**
+- `courseId` (string) – The course NFT policy ID
+- `alias` (string) – The student's alias
+
+**Returns:**
+- `Promise<Utxo>` – The UTXO matching the specified alias
+
+**Example:**
+```typescript
+try {
+  const utxo = await sdk.provider.core.course.courseState.getUtxoByAlias("a1b2c3d4...", "student123");
+  console.log("UTXO found:", utxo.txHash);
+} catch (error) {
+  if (error.message.includes("No UTXO found")) {
+    console.error("No matching UTXO found for student alias");
+  } else {
+    console.error("Error fetching UTXO:", error);
+  }
+}
+```
+
+**Behavior:**
+1. Calls `getUtxos()` to retrieve all course state UTXOs
+2. Filters for UTXOs containing an asset name that matches the alias
+3. Asset names are decoded from hexadecimal format for comparison
+
+**Throws:**
+- `SdkError` – When no matching UTXO is found or fetching fails
+
+**Use Cases:**
+- Looking up course participation by a specific student  
+- Querying metadata tied to an alias  
+- Validating student’s presence or progress at the course level

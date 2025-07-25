@@ -1,0 +1,92 @@
+# Instance Governance
+
+The Instance Governance provides functionality for managing and querying governance-related UTXOs associated with courses and projects. This enables interaction with the governance smart contract that oversees individual instances within the system.
+
+## Overview
+
+Instance Governance manages UTXOs that contain governance information for specific courses or projects. Each UTXO represents governance state for a particular instance, identified by a unique course ID or project ID stored in the datum.
+
+## Methods
+
+### getUtxos()
+
+Retrieves all UTXOs associated with the governance smart contract that contain valid governance datum structures.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.instanceGovernance.getUtxos()
+```
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of UTXOs from the governance contract with valid governance data
+
+**Example:**
+```typescript
+try {
+  const utxos = await sdk.provider.core.course.instanceGovernance.getUtxos();
+  console.log(`Found ${utxos.length} governance instances`);
+  
+  // Process each governance UTXO
+  utxos.forEach((utxo, index) => {
+    console.log(`Governance instance ${index + 1}:`, utxo.txHash);
+  });
+} catch (error) {
+  console.error('Failed to fetch governance UTXOs:', error);
+}
+```
+
+**Behavior:**
+- Retrieves all UTXOs from the governance contract address
+- Filters UTXOs to include only those with valid governance datum structures
+- UTXOs without proper datum are automatically excluded
+
+**Throws:**
+- `SdkError` - When the UTXO fetch operation fails
+
+---
+
+### getUtxoByCourseIdOrProjectId(id)
+
+Retrieves a specific governance UTXO by its associated course ID or project ID.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.instanceGovernance.getUtxoByCourseIdOrProjectId(id)
+```
+
+**Parameters:**
+- `id` (string) - The course ID or project ID to search for (in hexadecimal format)
+
+**Returns:**
+- `Promise<Utxo>` - The governance UTXO for the specified course or project
+
+**Example:**
+```typescript
+try {
+  const courseId = "48656c6c6f20576f726c64"; // "Hello World" in hex
+  const utxo = await sdk.provider.core.course.instanceGovernance.getUtxoByCourseIdOrProjectId(courseId);
+  
+  console.log('Found governance UTXO for course:', utxo.txHash);
+  console.log('Governance data:', utxo.parsedValued?.datum);
+} catch (error) {
+  if (error.message.includes('No UTXO found')) {
+    console.error('No governance found for ID:', courseId);
+  } else {
+    console.error('Error retrieving governance:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Retrieves all governance UTXOs using `getUtxos()`
+2. Searches through UTXOs to find one with a datum containing the specified ID
+3. Compares the ID from the datum's second field with the provided ID
+4. Returns the first matching UTXO found
+
+**Throws:**
+- `SdkError` - When no UTXO is found with the specified ID or when the fetch operation fails
+
+**Notes:**
+- The ID parameter should be provided in hexadecimal format
+- The method searches the second field of the datum structure for the ID match
+- Only returns the first matching UTXO if multiple exist

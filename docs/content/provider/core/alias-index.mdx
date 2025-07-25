@@ -1,0 +1,82 @@
+# Alias Index
+
+The Alias Index provides functionality for managing and querying UTXOs associated with alias registration and validation on the Cardano blockchain.
+
+## Overview
+
+The Alias Index system maintains a sorted list of aliases using UTXOs that contain datum information about alias ranges. Each UTXO represents a position in the sorted alias structure, containing information about the prior and subsequent aliases in the sequence.
+
+## Methods
+
+### getUtxos()
+
+Retrieves all UTXOs associated with the alias index contract.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.aliasIndex.getUtxos()
+```
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of UTXOs from the alias index contract
+
+**Example:**
+```typescript
+try {
+  const utxos = await sdk.provider.core.course.aliasIndex.getUtxos();
+  console.log(`Found ${utxos.length} UTXOs in alias index`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+```
+
+**Throws:**
+- `SdkError` - When the UTXO fetch operation fails
+
+---
+
+### getUtxoByNewAlias(alias)
+
+Finds the appropriate UTXO where a new alias should be inserted in the sorted alias structure. This method validates that the alias doesn't already exist and locates the correct position based on lexicographical ordering.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.aliasIndex.getUtxoByNewAlias(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The new alias to find insertion point for
+
+**Returns:**
+- `Promise<Utxo>` - The UTXO representing the position where the new alias should be inserted
+
+**Example:**
+```typescript
+try {
+  const newAlias = "mynewalias";
+  const utxo = await sdk.provider.core.course.aliasIndex.getUtxoByNewAlias(newAlias);
+  console.log('Found insertion point UTXO:', utxo.txHash);
+} catch (error) {
+  if (error.message === 'Alias already exists') {
+    console.error('This alias is already registered');
+  } else {
+    console.error('Error finding insertion point:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Converts the input alias to hexadecimal format for comparison
+2. Retrieves all alias index UTXOs
+3. For each UTXO, parses the datum to extract prior and subsequent alias information
+4. Finds the UTXO where: `prior_alias ≤ new_alias ≤ subsequent_alias`
+5. Validates that the new alias doesn't match any existing aliases
+
+**Throws:**
+- `SdkError` - When the alias already exists (matches prior or subsequent alias)
+- `SdkError` - When no suitable UTXO is found for the alias insertion point
+
+**Notes:**
+- Aliases are compared in hexadecimal format for consistent ordering
+- The method ensures uniqueness by checking against both prior and subsequent aliases
+- UTXOs without valid datum data are automatically filtered out

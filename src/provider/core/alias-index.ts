@@ -75,7 +75,7 @@ export class AliasIndex {
                 alias_hex === prior_alias ||
                 alias_hex === subsequent_alias
             ) {
-                throw new Error('Alias already exists')
+                throw new SdkError('Alias already exists')
             } else if (
                 prior_alias <= alias_hex &&
                 alias_hex <= subsequent_alias

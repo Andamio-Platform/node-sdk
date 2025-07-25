@@ -1,0 +1,81 @@
+# Global State
+
+The Global State provides functionality for managing and querying UTXOs that represent the current state of registered aliases in the system.
+
+## Overview
+
+The Global State maintains UTXOs that contain information about registered aliases. Each UTXO represents an active alias registration and contains associated metadata and assets that identify the alias.
+
+## Methods
+
+### getUtxos()
+
+Retrieves all UTXOs associated with the global state contract.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.globalState.getUtxos()
+```
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of UTXOs from the global state contract
+
+**Example:**
+```typescript
+try {
+  const utxos = await sdk.provider.core.course.globalState.getUtxos();
+  console.log(`Found ${utxos.length} registered aliases`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+```
+
+**Throws:**
+- `SdkError` - When the UTXO fetch operation fails
+
+---
+
+### getUtxoByAlias(alias)
+
+Retrieves a specific UTXO by its alias name from the global state. This method finds the UTXO that contains the asset representing the given alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.globalState.getUtxoByAlias(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The alias name to search for
+
+**Returns:**
+- `Promise<Utxo>` - The UTXO containing the specified alias
+
+**Example:**
+```typescript
+try {
+  const alias = "myalias";
+  const utxo = await sdk.provider.core.course.globalState.getUtxoByAlias(alias);
+  console.log('Found alias UTXO:', utxo.txHash);
+  console.log('Alias assets:', utxo.parsedValued?.assets);
+} catch (error) {
+  if (error.message.includes('No UTXO found for alias')) {
+    console.error('Alias not found:', alias);
+  } else {
+    console.error('Error retrieving alias:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Queries UTXOs from the global state contract filtered by the alias
+2. Searches through the returned UTXOs for assets matching the alias name
+3. Returns the first UTXO that contains an asset with the specified alias name
+4. Asset names are decoded from hexadecimal format for comparison
+
+**Throws:**
+- `SdkError` - When no UTXO is found for the specified alias or when the fetch operation fails
+
+**Notes:**
+- The method looks for assets where the decoded name matches the provided alias
+- Asset names are processed by removing a 6-character prefix before comparison
+- Only returns the first matching UTXO if multiple exist
