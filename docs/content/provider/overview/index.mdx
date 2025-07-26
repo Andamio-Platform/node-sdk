@@ -1,0 +1,175 @@
+# Overview Module - Introduction
+
+The Overview provides network-level utilities to query aliases, instances, and user data across the Andamio network. This serves as a high-level interface for accessing comprehensive network information.
+
+## Overview
+
+The Overview class aggregates various network-wide query functions and specialized modules like Project and Stats. It provides convenient methods to check alias availability, retrieve user data, and get network-wide statistics without needing to interact with individual contract addresses.
+
+## Properties
+
+### project
+
+Access to project-specific functionality and queries.
+
+**Type:** `Project`
+
+**Example:**
+```typescript
+const projectData = await sdk.provider.core.course.overview.project.someMethod();
+```
+
+### stats
+
+Access to network statistics and analytics.
+
+**Type:** `Stats`
+
+**Example:**
+```typescript
+const networkStats = await sdk.provider.core.course.overview.stats.getNetworkStats();
+```
+
+## Methods
+
+### checkAliasAvailability(alias)
+
+Checks whether a specific alias is available for registration.
+
+**Syntax:**
+```typescript
+const isAvailable = await sdk.provider.core.course.overview.checkAliasAvailability(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The alias name to check for availability
+
+**Returns:**
+- `Promise<boolean>` - `true` if the alias is available, `false` if it's already taken
+
+**Example:**
+```typescript
+try {
+  const aliasToCheck = "mynewalias";
+  const isAvailable = await sdk.provider.core.course.overview.checkAliasAvailability(aliasToCheck);
+  
+  if (isAvailable) {
+    console.log(`Alias "${aliasToCheck}" is available for registration`);
+  } else {
+    console.log(`Alias "${aliasToCheck}" is already taken`);
+  }
+} catch (error) {
+  console.error('Failed to check alias availability:', error);
+}
+```
+
+---
+
+### getAllAliases()
+
+Fetches all known aliases registered on the network.
+
+**Syntax:**
+```typescript
+const aliases = await sdk.provider.core.course.overview.getAllAliases()
+```
+
+**Returns:**
+- `Promise<string[]>` - Array of all registered alias names
+
+**Example:**
+```typescript
+try {
+  const allAliases = await sdk.provider.core.course.overview.getAllAliases();
+  console.log(`Found ${allAliases.length} registered aliases`);
+  
+  // Display first 10 aliases
+  console.log('Sample aliases:', allAliases.slice(0, 10));
+  
+  // Check if specific alias exists
+  const targetAlias = "existinguser";
+  if (allAliases.includes(targetAlias)) {
+    console.log(`Found alias: ${targetAlias}`);
+  }
+} catch (error) {
+  console.error('Failed to fetch all aliases:', error);
+}
+```
+
+---
+
+### getUserData(alias)
+
+Fetches comprehensive user data associated with a specific alias.
+
+**Syntax:**
+```typescript
+const userData = await sdk.provider.core.course.overview.getUserData(alias)
+```
+
+**Parameters:**
+- `alias` (string) - The alias to retrieve data for
+
+**Returns:**
+- `Promise<{ info: string; data: AliasData }>` - Object containing user information and structured alias data
+
+**Example:**
+```typescript
+try {
+  const alias = "exampleuser";
+  const userData = await sdk.provider.core.course.overview.getUserData(alias);
+  
+  console.log('User info:', userData.info);
+  console.log('User data:', userData.data);
+  
+  // Access specific user data fields
+  if (userData.data) {
+    console.log('User profile:', userData.data.profile);
+    console.log('User achievements:', userData.data.achievements);
+  }
+} catch (error) {
+  console.error('Failed to fetch user data:', error);
+}
+```
+
+---
+
+### getAllInstancesList()
+
+Fetches all policy IDs categorized as courses or projects across the network.
+
+**Syntax:**
+```typescript
+const instances = await sdk.provider.core.course.overview.getAllInstancesList()
+```
+
+**Returns:**
+- `Promise<{ courses: string[]; projects: string[] }>` - Object containing arrays of course and project policy IDs
+
+**Example:**
+```typescript
+try {
+  const instances = await sdk.provider.core.course.overview.getAllInstancesList();
+  
+  console.log(`Found ${instances.courses.length} courses`);
+  console.log(`Found ${instances.projects.length} projects`);
+  
+  // List course policy IDs
+  console.log('Course policies:', instances.courses);
+  
+  // List project policy IDs
+  console.log('Project policies:', instances.projects);
+  
+  // Total instances
+  const totalInstances = instances.courses.length + instances.projects.length;
+  console.log(`Total instances on network: ${totalInstances}`);
+} catch (error) {
+  console.error('Failed to fetch instances list:', error);
+}
+```
+
+**Use Cases:**
+- Discovering all available courses and projects
+- Building directory interfaces for the network
+- Analytics and reporting on network growth
+- Validating instance policy IDs

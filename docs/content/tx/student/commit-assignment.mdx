@@ -1,0 +1,319 @@
+# Commit Assignment
+
+This function creates a transaction for students to submit their assignments for a specific course module, moving the course state token to the assignment validator for instructor review.
+
+---
+
+## `commitAssignmentTx(params)`
+
+Builds a transaction that allows a student to submit an assignment for a course module, transferring their course state token to the assignment validator where it awaits instructor approval.
+
+### **Signature**
+```ts
+export async function commitAssignmentTx({
+  client,
+  provider,
+  alias,
+  courseId,
+  moduleTokenName,
+  assignmentEvidenceInHex
+}: {
+  client: UtxorpcClient;
+  provider: Provider;
+  alias: string;
+  courseId: string;
+  moduleTokenName: string;
+  assignmentEvidenceInHex?: string;
+}): Promise<string>
+```
+
+### **Parameters**
+
+| Name                   | Type           | Description                                          |
+|------------------------|----------------|------------------------------------------------------|
+| client                 | `UtxorpcClient`| UTXO RPC client for blockchain interactions          |
+| provider               | `Provider`     | Provider instance for accessing core functionality   |
+| alias                  | `string`       | Alias of the student submitting the assignment       |
+| courseId               | `string`       | Unique identifier of the course                      |
+| moduleTokenName        | `string`       | Name of the module token for the assignment          |
+| assignmentEvidenceInHex| `string?`      | Optional hex-encoded evidence/proof of completion    |
+
+### **Returns**
+
+A promise that resolves to a string containing the transaction CBOR that can be signed and submitted.
+
+### **Transaction Structure**
+
+The function constructs a transaction with the following components:
+
+#### **Inputs**
+1. **Course State UTXO**:
+   - Spends from the course state validator using Plutus V3 script
+   - Uses inline datum and reference script
+   - Redeemer: `CourseStateCommitAssignmentAction(alias, moduleTokenName, assignmentEvidenceInHex)`
+
+2. **User Access Token UTXO**:
+   - Spends the student's access token for authorization
+   - Simple UTXO input (no script)
+
+#### **Reference Inputs**
+- **Module Reference UTXO**: Read-only reference to validate module requirements
+
+#### **Outputs**
+1. **Assignment State Output**:
+   - Address: Assignment state address for the course
+   - Token: Course state token (`courseStateTokenPolicy + hexEncodedAlias`)
+   - Datum: Assignment state datum containing submission details
+
+2. **User Access Token Return**:
+   - Returns access token to student's address
+   - Token: `accessTokenPolicyId + "323232" + hexEncodedAlias`
+
+### **Behavior**
+
+1. **Setup**: Initializes Maestro provider and MeshTxBuilder with Preprod network configuration
+2. **Address Resolution**: Resolves addresses for course state and assignment state
+3. **UTXO Collection**: Gathers required UTXOs:
+   - Student's UTXOs (including access token and collateral)
+   - Course state UTXO for the student
+   - Course state reference script
+   - Module reference UTXO for validation
+4. **Datum Validation**: Validates the student's course state datum
+5. **Transaction Building**: Constructs the transaction with:
+   - Course state spending with assignment commit action
+   - User access token spending
+   - Module reference as read-only input
+   - Assignment state output with submission details
+   - Access token return
+6. **Completion**: Builds and returns the transaction CBOR
+
+### **Assignment State Datum Structure**
+
+The assignment state datum contains:
+- **Module Token Name**: The module being submitted for
+- **Course State Token Policy**: Policy of the course state token
+- **Student Alias**: The submitting student's alias
+- **Course State Address**: Address to return the token after approval
+- **Course State Datum**: Original course state data
+- **Assignment Evidence**: Optional submission evidence
+
+### **Redeemer Action**
+
+The course state redeemer uses `CourseStateCommitAssignmentAction` which includes:
+- Student alias
+- Module token name
+- Assignment evidence (optional)
+
+### **Script References**
+
+- **Course State Script**: Retrieved dynamically from instance UTXOs ("CourseStateScripts")
+- **Module Reference**: Used as read-only reference for validation
+
+### **Errors**
+
+Throws errors if:
+- User access token UTXO not found for the student alias
+- Invalid course state datum for the student
+- Course state UTXO cannot be retrieved
+- Module reference UTXO is missing
+- Transaction building fails
+
+---
+
+## Example Usage
+
+### Basic Assignment Submission
+
+```typescript
+import { commitAssignmentTx } from './commit-assignment';
+
+// Submit assignment for a module
+const txCbor = await commitAssignmentTx({
+  client: utxorpcClient,
+  provider: sdkProvider,
+  alias: "student_bob",
+  courseId: "blockchain-fundamentals-2024",
+  moduleTokenName: "IntroToBlockchain",
+  assignmentEvidenceInHex: "48656c6c6f20576f726c64" // "Hello World" in hex
+});
+
+// Sign and submit the transaction
+const signedTx = await wallet.signTx(txCbor);
+const txHash = await wallet.submitTx(signedTx);
+console.log(`Assignment submitted! Transaction: ${txHash}`);
+```
+
+### Assignment with Documentation
+
+```typescript
+// Submit assignment with detailed evidence
+const evidence = {
+  submissionType: "project",
+  githubRepo: "https://github.com/student/blockchain-project",
+  description: "Smart contract implementation with tests",
+  completionDate: "2024-01-15"
+};
+
+// Convert evidence to hex
+const evidenceHex = Buffer.from(JSON.stringify(evidence)).toString('hex');
+
+const txCbor = await commitAssignmentTx({
+  client,
+  provider,
+  alias: "student_alice",
+  courseId: "advanced-smart-contracts",
+  moduleTokenName: "ContractDevelopment",
+  assignmentEvidenceInHex: evidenceHex
+});
+```
+
+### Student Learning Workflow
+
+```typescript
+// Complete student assignment submission workflow
+async function submitAssignment(
+  studentAlias: string,
+  courseId: string,
+  moduleTokenName: string,
+  submissionData: any
+) {
+  try {
+    // Prepare evidence
+    const evidenceHex = submissionData ? 
+      Buffer.from(JSON.stringify(submissionData)).toString('hex') : 
+      undefined;
+    
+    // Build submission transaction
+    const txCbor = await commitAssignmentTx({
+      client,
+      provider,
+      alias: studentAlias,
+      courseId,
+      moduleTokenName,
+      assignmentEvidenceInHex: evidenceHex
+    });
+    
+    // Process transaction
+    const result = await processTransaction(txCbor);
+    
+    return {
+      success: true,
+      txHash: result.txHash,
+      module: moduleTokenName,
+      submissionTime: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error("Failed to submit assignment:", error);
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### Batch Assignment Submissions
+
+```typescript
+// Submit multiple assignments (sequential)
+async function submitMultipleAssignments(
+  studentAlias: string,
+  submissions: Array<{
+    courseId: string;
+    moduleTokenName: string;
+    evidence?: any;
+  }>
+) {
+  const results = [];
+  
+  for (const submission of submissions) {
+    const evidenceHex = submission.evidence ?
+      Buffer.from(JSON.stringify(submission.evidence)).toString('hex') :
+      undefined;
+    
+    try {
+      const txCbor = await commitAssignmentTx({
+        client,
+        provider,
+        alias: studentAlias,
+        courseId: submission.courseId,
+        moduleTokenName: submission.moduleTokenName,
+        assignmentEvidenceInHex: evidenceHex
+      });
+      
+      results.push({
+        module: submission.moduleTokenName,
+        txCbor,
+        status: 'ready'
+      });
+    } catch (error) {
+      results.push({
+        module: submission.moduleTokenName,
+        status: 'failed',
+        error: error.message
+      });
+    }
+  }
+  
+  return results;
+}
+```
+
+---
+
+## Workflow Integration
+
+### Assignment Lifecycle
+
+1. **Student Enrollment**: Student enrolls in course and receives course state token
+2. **Module Study**: Student completes learning materials for a module
+3. **Assignment Submission**: Student uses `commitAssignmentTx` to submit assignment
+4. **Pending Review**: Assignment sits in assignment validator awaiting approval
+5. **Instructor Review**: Course creator reviews and accepts/rejects assignment
+6. **Completion**: Upon acceptance, student receives module completion token
+
+### State Transitions
+
+- **Before**: Course state token at course state address (student control)
+- **During**: Course state token moves to assignment state address (validator control)
+- **After**: Upon approval, token moves to course state with updated completion status
+
+### Authorization Model
+
+- **Student Verification**: Uses access token to verify student identity
+- **Course Enrollment**: Validates student has active course state token
+- **Module Validation**: References module token to ensure valid assignment target
+
+---
+
+## Technical Notes
+
+### Network Configuration
+- **Hardcoded Network**: Currently configured for Preprod testnet
+- **Maestro Integration**: Uses Maestro for all blockchain operations
+- **API Key**: Contains hardcoded Maestro API key (should be externalized)
+
+### Token Management
+- **Course State Token**: Represents student's enrollment and progress
+- **Token Movement**: Token physically moves between validators to represent state
+- **Access Control**: Only token holder can initiate assignment submission
+
+### Data Integrity
+- **Assignment Evidence**: Optional hex-encoded data for submission proof
+- **Datum Preservation**: Original course state datum preserved in assignment state
+- **Module Reference**: Read-only validation against module requirements
+
+### Security Features
+- **Script Validation**: Uses Plutus V3 scripts for secure state transitions
+- **Access Token Authorization**: Requires valid student access token
+- **Module Validation**: Validates assignment against module specifications
+- **Datum Integrity**: Preserves course state data through transition
+
+### Performance Considerations
+- **Reference Scripts**: Uses reference scripts to minimize transaction size
+- **Inline Datums**: Employs inline datums for efficient data storage
+- **Read-Only References**: Uses read-only references for validation without spending
+- **Collateral Management**: Automatically selects appropriate collateral UTXO
+
+### Integration Points
+- **Course Management**: Integrates with course state management
+- **Module System**: References module specifications for validation
+- **Assignment Review**: Provides data structure for instructor review process
+- **Progress Tracking**: Updates student progress through course completion

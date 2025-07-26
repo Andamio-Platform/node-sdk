@@ -1,0 +1,189 @@
+# Enrollee Count
+
+These functions provide comprehensive enrollment statistics for courses and projects, including both enrolled and completed participants across different policies and aliases.
+
+---
+
+## `enrolleeCount(core, policies)`
+
+Retrieves enrollment and completion statistics for a set of policies.
+
+### **Signature**
+```ts
+export async function enrolleeCount(core: Core, policies: string[]): Promise<{
+  policy: string;
+  state: string;
+  enrolled: number;
+  completed: number;
+}[]>
+```
+
+### **Parameters**
+
+| Name     | Type       | Description                              |
+|----------|------------|------------------------------------------|
+| core     | `Core`     | Core SDK object                          |
+| policies | `string[]` | Array of policy IDs to check against    |
+
+### **Returns**
+
+A promise that resolves to an array of objects, each containing:
+
+- `policy`: The policy ID
+- `state`: `"Course"` or `"Project"` (based on the state type)
+- `enrolled`: Number of enrolled participants
+- `completed`: Number of participants who completed the course/project
+
+### **Behavior**
+
+1. **Fetches completion data**: Uses `aliasesWhoCompletedByPolicies` to get aliases that completed local states for the given policies.
+2. **Retrieves instance addresses**: Gets all instance UTXOs and filters addresses by state:
+   - `ContributorStateScripts` (for projects)
+   - `CourseStateScripts` (for courses) 
+   - `AssignmentValidator` (for courses)
+3. **Counts enrollments**:
+   - For **projects** (`ContributorStateScripts`): Counts unique assets across UTXOs
+   - For **courses** (`CourseStateScripts`/`AssignmentValidator`): Counts total UTXOs
+4. **Maps completion data**: Associates completion counts with each policy from the earlier fetch.
+
+### **State Mapping**
+
+- `ContributorStateScripts` → `Project`
+- `CourseStateScripts` → `Course` 
+- `AssignmentValidator` → `Course`
+
+### **Errors**
+
+Throws `SdkError` if:
+- Failed to fetch completed local states
+- Any other error occurs during processing
+
+---
+
+## `aliasesWhoCompletedByPolicies(core, policies)`
+
+Helper function that identifies which aliases have completed local states for given policies.
+
+### **Signature**
+```ts
+export async function aliasesWhoCompletedByPolicies(core: Core, policies: string[]): Promise<{
+  policy: string;
+  aliases: string[];
+}[] | undefined>
+```
+
+### **Parameters**
+
+| Name     | Type       | Description                              |
+|----------|------------|------------------------------------------|
+| core     | `Core`     | Core SDK object                          |
+| policies | `string[]` | Array of policy IDs to check against    |
+
+### **Returns**
+
+A promise that resolves to an array of objects containing:
+
+- `policy`: The policy ID
+- `aliases`: Array of alias names that completed states for this policy
+
+Returns `undefined` if no completed states are found.
+
+### **Behavior**
+
+1. Calls `CompletedLocalStates` to get all aliases with completed states.
+2. For each policy, filters aliases that have completed local states matching that policy.
+3. Returns the mapping of policies to their completing aliases.
+
+---
+
+## `CompletedLocalStates(core)`
+
+Internal helper function that retrieves all aliases with completed local states from the global state.
+
+### **Signature**
+```ts
+export async function CompletedLocalStates(core: Core): Promise<{
+  alias: string;
+  completedStates: any[];
+}[] | undefined>
+```
+
+### **Parameters**
+
+| Name | Type   | Description      |
+|------|--------|------------------|
+| core | `Core` | Core SDK object  |
+
+### **Returns**
+
+A promise that resolves to an array of objects containing:
+
+- `alias`: The alias name
+- `completedStates`: Array of completed local state data (filtered for tag 121)
+
+Returns `undefined` if no global state UTXOs are found.
+
+### **Behavior**
+
+1. Fetches global state UTXOs.
+2. Extracts datum information for each alias.
+3. Filters credentials to only include completed states (tag 121).
+4. Returns the processed data structure.
+
+---
+
+## Examples
+
+### Basic Usage
+
+```ts
+// Get enrollment stats for specific policies
+const policies = ["policy1", "policy2"];
+const stats = await enrolleeCount(core, policies);
+
+console.log(stats);
+// Output:
+// [
+//   {
+//     policy: "policy1",
+//     state: "Course", 
+//     enrolled: 25,
+//     completed: 18
+//   },
+//   {
+//     policy: "policy2",
+//     state: "Project",
+//     enrolled: 12, 
+//     completed: 8
+//   }
+// ]
+```
+
+### Check Completions Only
+
+```ts
+// Get just the completion data
+const completions = await aliasesWhoCompletedByPolicies(core, policies);
+
+console.log(completions);
+// Output:
+// [
+//   {
+//     policy: "policy1",
+//     aliases: ["alice", "bob", "charlie"]
+//   },
+//   {
+//     policy: "policy2", 
+//     aliases: ["dave", "eve"]
+//   }
+// ]
+```
+
+---
+
+## Notes
+
+- **Unique Asset Counting**: For projects, the system counts unique assets rather than total UTXOs to avoid double-counting participants with multiple contributions.
+- **State Detection**: The function automatically detects whether a policy represents a course or project based on the instance state types found.
+- **Completion Tracking**: Completion is tracked through global state entries with specific plutus data tags (tag 121).
+- **Error Handling**: Returns empty arrays and logs errors for individual failures, but throws `SdkError` for critical failures.

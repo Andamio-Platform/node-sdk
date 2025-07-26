@@ -1,9 +1,452 @@
-# Core - Intro
+# Core Module - Introduction
 
-The Core module provides lower-level Andamio data directly from the Cardano blockchain.
+The Core module provides direct, low-level access to Andamio protocol data stored on the Cardano blockchain. It serves as the foundation layer for all higher-level provider functionality, offering precise control over data retrieval and state management.
 
 ```typescript
 const sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc...")
 
 const coreProvider = sdk.provider.core
 ```
+
+## Overview
+
+The Core module is designed for developers who need direct access to Andamio's on-chain data structures. It provides unfiltered access to UTXOs, datums, and protocol state without abstraction layers, making it ideal for building custom analytics, debugging protocol interactions, or implementing advanced features.
+
+### Key Characteristics
+
+- **Direct Blockchain Access**: Raw UTXO and datum retrieval from validators
+- **Protocol-Level Operations**: Low-level access to Andamio smart contract states
+- **Type-Safe Data**: Strongly typed interfaces for all Andamio data structures
+- **Network Agnostic**: Works across all Cardano networks (Mainnet, Preprod, Preview)
+- **Performance Optimized**: Efficient queries with minimal data processing overhead
+
+---
+
+## Architecture
+
+The Core module is organized into specialized components that handle different aspects of the Andamio protocol:
+
+```typescript
+class Core {
+  // Configuration and network information
+  public readonly andamioConfig: AndamioConfig;
+  public readonly network: string;
+  
+  // Core data access components
+  public aliasIndex: AliasIndex;           // User alias management
+  public globalState: GlobalState;         // Cross-platform user state
+  public indexReference: IndexReference;   // Protocol reference data
+  public userAccessToken: UserAccessToken; // User authentication tokens
+  public localStates: LocalStates;         // Course/project specific states
+}
+```
+
+### Component Responsibilities
+
+#### **Alias Index**
+Manages the platform-wide alias system that provides human-readable identifiers for users.
+
+```typescript
+// Check if an alias is available
+const availableUtxo = await core.aliasIndex.getUtxoByNewAlias("potential_alias");
+
+// Get existing alias data
+const aliasData = await core.aliasIndex.getUtxoByExistingAlias("existing_user");
+```
+
+#### **Global State**
+Tracks user enrollments, completions, and cross-platform achievements.
+
+```typescript
+// Get user's global state
+const globalStateUtxo = await core.globalState.getUtxoByAlias("student_alice");
+
+// Get all global states (for analytics)
+const allGlobalStates = await core.globalState.getUtxos();
+```
+
+#### **Index Reference**
+Provides access to protocol configuration and reference data.
+
+```typescript
+// Get protocol configuration
+const observerStakeAddress = await core.indexReference.getObserverStakeAddress();
+const treasuryAddress = await core.indexReference.getProtocolTreasuryAddress();
+const protocolFee = await core.indexReference.getProtocolFeeAmountInLovelace();
+```
+
+#### **User Access Token**
+Manages user authentication and authorization tokens.
+
+```typescript
+// Get user address from alias
+const userAddress = await core.userAccessToken.getAddressByAlias("instructor_bob");
+
+// Validate user access
+const hasValidToken = await core.userAccessToken.validateTokenForAlias("instructor_bob");
+```
+
+#### **Local States**
+Provides access to course and project-specific state data.
+
+```typescript
+// Course-related states
+const courseState = await core.localStates.course.courseState.getUtxoByAlias(
+  "blockchain-course", 
+  "student_charlie"
+);
+
+// Project-related states
+const projectState = await core.localStates.project.contributorState.getUtxoByAlias(
+  "defi-project",
+  "contributor_diana"
+);
+
+// Instance governance
+const governance = await core.localStates.instanceGovernance.getUtxoByCourseIdOrProjectId(
+  "advanced-smart-contracts"
+);
+```
+
+---
+
+## Data Access Patterns
+
+### **Direct UTXO Retrieval**
+
+The Core module returns raw UTXO objects with minimal processing:
+
+```typescript
+interface AndamioUtxo {
+  input: {
+    txHash: string;
+    outputIndex: number;
+  };
+  output: {
+    address: string;
+    amount: Asset[];
+    plutusData?: PlutusData;
+  };
+  parsedValued?: {
+    datum?: {
+      payload: PlutusData;
+    };
+    script?: Script;
+  };
+}
+```
+
+### **Datum Parsing**
+
+While the Core module returns raw data, it includes parsed datum information when available:
+
+```typescript
+const utxo = await core.globalState.getUtxoByAlias("user_alice");
+
+// Raw plutus data
+const rawDatum = utxo.output.plutusData;
+
+// Parsed datum (if available)
+const parsedDatum = utxo.parsedValued?.datum?.payload;
+
+// Use appropriate parser for the datum type
+const globalStateDatum = parseGlobalStateDatum(parsedDatum);
+```
+
+---
+
+## Common Usage Patterns
+
+### **User State Investigation**
+
+```typescript
+async function investigateUserState(alias: string) {
+  try {
+    // Get all user-related data
+    const globalState = await core.globalState.getUtxoByAlias(alias);
+    const userAddress = await core.userAccessToken.getAddressByAlias(alias);
+    
+    // Parse global state to see enrollments
+    const enrollments = parseGlobalStateDatum(globalState.parsedValued?.datum?.payload);
+    
+    // Get course states for each enrollment
+    const courseStates = await Promise.all(
+      enrollments.courses.map(courseId =>
+        core.localStates.course.courseState.getUtxoByAlias(courseId, alias)
+      )
+    );
+    
+    return {
+      alias,
+      userAddress,
+      globalState: enrollments,
+      courseStates: courseStates.filter(state => state !== null)
+    };
+  } catch (error) {
+    console.error(`Error investigating user state for ${alias}:`, error);
+    throw error;
+  }
+}
+```
+
+### **Course State Analysis**
+
+```typescript
+async function analyzeCourseState(courseId: string) {
+  try {
+    // Get all course-related UTXOs
+    const courseStates = await core.localStates.course.courseState.getUtxos(courseId);
+    const assignmentStates = await core.localStates.course.assignmentState.getUtxos(courseId);
+    const moduleReferences = await core.localStates.course.moduleRef.getUtxos(courseId);
+    const governance = await core.localStates.instanceGovernance.getUtxoByCourseIdOrProjectId(courseId);
+    
+    return {
+      courseId,
+      enrolledStudents: courseStates.length,
+      pendingAssignments: assignmentStates.length,
+      totalModules: moduleReferences.length,
+      governance: governance ? parseInstanceGovernanceDatum(governance.parsedValued?.datum?.payload) : null
+    };
+  } catch (error) {
+    console.error(`Error analyzing course state for ${courseId}:`, error);
+    throw error;
+  }
+}
+```
+
+### **Platform Health Check**
+
+```typescript
+async function platformHealthCheck() {
+  try {
+    // Check core protocol components
+    const aliasIndexHealth = await checkAliasIndexHealth();
+    const globalStateHealth = await checkGlobalStateHealth();
+    const referenceDataHealth = await checkReferenceDataHealth();
+    
+    return {
+      status: 'healthy',
+      components: {
+        aliasIndex: aliasIndexHealth,
+        globalState: globalStateHealth,
+        referenceData: referenceDataHealth
+      },
+      timestamp: new Date().toISOString()
+    };
+  } catch (error) {
+    return {
+      status: 'unhealthy',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    };
+  }
+}
+
+async function checkAliasIndexHealth() {
+  try {
+    // Try to query a known alias or check index state
+    const indexUtxos = await core.aliasIndex.getUtxos();
+    return { status: 'healthy', count: indexUtxos.length };
+  } catch (error) {
+    return { status: 'error', error: error.message };
+  }
+}
+```
+
+---
+
+## Advanced Features
+
+### **Custom Query Builders**
+
+```typescript
+class CustomQueryBuilder {
+  constructor(private core: Core) {}
+  
+  // Build complex queries using core components
+  async getUserCompletionAnalytics(alias: string) {
+    const globalState = await this.core.globalState.getUtxoByAlias(alias);
+    const enrollments = parseGlobalStateDatum(globalState.parsedValued?.datum?.payload);
+    
+    const completionData = await Promise.all(
+      enrollments.courses.map(async (courseId) => {
+        const courseState = await this.core.localStates.course.courseState.getUtxoByAlias(courseId, alias);
+        const modules = await this.core.localStates.course.moduleRef.getUtxos(courseId);
+        
+        return {
+          courseId,
+          totalModules: modules.length,
+          completedModules: courseState ? parseCompletedModules(courseState) : 0
+        };
+      })
+    );
+    
+    return completionData;
+  }
+}
+```
+
+### **Real-time Monitoring**
+
+```typescript
+class StateMonitor {
+  private subscriptions = new Map();
+  
+  constructor(private core: Core) {}
+  
+  async monitorUserState(alias: string, callback: (state: any) => void) {
+    // Implement polling or webhook-based monitoring
+    const monitor = setInterval(async () => {
+      try {
+        const currentState = await this.core.globalState.getUtxoByAlias(alias);
+        callback(currentState);
+      } catch (error) {
+        console.error(`Error monitoring ${alias}:`, error);
+      }
+    }, 30000); // Poll every 30 seconds
+    
+    this.subscriptions.set(alias, monitor);
+  }
+  
+  stopMonitoring(alias: string) {
+    const monitor = this.subscriptions.get(alias);
+    if (monitor) {
+      clearInterval(monitor);
+      this.subscriptions.delete(alias);
+    }
+  }
+}
+```
+
+---
+
+## Configuration Access
+
+The Core module provides access to the underlying Andamio configuration:
+
+```typescript
+// Network information
+const network = core.network; // "Mainnet", "Preprod", or "Preview"
+
+// Protocol addresses
+const config = core.andamioConfig;
+const globalStateAddress = config.globalStateS.sCAddress;
+const indexAddress = config.indexMS.mSCAddress;
+
+// Policy IDs
+const accessTokenPolicy = config.indexMS.mSCPolicyID;
+
+// Reference transaction data
+const globalStateRefTx = config.globalStateRefMS.mSCTxRef;
+```
+
+---
+
+## Error Handling
+
+### **Network Errors**
+
+```typescript
+try {
+  const data = await core.globalState.getUtxoByAlias("user_alias");
+} catch (error) {
+  if (error.message.includes('network')) {
+    // Handle network connectivity issues
+    console.error("Network error:", error);
+  } else if (error.message.includes('not found')) {
+    // Handle data not found scenarios
+    console.warn("Data not found:", error);
+  } else {
+    // Handle other errors
+    console.error("Unexpected error:", error);
+  }
+}
+```
+
+### **Data Validation**
+
+```typescript
+async function safeDataRetrieval(alias: string) {
+  try {
+    const utxo = await core.globalState.getUtxoByAlias(alias);
+    
+    // Validate data structure
+    if (!utxo.parsedValued?.datum?.payload) {
+      throw new Error("Invalid datum structure");
+    }
+    
+    return utxo;
+  } catch (error) {
+    console.error("Data retrieval failed:", error);
+    return null;
+  }
+}
+```
+
+---
+
+## Performance Considerations
+
+### **Efficient Queries**
+
+```typescript
+// Good: Batch queries when possible
+const allCourseStates = await core.localStates.course.courseState.getUtxos();
+
+// Avoid: Sequential individual queries
+// const states = [];
+// for (const alias of aliases) {
+//   const state = await core.localStates.course.courseState.getUtxoByAlias(courseId, alias);
+//   states.push(state);
+// }
+```
+
+### **Caching Strategy**
+
+```typescript
+class CoreDataCache {
+  private cache = new Map();
+  private ttl = 60000; // 1 minute TTL
+  
+  async getCachedData(key: string, fetcher: () => Promise<any>) {
+    const cached = this.cache.get(key);
+    
+    if (cached && Date.now() - cached.timestamp < this.ttl) {
+      return cached.data;
+    }
+    
+    const data = await fetcher();
+    this.cache.set(key, { data, timestamp: Date.now() });
+    return data;
+  }
+}
+```
+
+---
+
+## Best Practices
+
+### **1. Data Validation**
+- Always validate returned UTXO structures before processing
+- Check for null/undefined values in parsed data
+- Implement type guards for complex datum structures
+
+### **2. Error Handling**
+- Implement comprehensive error handling for network operations
+- Use specific error types for different failure scenarios
+- Provide fallback mechanisms for critical operations
+
+### **3. Performance Optimization**
+- Use batch queries when fetching related data
+- Implement appropriate caching for frequently accessed data
+- Avoid unnecessary repeated queries in loops
+
+### **4. Security Considerations**
+- Validate all input parameters before querying
+- Handle sensitive data appropriately
+- Implement proper access controls for administrative operations
+
+### **5. Debugging and Monitoring**
+- Log important operations with sufficient detail
+- Monitor query performance and error rates
+- Implement health checks for critical components

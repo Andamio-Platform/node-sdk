@@ -1,0 +1,50 @@
+# Alias Availability
+
+Checks if a given alias is available for use by querying the alias index.
+
+## Import
+
+```ts
+import { SdkError } from "../../common/error";
+import { Core } from "../core";
+```
+
+## Function Signature
+
+```ts
+export async function aliasAvailability(core: Core, alias: string): Promise<boolean>
+```
+
+## Parameters
+
+| Name   | Type   | Description                                    |
+|--------|--------|------------------------------------------------|
+| core   | Core   | The Core SDK instance with aliasIndex access. |
+| alias  | string | The alias string to check for availability.   |
+
+## Description
+
+This function determines whether a given alias is available by attempting to retrieve a UTXO associated with the alias using `core.aliasIndex.getUtxoByNewAlias(alias)`:
+
+- If a UTXO is found, it assumes the alias exists and is **not available**, returning `true`.
+- If the error message indicates **"Alias already exists"**, it returns `false` (i.e., alias not available).
+- If any other error occurs, it throws a wrapped `SdkError`.
+
+## Returns
+
+- `Promise<boolean>`: Resolves to `false` if alias is available, `true` if already taken.
+
+## Errors
+
+- Throws `SdkError` if an unexpected condition or unknown error is encountered.
+
+## Example
+
+```ts
+const available = await aliasAvailability(core, "unique-alias");
+if (available) {
+  console.log("Alias is taken.");
+} else {
+  console.log("Alias is available.");
+}
+```

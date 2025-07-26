@@ -1,5 +1,385 @@
 # Mint Access Token
 
-```typescript
-const unsignedTx = await sdk.transaction.mintAccessToken({ userAddress: <user-address>, alias: <new-alias> })
+This function creates a transaction to mint access tokens for new users, establishing their identity and enabling participation in the Andamio ecosystem.
+
+---
+
+## `buildTx(params)`
+
+Builds a transaction that mints access tokens for a new user, creating their digital identity and enabling access to courses, projects, and other platform features.
+
+### **Signature**
+```ts
+export async function buildTx({
+  client,
+  provider,
+  userAddress,
+  alias
+}: {
+  client: UtxorpcClient;
+  provider: Provider;
+  userAddress: string;
+  alias: string;
+}): Promise<string | undefined>
 ```
+
+### **Parameters**
+
+| Name        | Type           | Description                                        |
+|-------------|----------------|----------------------------------------------------|
+| client      | `UtxorpcClient`| UTXO RPC client for blockchain interactions        |
+| provider    | `Provider`     | Provider instance for accessing core functionality |
+| userAddress | `string`       | Cardano address of the new user                    |
+| alias       | `string`       | Unique alias/username for the new user            |
+
+### **Returns**
+
+A promise that resolves to a string containing the transaction CBOR, or `undefined` if the alias index datum is invalid.
+
+### **Transaction Structure**
+
+This function constructs a complex transaction with multiple components:
+
+#### **Withdrawal**
+- **Observer Stake Withdrawal**:
+  - Uses Plutus V3 script with observer stake address
+  - Withdrawal amount: 0 (for validation only)
+  - Redeemer: `conStr0([aliasHex, "20"])`
+
+#### **Inputs**
+- **Alias Index UTXO**:
+  - Spends from the index validator using Plutus V3 script
+  - Uses inline datum and reference script
+  - Redeemer: `conStr0([])` (empty constructor)
+
+#### **Minting Operations**
+1. **Index Token**: `policyId + "20"` (quantity: 1)
+2. **Global State Token**: `policyId + "313030" + aliasHex` (quantity: 1)  
+3. **User Access Token**: `policyId + "323232" + aliasHex` (quantity: 1)
+
+All minting operations use:
+- Plutus V3 minting script
+- Same reference script from index configuration
+- Redeemer: `builtinByteString(aliasHex)`
+
+#### **Outputs**
+1. **Protocol Treasury Payment**:
+   - Address: Protocol treasury address
+   - Amount: Protocol fee in lovelace
+
+2. **Index Validator Output 1**:
+   - Address: Index validator address
+   - Token: Original index token from input
+   - Datum: `conStr0([originalField0, aliasHex])`
+
+3. **Index Validator Output 2**:
+   - Address: Index validator address  
+   - Token: New index token (`policyId + "20"`)
+   - Datum: `conStr0([aliasHex, originalField1])`
+
+4. **Global State Output**:
+   - Address: Global state validator address
+   - Token: Global state token (`policyId + "313030" + aliasHex`)
+   - Datum: `conStr0([policyId, aliasHex, [], "20"])`
+
+5. **User Access Token Output**:
+   - Address: User's address
+   - Token: User access token (`policyId + "323232" + aliasHex`)
+
+### **Behavior**
+
+1. **Setup**: Initializes U5C and Maestro providers with network configuration
+2. **Address Resolution**: Resolves index and global state addresses from configuration
+3. **UTXO Collection**: Gathers user UTXOs for collateral and fees
+4. **Alias Processing**: 
+   - Retrieves alias index UTXO for the new alias
+   - Parses and validates the alias index datum
+5. **Configuration Retrieval**: Gets protocol parameters:
+   - Observer stake address
+   - Protocol treasury address  
+   - Protocol fee amount
+6. **Transaction Building**: Constructs transaction with:
+   - Stake withdrawal for validation
+   - Index UTXO spending
+   - Multiple token minting operations
+   - Proper outputs for all stakeholders
+7. **Completion**: Builds and returns transaction CBOR
+
+### **Token Types and Naming**
+
+| Token Type | Format | Purpose |
+|------------|--------|---------|
+| Index Token | `policyId + "20"` | Index management |
+| Global State Token | `policyId + "313030" + aliasHex` | User's global state tracking |
+| User Access Token | `policyId + "323232" + aliasHex` | User authentication and authorization |
+
+### **Datum Structures**
+
+#### **Index Validator Datums**
+- **Output 1**: `conStr0([originalField0, newAliasHex])`
+- **Output 2**: `conStr0([newAliasHex, originalField1])`
+
+#### **Global State Datum**
+```ts
+conStr0([
+  builtinByteString(policyId),     // Policy ID
+  builtinByteString(aliasHex),     // User alias
+  list([]),                       // Empty credentials list
+  builtinByteString("20")          // Index token reference
+])
+```
+
+### **Script References**
+
+- **Index Script**: Uses configured reference from `indexMS.mSCTxRef`
+- **Observer Script**: Uses configured reference from `v1GlobalStateObsTxRef`
+
+### **Errors**
+
+Returns `undefined` if:
+- Alias index datum is missing or invalid
+- Datum parsing fails
+
+Throws errors if:
+- Required UTXOs cannot be retrieved
+- Configuration parameters are missing
+- Transaction building fails
+
+---
+
+## Example Usage
+
+### Basic Access Token Minting
+
+```typescript
+import { buildTx } from './mint-access-token';
+
+// Mint access token for new user
+const txCbor = await buildTx({
+  client: utxorpcClient,
+  provider: sdkProvider,
+  userAddress: "addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp",
+  alias: "new_student_bob"
+});
+
+if (txCbor) {
+  // Sign and submit the transaction
+  const signedTx = await wallet.signTx(txCbor);
+  const txHash = await wallet.submitTx(signedTx);
+  console.log(`Access token minted! Transaction: ${txHash}`);
+} else {
+  console.error("Failed to build transaction - invalid alias datum");
+}
+```
+
+### User Registration Workflow
+
+```typescript
+// Complete user registration process
+async function registerNewUser(
+  userAddress: string,
+  desiredAlias: string
+) {
+  try {
+    // Check alias availability
+    const isAvailable = await checkAliasAvailability(desiredAlias);
+    if (!isAvailable) {
+      return { success: false, error: "Alias already taken" };
+    }
+    
+    // Build minting transaction
+    const txCbor = await buildTx({
+      client,
+      provider,
+      userAddress,
+      alias: desiredAlias
+    });
+    
+    if (!txCbor) {
+      return { success: false, error: "Failed to build transaction" };
+    }
+    
+    // Process transaction
+    const result = await processTransaction(txCbor);
+    
+    return {
+      success: true,
+      txHash: result.txHash,
+      alias: desiredAlias,
+      userAddress,
+      accessToken: `${policyId}323232${stringToHex(desiredAlias)}`
+    };
+  } catch (error) {
+    console.error("Failed to register user:", error);
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### Batch User Registration
+
+```typescript
+// Register multiple users in sequence
+async function batchRegisterUsers(
+  registrations: Array<{
+    userAddress: string;
+    alias: string;
+  }>
+) {
+  const results = [];
+  
+  for (const registration of registrations) {
+    try {
+      const txCbor = await buildTx({
+        client,
+        provider,
+        userAddress: registration.userAddress,
+        alias: registration.alias
+      });
+      
+      if (txCbor) {
+        results.push({
+          alias: registration.alias,
+          userAddress: registration.userAddress,
+          txCbor,
+          status: 'ready'
+        });
+      } else {
+        results.push({
+          alias: registration.alias,
+          status: 'failed',
+          error: 'Invalid alias datum'
+        });
+      }
+      
+      // Wait between registrations to avoid conflicts
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    } catch (error) {
+      results.push({
+        alias: registration.alias,
+        status: 'failed',
+        error: error.message
+      });
+    }
+  }
+  
+  return results;
+}
+```
+
+### Integration with Frontend
+
+```typescript
+// Frontend integration helper
+async function mintAccessTokenForUser(walletApi: any, alias: string) {
+  try {
+    // Get user's address from wallet
+    const addresses = await walletApi.getUsedAddresses();
+    const userAddress = addresses[0];
+    
+    // Build the transaction
+    const txCbor = await buildTx({
+      client,
+      provider,
+      userAddress,
+      alias
+    });
+    
+    if (!txCbor) {
+      throw new Error("Failed to build minting transaction");
+    }
+    
+    // Sign with wallet
+    const signedTx = await walletApi.signTx(txCbor);
+    
+    // Submit transaction
+    const txHash = await walletApi.submitTx(signedTx);
+    
+    return {
+      success: true,
+      txHash,
+      alias,
+      message: "Access token successfully minted!"
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: error.message
+    };
+  }
+}
+```
+
+---
+
+## Workflow Integration
+
+### User Onboarding Process
+
+1. **Alias Selection**: User chooses unique alias
+2. **Availability Check**: System verifies alias is not taken
+3. **Transaction Building**: Uses `buildTx` to create minting transaction
+4. **Payment**: User pays protocol fee + transaction costs
+5. **Token Minting**: System mints access tokens and establishes identity
+6. **Platform Access**: User can now enroll in courses and join projects
+
+### Identity Management
+
+- **Unique Identity**: Each user gets unique access token based on alias
+- **Global State**: User's global state token tracks all platform activity
+- **Authorization**: Access token required for all platform interactions
+
+### Fee Structure
+
+- **Protocol Fee**: Paid to protocol treasury for registration
+- **Transaction Fees**: Standard Cardano network fees
+- **Collateral**: Required for Plutus script execution
+
+---
+
+## Technical Notes
+
+### Network Configuration
+- **Multi-Provider**: Uses both U5C and Maestro providers
+- **Network Flexibility**: Adapts to provider's network configuration
+- **API Keys**: Uses configured API keys for provider access
+
+### Token Economics
+- **Single Registration**: Each alias can only be registered once
+- **Permanent Tokens**: Access tokens are permanent (no burning mechanism)
+- **Policy Consistency**: All tokens use same policy ID from configuration
+
+### Security Features
+- **Script Validation**: Uses Plutus V3 scripts for secure minting
+- **Alias Uniqueness**: Ensures no duplicate aliases can be registered
+- **Stake Validation**: Uses observer stake withdrawal for additional validation
+- **Fee Payment**: Requires protocol fee payment for spam prevention
+
+### Data Structures
+- **Index Management**: Maintains alias index for uniqueness
+- **Global State**: Initializes user's global state tracking
+- **Datum Integrity**: Preserves existing index data while adding new alias
+
+### Performance Considerations
+- **Reference Scripts**: Uses reference scripts to minimize transaction size
+- **Collateral Management**: Automatically selects collateral UTXO
+- **UTXO Selection**: Efficient selection of user UTXOs for fees
+- **Transaction Size**: Optimized for multiple minting operations
+
+### Integration Points
+- **Course System**: Access tokens enable course enrollment
+- **Project System**: Tokens enable project participation  
+- **Credential System**: Global state supports credential tracking
+- **Analytics**: Token creation provides user registration metrics
+
+### Error Handling
+- **Datum Validation**: Checks alias index datum validity
+- **Configuration Validation**: Ensures all required parameters are available
+- **Transaction Safety**: Comprehensive error handling for complex transaction
+- **Graceful Degradation**: Returns undefined for recoverable errors
+
+### Protocol Integration
+- **Observer Pattern**: Uses stake withdrawal for validation
+- **Treasury Integration**: Automatic fee payment to protocol treasury
+- **Index Management**: Maintains platform-wide alias index
+- **State Synchronization**: Ensures consistent state across validators

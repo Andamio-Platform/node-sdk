@@ -1,0 +1,89 @@
+# Commitment Count
+
+These functions retrieve commitment statistics associated with a set of policies or an alias from the local state of an instance on the blockchain.
+
+---
+
+## `commitmentCount(core, policies)`
+
+Counts the number of committed UTXOs per policy.
+
+### **Signature**
+```ts
+export async function commitmentCount(core: Core, policies: string[]): Promise<{
+  policy: string;
+  state: string;
+  committed: number;
+}[]>
+```
+
+### **Parameters**
+
+| Name     | Type     | Description                              |
+|----------|----------|------------------------------------------|
+| core     | `Core`   | Core SDK object                          |
+| policies | `string[]` | Array of policy IDs to check against     |
+
+### **Returns**
+
+A promise that resolves to an array of objects, each containing:
+
+- `policy`: The policy ID
+- `state`: `"Project"` or `"Course"` (mapped from internal `Escrow1` or `AssignmentValidator`)
+- `committed`: Number of UTXOs found under the respective policy
+
+### **Behavior**
+
+1. Retrieves all UTXOs from instance local states.
+2. Filters only UTXOs from addresses with state `Escrow1` or `AssignmentValidator`.
+3. For each address, fetches its UTXOs and aggregates commitment counts by policy.
+4. Converts internal state to high-level label:
+   - `Escrow1` → `Project`
+   - `AssignmentValidator` → `Course`
+
+### **Errors**
+
+- Returns an empty array and logs to console in case of an error.
+
+---
+
+## `commitmentCountUnderAlias(core, alias)`
+
+Wrapper around `commitmentCount` that resolves policies from an alias before counting commitments.
+
+### **Signature**
+```ts
+export async function commitmentCountUnderAlias(core: Core, alias: string): Promise<{
+  policy: string;
+  state: string;
+  committed: number;
+}[]>
+```
+
+### **Parameters**
+
+| Name  | Type     | Description                |
+|-------|----------|----------------------------|
+| core  | `Core`   | Core SDK instance          |
+| alias | `string` | Alias to lookup policies   |
+
+### **Returns**
+
+Same structure as `commitmentCount`.
+
+### **Behavior**
+
+1. Retrieves governance UTXOs from local state.
+2. Resolves the alias to associated policy IDs.
+3. Uses `commitmentCount` to get counts per policy.
+
+---
+
+## Example
+
+```ts
+const policies = ["policy1", "policy2"];
+const results = await commitmentCount(core, policies);
+
+const aliasResults = await commitmentCountUnderAlias(core, "blockchain-course");
+```

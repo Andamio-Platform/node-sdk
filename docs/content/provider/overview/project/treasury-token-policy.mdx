@@ -1,5 +1,114 @@
 # Treasury Token Policy
 
-```typescript
-const aliases = await sdk.provider.network.project.getTreasuryTokenPolicy(<project-nft-policy>);
+This function retrieves the treasury token policy ID for a given project by extracting and processing the reference script from the blockchain.
+
+---
+
+## `treasuryTokenPolicy(core, projectNftPolicy)`
+
+Derives the treasury token policy ID from a project's NFT policy by locating and processing the treasury token reference script.
+
+### **Signature**
+```ts
+export async function treasuryTokenPolicy(core: Core, projectNftPolicy: string): Promise<string>
 ```
+
+### **Parameters**
+
+| Name             | Type     | Description                                    |
+|------------------|----------|------------------------------------------------|
+| core             | `Core`   | Core SDK object                                |
+| projectNftPolicy | `string` | The NFT policy ID of the project               |
+
+### **Returns**
+
+A promise that resolves to a string containing the treasury token policy ID (hash).
+
+### **Behavior**
+
+1. **Fetches Treasury Token Reference UTXO**: Retrieves the UTXO containing the treasury token reference script from the instance validator, filtered by the project NFT policy and "TreasuryToken" type.
+
+2. **Extracts Reference Script**: Gets the reference script attached to the UTXO as a `Uint8Array`.
+
+3. **Processes CBOR Encoding**: 
+   - Converts the script bytes to hexadecimal
+   - Double-encodes the CBOR data for proper deserialization
+   - Uses CBOR encoding to prepare the script data
+
+4. **Deserializes Plutus Script**: Deserializes the processed CBOR data as a Plutus V3 script.
+
+5. **Derives Policy Hash**: Computes and returns the policy hash from the deserialized script.
+
+### **Technical Details**
+
+- **Script Version**: Uses Plutus V3 for script deserialization
+- **CBOR Processing**: Employs double CBOR encoding to handle the script data format correctly
+- **Hash Algorithm**: Uses the standard Plutus script hashing mechanism
+
+### **Errors**
+
+Throws `SdkError` if:
+- Treasury token reference UTXO cannot be found
+- Reference script is missing or invalid
+- CBOR processing fails
+- Script deserialization fails
+- Hash computation fails
+
+---
+
+## Example Usage
+
+### Basic Usage
+
+```typescript
+// Get treasury token policy for a project
+const projectNftPolicy = "a1b2c3d4e5f6..."; // Project NFT policy ID
+const treasuryPolicy = await treasuryTokenPolicy(core, projectNftPolicy);
+
+console.log(`Treasury Token Policy: ${treasuryPolicy}`);
+// Output: Treasury Token Policy: 7f8e9d0c1b2a3456...
+```
+
+### Integration with Provider
+
+```typescript
+// Using through the SDK provider
+const treasuryPolicy = await sdk.provider.overview.project.treasuryTokenPolicy(projectNftPolicy);
+```
+
+### Error Handling
+
+```typescript
+try {
+    const treasuryPolicy = await treasuryTokenPolicy(core, projectNftPolicy);
+    console.log("Treasury policy retrieved:", treasuryPolicy);
+} catch (error) {
+    if (error instanceof SdkError) {
+        console.error("Failed to get treasury token policy:", error.message);
+    }
+}
+```
+
+---
+
+## Use Cases
+
+### Treasury Management
+- **Token Minting**: Use the policy to identify treasury tokens that can be minted for the project
+- **Asset Tracking**: Track treasury assets associated with a specific project
+- **Authorization**: Verify treasury token authenticity using the derived policy
+
+### Project Integration
+- **Policy Validation**: Ensure treasury operations are performed with the correct policy
+- **Asset Discovery**: Find all treasury tokens associated with a project
+- **Smart Contract Integration**: Use the policy in smart contract interactions
+
+---
+
+## Notes
+
+- **Reference Scripts**: The function relies on reference scripts being properly stored in the instance validator UTXOs
+- **CBOR Encoding**: Double CBOR encoding is necessary due to the specific format requirements of Plutus scripts
+- **Policy Uniqueness**: Each project has a unique treasury token policy derived from its reference script
+- **Version Dependency**: Currently supports Plutus V3 scripts only
+- **Error Resilience**: Throws descriptive errors to help with debugging integration issues

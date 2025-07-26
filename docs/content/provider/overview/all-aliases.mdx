@@ -1,5 +1,153 @@
 # All Aliases
 
+The All Aliases functionality retrieves all registered aliases from the network by querying the global state and extracting alias names from UTXOs.
+
+## Overview
+
+All Aliases provides a comprehensive list of every registered alias on the Andamio network. It queries the global state contract to retrieve all alias UTXOs and extracts the alias names from their datum structures.
+
+## Function
+
+### allAliases(core)
+
+Fetches all known aliases registered on the network.
+
+**Syntax:**
 ```typescript
-const aliases = await sdk.provider.network.getAllAliases()
+const aliases = await allAliases(core)
 ```
+
+**Parameters:**
+- `core` (Core) - The core SDK instance
+
+**Returns:**
+- `Promise<string[]>` - Array of all registered alias names
+
+**Example:**
+```typescript
+try {
+  const aliases = await allAliases(core);
+  
+  console.log(`Total registered aliases: ${aliases.length}`);
+  
+  // Display all aliases
+  console.log('Registered aliases:');
+  aliases.forEach((alias, index) => {
+    console.log(`  ${index + 1}. ${alias}`);
+  });
+  
+  // Check if specific aliases exist
+  const aliasesToCheck = ['alice', 'bob', 'charlie'];
+  aliasesToCheck.forEach(alias => {
+    if (aliases.includes(alias)) {
+      console.log(`✓ ${alias} is registered`);
+    } else {
+      console.log(`✗ ${alias} is not registered`);
+    }
+  });
+  
+} catch (error) {
+  console.error('Failed to fetch aliases:', error);
+}
+```
+
+**Advanced Usage:**
+```typescript
+// Alias analytics and filtering
+try {
+  const aliases = await allAliases(core);
+  
+  // Basic statistics
+  const stats = {
+    total: aliases.length,
+    shortest: Math.min(...aliases.map(a => a.length)),
+    longest: Math.max(...aliases.map(a => a.length)),
+    averageLength: (aliases.reduce((sum, a) => sum + a.length, 0) / aliases.length).toFixed(1)
+  };
+  
+  console.log('Alias Statistics:', stats);
+  
+  // Find aliases by length
+  const shortAliases = aliases.filter(alias => alias.length <= 5);
+  const longAliases = aliases.filter(alias => alias.length >= 15);
+  
+  console.log(`Short aliases (≤5 chars): ${shortAliases.length}`);
+  console.log(`Long aliases (≥15 chars): ${longAliases.length}`);
+  
+  // Alphabetical sorting
+  const sortedAliases = [...aliases].sort();
+  console.log('First 10 aliases alphabetically:', sortedAliases.slice(0, 10));
+  
+  // Pattern matching
+  const aliasesWithNumbers = aliases.filter(alias => /\d/.test(alias));
+  console.log(`Aliases containing numbers: ${aliasesWithNumbers.length}`);
+  
+} catch (error) {
+  console.error('Failed to analyze aliases:', error);
+}
+```
+
+**Search and Validation:**
+```typescript
+// Alias search functionality
+try {
+  const aliases = await allAliases(core);
+  
+  // Case-insensitive search
+  const searchAlias = (query: string) => {
+    const normalizedQuery = query.toLowerCase();
+    return aliases.filter(alias => 
+      alias.toLowerCase().includes(normalizedQuery)
+    );
+  };
+  
+  // Prefix search
+  const prefixSearch = (prefix: string) => {
+    return aliases.filter(alias => 
+      alias.toLowerCase().startsWith(prefix.toLowerCase())
+    );
+  };
+  
+  // Exact match validation
+  const isAliasRegistered = (alias: string) => {
+    return aliases.includes(alias);
+  };
+  
+  // Usage examples
+  console.log('Search for "dev":', searchAlias('dev'));
+  console.log('Aliases starting with "a":', prefixSearch('a'));
+  console.log('Is "testuser" registered?', isAliasRegistered('testuser'));
+  
+} catch (error) {
+  console.error('Failed to search aliases:', error);
+}
+```
+
+**Detailed Behavior:**
+1. **Global State Query**: Retrieves all UTXOs from the global state contract
+2. **Datum Processing**: Extracts the alias data from each UTXO's datum structure
+3. **Byte Conversion**: Converts alias bytes from the datum to hexadecimal format
+4. **String Decoding**: Decodes hexadecimal strings back to readable alias names
+5. **Array Assembly**: Compiles all extracted aliases into a single array
+
+**Data Extraction Process:**
+- Each global state UTXO contains a datum with alias information
+- The alias is stored in the second field (`fields[1]`) of the datum structure
+- Alias data is stored as bytes and needs conversion to readable strings
+- The function handles the complete conversion pipeline from bytes to strings
+
+**Performance Considerations:**
+- The function processes all global state UTXOs, so response time depends on network size
+- Results are not cached, so frequent calls will re-query the blockchain
+- Consider caching results for applications that need frequent alias lookups
+
+**Throws:**
+- `SdkError` - When the global state UTXOs cannot be retrieved or processed
+
+**Use Cases:**
+- Building alias directories and search interfaces
+- Validating alias availability before registration
+- Network analytics and user base analysis
+- Creating autocomplete functionality for user interfaces
+- Monitoring network growth and user adoption
+- Generating reports on alias usage patterns

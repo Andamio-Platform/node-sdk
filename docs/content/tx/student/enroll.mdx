@@ -1,0 +1,334 @@
+# Enroll
+
+This function creates a transaction for students to enroll in a course, minting a course state token and updating the global state to track their enrollment.
+
+---
+
+## `enrollCourseTx(params)`
+
+Builds a transaction that allows a student to enroll in a course by minting a course state token and updating their global state to include the new course enrollment.
+
+### **Signature**
+```ts
+export async function enrollCourseTx({
+  client,
+  provider,
+  alias,
+  courseId
+}: {
+  client: UtxorpcClient;
+  provider: Provider;
+  alias: string;
+  courseId: string;
+}): Promise<string>
+```
+
+### **Parameters**
+
+| Name     | Type           | Description                                        |
+|----------|----------------|----------------------------------------------------|
+| client   | `UtxorpcClient`| UTXO RPC client for blockchain interactions        |
+| provider | `Provider`     | Provider instance for accessing core functionality |
+| alias    | `string`       | Alias of the student enrolling in the course      |
+| courseId | `string`       | Unique identifier of the course to enroll in      |
+
+### **Returns**
+
+A promise that resolves to a string containing the transaction CBOR that can be signed and submitted.
+
+### **Transaction Structure**
+
+The function constructs a transaction with the following components:
+
+#### **Inputs**
+1. **User Access Token UTXO**:
+   - Spends the student's access token for authorization
+   - Simple UTXO input (no script)
+
+2. **Global State UTXO**:
+   - Spends from the global state validator using Plutus V3 script
+   - Uses inline datum and reference script
+   - Redeemer: `LocalStateMintRedeemer(courseId, courseStateTokenPolicy)`
+
+#### **Minting Operations**
+- **Course State Token**:
+  - Policy: Course state token policy for the specific course
+  - Asset name: Hex-encoded student alias
+  - Quantity: 1 token
+  - Uses Plutus V3 minting script with reference
+
+#### **Outputs**
+1. **Course State Output**:
+   - Address: Course state address for the course
+   - Token: `courseStateTokenPolicy + hexEncodedAlias`
+   - Datum: Empty course state datum ("80" in CBOR)
+
+2. **User Access Token Return**:
+   - Returns access token to student's address
+   - Token: `accessTokenPolicyId + "323232" + hexEncodedAlias`
+
+3. **Global State Update**:
+   - Returns global state token to global state address
+   - Token: `accessTokenPolicyId + "313030" + hexEncodedAlias`
+   - Datum: Updated global state datum with new course enrollment
+
+### **Behavior**
+
+1. **Setup**: Initializes Maestro provider and MeshTxBuilder with Preprod network configuration
+2. **Global State Validation**: Retrieves and validates the student's current global state datum
+3. **Course Information**: Resolves course state token policy and address for the target course
+4. **UTXO Collection**: Gathers required UTXOs:
+   - Student's UTXOs (including access token and collateral)
+   - Student's global state UTXO
+   - Global state reference script
+   - Course state reference script
+5. **Datum Processing**: Updates global state datum to include new course enrollment
+6. **Transaction Building**: Constructs the transaction with:
+   - User access token spending
+   - Global state spending with mint redeemer
+   - Course state token minting
+   - Appropriate outputs with updated state
+7. **Completion**: Builds and returns the transaction CBOR
+
+### **Global State Update**
+
+The enrollment process updates the student's global state datum to include the new course, enabling:
+- Tracking of all enrolled courses
+- Progress monitoring across multiple courses
+- Integration with completion verification systems
+
+### **Token Naming Convention**
+
+- **Access Tokens**: `policyId + "323232" + hexEncodedAlias`
+- **Global State Tokens**: `policyId + "313030" + hexEncodedAlias`
+- **Course State Tokens**: `courseStatePolicy + hexEncodedAlias`
+
+### **Script References**
+
+- **Global State Script**: Retrieved from global state reference token
+- **Course State Script**: Retrieved from instance UTXOs ("CourseStateScripts")
+
+### **Errors**
+
+Throws errors if:
+- Invalid global state datum for the student
+- User access token UTXO not found for the alias
+- Global state UTXO cannot be retrieved
+- Course state reference script is missing
+- Transaction building fails
+
+---
+
+## Example Usage
+
+### Basic Course Enrollment
+
+```typescript
+import { enrollCourseTx } from './enroll';
+
+// Enroll a student in a course
+const txCbor = await enrollCourseTx({
+  client: utxorpcClient,
+  provider: sdkProvider,
+  alias: "student_alice",
+  courseId: "blockchain-fundamentals-2024"
+});
+
+// Sign and submit the transaction
+const signedTx = await wallet.signTx(txCbor);
+const txHash = await wallet.submitTx(signedTx);
+console.log(`Successfully enrolled! Transaction: ${txHash}`);
+```
+
+### Student Onboarding Workflow
+
+```typescript
+// Complete student enrollment workflow
+async function enrollStudentInCourse(
+  studentAlias: string,
+  courseId: string
+) {
+  try {
+    // Check if student is already enrolled
+    const existingEnrollment = await checkExistingEnrollment(studentAlias, courseId);
+    if (existingEnrollment) {
+      return { success: false, error: "Already enrolled in this course" };
+    }
+    
+    // Build enrollment transaction
+    const txCbor = await enrollCourseTx({
+      client,
+      provider,
+      alias: studentAlias,
+      courseId
+    });
+    
+    // Process transaction
+    const result = await processTransaction(txCbor);
+    
+    return {
+      success: true,
+      txHash: result.txHash,
+      courseId,
+      enrollmentDate: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error("Failed to enroll student:", error);
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### Multi-Course Enrollment
+
+```typescript
+// Enroll student in multiple courses (sequential)
+async function enrollInMultipleCourses(
+  studentAlias: string,
+  courseIds: string[]
+) {
+  const results = [];
+  
+  for (const courseId of courseIds) {
+    try {
+      const txCbor = await enrollCourseTx({
+        client,
+        provider,
+        alias: studentAlias,
+        courseId
+      });
+      
+      results.push({
+        courseId,
+        txCbor,
+        status: 'ready'
+      });
+      
+      // Wait between enrollments to avoid conflicts
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      results.push({
+        courseId,
+        status: 'failed',
+        error: error.message
+      });
+    }
+  }
+  
+  return results;
+}
+```
+
+### Course Catalog Integration
+
+```typescript
+// Enroll with course validation
+async function enrollWithValidation(
+  studentAlias: string,
+  courseId: string
+) {
+  try {
+    // Validate course exists and is available
+    const courseInfo = await provider.overview.course.getCourseInfo(courseId);
+    if (!courseInfo.isActive) {
+      throw new Error("Course is not currently active");
+    }
+    
+    // Check prerequisites
+    const hasPrerequisites = await checkPrerequisites(studentAlias, courseInfo.prerequisites);
+    if (!hasPrerequisites) {
+      throw new Error("Student does not meet course prerequisites");
+    }
+    
+    // Proceed with enrollment
+    const txCbor = await enrollCourseTx({
+      client,
+      provider,
+      alias: studentAlias,
+      courseId
+    });
+    
+    return {
+      success: true,
+      txCbor,
+      courseTitle: courseInfo.title,
+      moduleCount: courseInfo.modules.length
+    };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+}
+```
+
+---
+
+## Workflow Integration
+
+### Student Journey
+
+1. **Account Creation**: Student creates account and receives access token
+2. **Course Discovery**: Student browses available courses
+3. **Enrollment**: Student uses `enrollCourseTx` to enroll in desired course
+4. **Course Access**: Student gains access to course materials and assignments
+5. **Progress Tracking**: System tracks student progress through global state updates
+
+### Course State Lifecycle
+
+1. **Enrollment**: Course state token minted with empty datum
+2. **Module Progress**: Token datum updated as student completes modules
+3. **Assignment Submission**: Token moves to assignment validator during review
+4. **Completion**: Token reflects full course completion status
+
+### Global State Management
+
+- **Enrollment Tracking**: Global state maintains list of all enrolled courses
+- **Progress Monitoring**: Enables cross-course progress analysis
+- **Credential Verification**: Supports verification of student achievements
+
+---
+
+## Technical Notes
+
+### Network Configuration
+- **Hardcoded Network**: Currently configured for Preprod testnet
+- **Maestro Integration**: Uses Maestro for all blockchain operations
+- **API Key**: Contains hardcoded Maestro API key (should be externalized)
+
+### Token Economics
+- **Single Enrollment**: Each student can only have one course state token per course
+- **Unique Tokens**: Course state tokens are uniquely named by student alias
+- **Policy Scoping**: Each course has its own token policy for state tokens
+
+### State Management
+- **Global State Updates**: Enrollment updates the student's global state
+- **Course State Creation**: Creates new local state for course progress tracking
+- **Datum Initialization**: Course state starts with empty datum ("80" CBOR)
+
+### Security Features
+- **Access Control**: Requires valid access token for enrollment
+- **Script Validation**: Uses Plutus V3 scripts for secure token minting
+- **State Consistency**: Ensures global and local state remain synchronized
+- **Duplicate Prevention**: System should prevent duplicate enrollments
+
+### Performance Considerations
+- **Reference Scripts**: Uses reference scripts to minimize transaction size
+- **Inline Datums**: Employs inline datums for efficient data storage
+- **Collateral Management**: Automatically selects appropriate collateral UTXO
+- **UTXO Selection**: Efficient selection of UTXOs for transaction construction
+
+### Integration Points
+- **Course Management**: Integrates with course creation and management systems
+- **Progress Tracking**: Provides foundation for assignment and completion tracking
+- **Credential Systems**: Supports broader credential verification infrastructure
+- **Analytics**: Enables enrollment and completion analytics
+
+### Data Structures
+- **Global State Datum**: Updated to include new course enrollment
+- **Course State Datum**: Initialized as empty for new enrollments
+- **Access Tokens**: Maintain consistent naming across all operations
+
+### Error Handling
+- **Validation**: Validates global state datum before processing
+- **Token Verification**: Ensures access token exists for the student
+- **Reference Resolution**: Validates all required reference scripts are available
+- **Transaction Safety**: Comprehensive error handling for transaction building

@@ -1,6 +1,6 @@
 # Andamio Provider
 
-The Provider is a core component of the Andamio SDK designed to retrieve and interact with on-chain Andamio-specific data. It serves as the connection layer between your application and the Andamio blockchain data structures.
+The Provider is a core component of the Andamio SDK designed to retrieve and interact with on-chain Andamio-specific data. It serves as the connection layer between your application and the Andamio blockchain data structures, offering high-level access to protocol data without requiring deep blockchain knowledge.
 
 ```typescript
 const sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", "dmtr_utxorpc...")
@@ -10,11 +10,453 @@ const provider = sdk.provider
 
 ## Overview
 
-The Provider component abstracts the complexity of querying and processing blockchain data specific to Andamio protocols and smart contracts. It offers a streamlined interface for developers to access this data without having to manage the underlying blockchain interactions directly.
+The Provider component abstracts the complexity of querying and processing blockchain data specific to Andamio protocols and smart contracts. It offers a streamlined interface for developers to access this data without having to manage the underlying blockchain interactions, UTXO management, or datum parsing directly.
+
+### Architecture
+
+The Provider is organized into two main modules:
+
+#### **Core Module**
+Provides fundamental access to Andamio protocol data structures and state management.
+
+#### **Overview Module** 
+Offers higher-level aggregated views and analytics built on top of the core data.
+
+```typescript
+class Provider {
+  public core: Core;           // Direct protocol data access
+  public overview: Overview;   // Aggregated views and analytics
+}
+```
+
+---
 
 ## Key Features
 
-- Access to Andamio-specific on-chain data structures
-- Simplified query methods for common Andamio data patterns
-- Consistent interface for blockchain interactions
-- Optimized data retrieval for Andamio protocols
+### **Protocol Data Access**
+- **Smart Contract State**: Direct access to validator states and datums
+- **Token Management**: Query and track Andamio protocol tokens
+- **Global State**: Access user enrollment and completion data
+- **Local States**: Course and project-specific state information
+
+### **Simplified Query Interface**
+- **High-Level Methods**: Intuitive method names for common operations
+- **Data Processing**: Automatic parsing of on-chain data structures
+- **Error Handling**: Comprehensive error handling and validation
+- **Type Safety**: Full TypeScript support with proper type definitions
+
+### **Performance Optimization**
+- **Efficient Queries**: Optimized blockchain queries to minimize network calls
+- **Caching**: Intelligent caching of frequently accessed data
+- **Batch Operations**: Support for batch data retrieval
+- **Reference Resolution**: Automatic resolution of script references
+
+### **Network Flexibility**
+- **Multi-Network**: Support for Mainnet, Preprod, and Preview networks
+- **Provider Agnostic**: Works with multiple blockchain data providers
+- **Configurable Endpoints**: Flexible endpoint configuration
+
+---
+
+## Core Module
+
+The Core module provides direct access to fundamental Andamio protocol components:
+
+### **Global State Management**
+```typescript
+// Access user's global enrollment state
+const globalState = await provider.core.globalState.getUtxoByAlias("student_alice");
+
+// Get all global state UTXOs
+const allGlobalStates = await provider.core.globalState.getUtxos();
+```
+
+### **Local State Access**
+```typescript
+// Course state operations
+const courseState = await provider.core.localStates.course.courseState.getUtxoByAlias(
+  "blockchain-course", 
+  "student_bob"
+);
+
+// Assignment state queries
+const assignmentState = await provider.core.localStates.course.assignmentState.getUtxoByAlias(
+  "blockchain-course",
+  "student_charlie"
+);
+
+// Module reference data
+const moduleRef = await provider.core.localStates.course.moduleRef.getUtxoByModuleTokenName(
+  "blockchain-course",
+  "IntroToBlockchain"
+);
+```
+
+### **User Access Management**
+```typescript
+// Get user address from alias
+const userAddress = await provider.core.userAccessToken.getAddressByAlias("instructor_diana");
+
+// Validate user access token
+const hasAccess = await provider.core.userAccessToken.validateToken("instructor_diana");
+```
+
+### **Instance Governance**
+```typescript
+// Get governance data for a course or project
+const governance = await provider.core.localStates.instanceGovernance.getUtxoByCourseIdOrProjectId(
+  "advanced-smart-contracts"
+);
+```
+
+---
+
+## Overview Module
+
+The Overview module provides aggregated views and analytics:
+
+### **Alias Management**
+```typescript
+// Check alias availability
+const isAvailable = await provider.overview.aliasAvailability("new_student");
+
+// Get all registered aliases
+const allAliases = await provider.overview.allAliases();
+
+// Get all instances (courses/projects)
+const instances = await provider.overview.allInstances();
+```
+
+### **User Data Analytics**
+```typescript
+// Get comprehensive user data
+const userData = await provider.overview.userData("student_alice");
+// Returns: enrollments, completions, progress, etc.
+```
+
+### **Course Statistics**
+```typescript
+// Get enrollment statistics
+const enrollmentStats = await provider.overview.stats.enrolleeCount(
+  ["policy1", "policy2"]
+);
+
+// Get commitment counts for projects
+const commitmentStats = await provider.overview.stats.commitmentCount(
+  ["project_policy1", "project_policy2"]
+);
+
+// Get stats by alias
+const aliasStats = await provider.overview.stats.enrolleeCountUnderAlias("blockchain-course");
+```
+
+### **Project Management**
+```typescript
+// Get treasury token policy for a project
+const treasuryPolicy = await provider.overview.project.treasuryTokenPolicy("project_nft_policy");
+```
+
+---
+
+## Common Usage Patterns
+
+### **Student Progress Tracking**
+
+```typescript
+async function getStudentProgress(studentAlias: string) {
+  try {
+    // Get global state (all enrollments)
+    const globalState = await provider.core.globalState.getUtxoByAlias(studentAlias);
+    
+    // Get comprehensive user data
+    const userData = await provider.overview.userData(studentAlias);
+    
+    // Get course-specific progress
+    const courseStates = await Promise.all(
+      userData.enrolledCourses.map(courseId =>
+        provider.core.localStates.course.courseState.getUtxoByAlias(courseId, studentAlias)
+      )
+    );
+    
+    return {
+      student: studentAlias,
+      globalState,
+      enrollments: userData.enrolledCourses,
+      completions: userData.completedCourses,
+      courseStates
+    };
+  } catch (error) {
+    console.error("Error fetching student progress:", error);
+    throw error;
+  }
+}
+```
+
+### **Course Analytics Dashboard**
+
+```typescript
+async function getCourseAnalytics(courseId: string) {
+  try {
+    // Get enrollment statistics
+    const enrollmentStats = await provider.overview.stats.enrolleeCountUnderAlias(courseId);
+    
+    // Get all enrolled students
+    const courseStates = await provider.core.localStates.course.courseState.getUtxos(courseId);
+    
+    // Get module information
+    const modules = await provider.core.localStates.course.moduleRef.getUtxos(courseId);
+    
+    // Get pending assignments
+    const pendingAssignments = await provider.core.localStates.course.assignmentState.getUtxos(courseId);
+    
+    return {
+      courseId,
+      enrollmentCount: enrollmentStats.length,
+      moduleCount: modules.length,
+      pendingAssignments: pendingAssignments.length,
+      enrolledStudents: courseStates.map(state => state.studentAlias),
+      completionRate: enrollmentStats.reduce((acc, stat) => acc + stat.completed, 0) / enrollmentStats.reduce((acc, stat) => acc + stat.enrolled, 0)
+    };
+  } catch (error) {
+    console.error("Error fetching course analytics:", error);
+    throw error;
+  }
+}
+```
+
+### **Platform Overview**
+
+```typescript
+async function getPlatformOverview() {
+  try {
+    // Get all aliases (users)
+    const allUsers = await provider.overview.allAliases();
+    
+    // Get all instances (courses/projects)
+    const allInstances = await provider.overview.allInstances();
+    
+    // Get global statistics
+    const globalStats = await Promise.all([
+      provider.overview.stats.enrolleeCount(allInstances.courses.map(c => c.policy)),
+      provider.overview.stats.commitmentCount(allInstances.projects.map(p => p.policy))
+    ]);
+    
+    return {
+      totalUsers: allUsers.length,
+      totalCourses: allInstances.courses.length,
+      totalProjects: allInstances.projects.length,
+      totalEnrollments: globalStats[0].reduce((acc, stat) => acc + stat.enrolled, 0),
+      totalCommitments: globalStats[1].reduce((acc, stat) => acc + stat.committed, 0)
+    };
+  } catch (error) {
+    console.error("Error fetching platform overview:", error);
+    throw error;
+  }
+}
+```
+
+---
+
+## Data Types and Structures
+
+### **UTXO Objects**
+All provider methods return standardized UTXO objects with parsed data:
+
+```typescript
+interface AndamioUtxo {
+  input: {
+    txHash: string;
+    outputIndex: number;
+  };
+  output: {
+    address: string;
+    amount: Asset[];
+    plutusData?: any;
+  };
+  parsedValued?: {
+    datum?: {
+      payload: any;
+    };
+    script?: any;
+  };
+}
+```
+
+### **Statistics Objects**
+```typescript
+interface EnrollmentStats {
+  policy: string;
+  state: "Course" | "Project";
+  enrolled: number;
+  completed: number;
+}
+
+interface CommitmentStats {
+  policy: string;
+  state: "Course" | "Project";
+  committed: number;
+}
+```
+
+---
+
+## Error Handling
+
+### **Common Error Patterns**
+
+```typescript
+try {
+  const data = await provider.core.globalState.getUtxoByAlias("nonexistent_user");
+} catch (error) {
+  if (error instanceof SdkError) {
+    console.error("SDK Error:", error.message);
+  } else {
+    console.error("Unexpected error:", error);
+  }
+}
+```
+
+### **Graceful Degradation**
+
+```typescript
+async function safeDataRetrieval(alias: string) {
+  try {
+    const userData = await provider.overview.userData(alias);
+    return userData;
+  } catch (error) {
+    console.warn(`Failed to fetch data for ${alias}:`, error.message);
+    return null; // Return null or default data structure
+  }
+}
+```
+
+---
+
+## Performance Considerations
+
+### **Efficient Data Access**
+
+```typescript
+// Good: Batch queries when possible
+const allCourseStates = await provider.core.localStates.course.courseState.getUtxos();
+
+// Avoid: Multiple individual queries
+// const states = await Promise.all(
+//   aliases.map(alias => provider.core.localStates.course.courseState.getUtxoByAlias(courseId, alias))
+// );
+```
+
+### **Caching Strategy**
+
+```typescript
+class DataCache {
+  private cache = new Map();
+  
+  async getCachedUserData(alias: string) {
+    if (this.cache.has(alias)) {
+      return this.cache.get(alias);
+    }
+    
+    const userData = await provider.overview.userData(alias);
+    this.cache.set(alias, userData);
+    return userData;
+  }
+  
+  clearCache() {
+    this.cache.clear();
+  }
+}
+```
+
+---
+
+## Integration Examples
+
+### **React Hook Integration**
+
+```typescript
+import { useState, useEffect } from 'react';
+
+const useAndamioData = (alias: string) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setLoading(true);
+        const userData = await provider.overview.userData(alias);
+        setData(userData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchData();
+  }, [alias]);
+  
+  return { data, loading, error };
+};
+```
+
+### **Express.js API Integration**
+
+```typescript
+app.get('/api/user/:alias', async (req, res) => {
+  try {
+    const { alias } = req.params;
+    const userData = await provider.overview.userData(alias);
+    res.json({ success: true, data: userData });
+  } catch (error) {
+    res.status(404).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+app.get('/api/course/:courseId/stats', async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const stats = await provider.overview.stats.enrolleeCountUnderAlias(courseId);
+    res.json({ success: true, data: stats });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+```
+
+---
+
+## Best Practices
+
+### **1. Error Handling**
+- Always implement proper error handling for network operations
+- Use specific error types to handle different failure scenarios
+- Implement retry logic for transient failures
+
+### **2. Data Validation**
+- Validate returned data before using it in your application
+- Check for null/undefined values from optional data
+- Implement type guards for complex data structures
+
+### **3. Performance Optimization**
+- Use batch queries when fetching multiple related data points
+- Implement appropriate caching strategies
+- Avoid unnecessary repeated queries
+
+### **4. Security Considerations**
+- Validate user inputs before querying
+- Implement proper access controls
+- Handle sensitive data appropriately
+
+### **5. Monitoring and Logging**
+- Log important operations for debugging
+- Monitor query performance and errors
+- Implement health checks for provider connectivity

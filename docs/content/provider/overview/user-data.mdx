@@ -1,5 +1,124 @@
 # User Data
 
+The User Data functionality provides comprehensive user information retrieval, including course and project participation, challenge completion status, and user profile information.
+
+## Overview
+
+User Data aggregates information about a user's participation across the Andamio network by querying their global state and local state data. This includes enrolled courses, active projects, completed challenges, and progress tracking.
+
+## Types
+
+### AliasData
+
+Structure containing user's courses and projects data.
+
 ```typescript
-const userData = await sdk.provider.network.getUserData(<alias>)
+type AliasData = {
+    courses: Instance[];
+    projects: Instance[];
+};
 ```
+
+### Instance
+
+Represents an instance with policy ID, challenges, and completion status.
+
+```typescript
+type Instance = {
+    policy: string;
+    challenges: string[];
+    completed: boolean;
+    completedChallengesInLocalState: string[] | null;
+};
+```
+
+## Function
+
+### userData(core, alias)
+
+Fetches comprehensive user data associated with a specific alias, including course and project participation details.
+
+**Syntax:**
+```typescript
+const userData = await userData(core, alias)
+```
+
+**Parameters:**
+- `core` (Core) - The core SDK instance
+- `alias` (string) - The user's alias to retrieve data for
+
+**Returns:**
+- `Promise<{ info: string; data: AliasData }>` - Object containing user information and structured participation data
+
+**Example:**
+```typescript
+try {
+  const alias = "student123";
+  const result = await userData(core, alias);
+  
+  console.log('User info:', result.info);
+  console.log(`Enrolled in ${result.data.courses.length} courses`);
+  console.log(`Participating in ${result.data.projects.length} projects`);
+  
+  // Analyze course progress
+  result.data.courses.forEach((course, index) => {
+    console.log(`\nCourse ${index + 1}:`);
+    console.log(`  Policy: ${course.policy}`);
+    console.log(`  Total challenges: ${course.challenges.length}`);
+    console.log(`  Completed: ${course.completed ? 'Yes' : 'No'}`);
+    
+    if (!course.completed && course.completedChallengesInLocalState) {
+      const completedCount = course.completedChallengesInLocalState.length;
+      const progress = (completedCount / course.challenges.length * 100).toFixed(1);
+      console.log(`  Progress: ${completedCount}/${course.challenges.length} (${progress}%)`);
+      console.log(`  Completed challenges: ${course.completedChallengesInLocalState.join(', ')}`);
+    }
+  });
+  
+  // Analyze project participation
+  result.data.projects.forEach((project, index) => {
+    console.log(`\nProject ${index + 1}:`);
+    console.log(`  Policy: ${project.policy}`);
+    console.log(`  Challenges: ${project.challenges.length}`);
+    console.log(`  Status: ${project.completed ? 'Completed' : 'In Progress'}`);
+  });
+  
+} catch (error) {
+  if (error.message.includes('No UTXO found for alias')) {
+    console.error('User not found:', alias);
+  } else {
+    console.error('Failed to fetch user data:', error);
+  }
+}
+```
+
+**Detailed Behavior:**
+1. **Global State Query**: Retrieves the user's global state UTXO containing overall participation data
+2. **Instance Classification**: Categorizes each instance as either a course or project based on network-wide instance lists
+3. **Challenge Parsing**: Extracts challenge lists and completion status for each instance
+4. **Local State Integration**: For incomplete instances, queries local state to get detailed progress information
+5. **Data Aggregation**: Combines all information into structured course and project arrays
+
+**Data Structure Details:**
+- **info**: User's profile information stored as a string
+- **courses**: Array of course instances the user is enrolled in
+- **projects**: Array of project instances the user is participating in
+- **policy**: Unique identifier for each course or project
+- **challenges**: List of all available challenges in hexadecimal format
+- **completed**: Boolean indicating if the user has completed all challenges
+- **completedChallengesInLocalState**: Detailed list of completed challenges when available
+
+**Progress Tracking:**
+- For completed instances: `completed` is `true` and `completedChallengesInLocalState` is `null`
+- For in-progress instances: `completed` is `false` and `completedChallengesInLocalState` contains the list of completed challenges
+- Local state data is retrieved from either course state or assignment state depending on availability
+
+**Throws:**
+- `SdkError` - When the user alias is not found or when data fetching fails
+
+**Use Cases:**
+- Building user profile dashboards
+- Tracking learning progress across courses
+- Generating completion certificates
+- Analyzing user engagement patterns
+- Creating personalized learning recommendations

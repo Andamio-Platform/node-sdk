@@ -1,12 +1,393 @@
 # Transaction Builder
 
-The `tx` module is the part of the SDK used to build Andamio transactions.
-It provides comprehensive functionality for easily building andamio 
-transactions that goes onchain.
+The `tx` module is the core transaction building component of the Andamio SDK, providing comprehensive functionality for constructing and submitting blockchain transactions that implement the Andamio protocol.
 
 ## Overview
 
-The transaction builder abstracts the complexity of blockchain interactions,
-allowing developers to construct valid transactions with minimal effort.
-This module handles transaction building with proper
-serialization of data that goes onchain according to the Andamio protocol specifications.
+The transaction builder abstracts the complexity of blockchain interactions, allowing developers to construct valid Cardano transactions with minimal effort. This module handles transaction building with proper serialization of data that goes on-chain according to the Andamio protocol specifications.
+
+### Key Features
+
+- **Protocol Compliance**: All transactions follow Andamio protocol specifications
+- **Script Integration**: Seamless integration with Plutus V3 smart contracts
+- **State Management**: Proper handling of global and local state transitions
+- **Token Management**: Comprehensive token minting and transfer operations
+- **Error Handling**: Robust error handling and validation
+- **Network Flexibility**: Support for multiple Cardano networks (Mainnet, Preprod, Preview)
+
+---
+
+## Architecture
+
+### Transaction Class Structure
+
+```typescript
+class Transaction {
+  public student: StudentTransactions;
+  public courseCreator: CourseCreatorTransactions;
+  
+  // Core transaction methods
+  public mintAccessToken(params): Promise<string>
+  public sponsorMintAccessToken(params): Promise<string>
+}
+```
+
+### Module Organization
+
+The transaction builder is organized into specialized modules:
+
+#### **Core Transactions**
+- **Access Token Minting**: User registration and identity creation
+- **Sponsored Minting**: Third-party sponsored user registration
+
+#### **Student Transactions**
+- **Course Enrollment**: Join courses and mint course state tokens
+- **Assignment Submission**: Submit assignments for instructor review
+
+#### **Course Creator Transactions**
+- **Module Token Minting**: Create course modules with requirements
+- **Assignment Acceptance**: Approve student assignment submissions
+
+---
+
+## Transaction Types
+
+### 1. Access Token Transactions
+
+#### **Mint Access Token**
+Creates a new user identity on the Andamio platform.
+
+```typescript
+const txCbor = await sdk.transaction.mintAccessToken({
+  userAddress: "addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj83ws8lhrn648jjxtwq2ytjqp",
+  alias: "student_alice"
+});
+```
+
+**Features:**
+- Mints user access token for platform authorization
+- Creates global state token for progress tracking
+- Establishes unique alias identity
+- Pays protocol registration fee
+
+#### **Sponsor Mint Access Token**
+Allows third parties to sponsor new user registration.
+
+```typescript
+const txCbor = await sdk.transaction.sponsorMintAccessToken({
+  userAddress: "addr1...",
+  alias: "sponsored_user"
+});
+```
+
+### 2. Student Transactions
+
+#### **Course Enrollment**
+```typescript
+const txCbor = await sdk.transaction.student.enroll({
+  alias: "student_bob",
+  courseId: "blockchain-fundamentals-2024"
+});
+```
+
+**Process:**
+1. Validates student access token
+2. Updates global state with new enrollment
+3. Mints course state token
+4. Enables access to course materials
+
+#### **Assignment Submission**
+```typescript
+const txCbor = await sdk.transaction.student.commitAssignment({
+  alias: "student_bob",
+  courseId: "blockchain-fundamentals-2024",
+  moduleTokenName: "IntroToBlockchain",
+  assignmentEvidenceInHex: "48656c6c6f20576f726c64"
+});
+```
+
+**Process:**
+1. Moves course state token to assignment validator
+2. Includes submission evidence/proof
+3. References module requirements
+4. Awaits instructor review
+
+### 3. Course Creator Transactions
+
+#### **Module Token Minting**
+```typescript
+const moduleDetails = [
+  {
+    moduleTokenName: "IntroToBlockchain",
+    slts: { learningObjectives: ["Understand blockchain basics"] },
+    assignment: { type: "quiz", passingScore: 80 }
+  }
+];
+
+const txCbor = await sdk.transaction.courseCreator.mintModuleTokens({
+  alias: "instructor_alice",
+  courseId: "blockchain-course",
+  listOfModuleDetails: moduleDetails
+});
+```
+
+**Process:**
+1. Mints module reference tokens
+2. Stores module specifications on-chain
+3. Defines learning requirements
+4. Enables student assignment submissions
+
+#### **Assignment Acceptance**
+```typescript
+const txCbor = await sdk.transaction.courseCreator.acceptAssignment({
+  approverAlias: "instructor_alice",
+  studentAlias: "student_bob",
+  courseId: "blockchain-course",
+  moduleTokenName: "IntroToBlockchain"
+});
+```
+
+**Process:**
+1. Reviews student assignment submission
+2. Moves course state token from assignment validator
+3. Updates student progress
+4. Issues module completion credential
+
+---
+
+## Technical Implementation
+
+### Script Integration
+
+All transactions use Plutus V3 smart contracts for validation:
+
+- **Global State Validator**: Manages user enrollments and progress
+- **Local State Validators**: Handle course-specific state transitions
+- **Minting Policies**: Control token creation and distribution
+- **Observer Scripts**: Provide additional validation through stake withdrawal
+
+### Transaction Structure
+
+Each transaction follows a consistent pattern:
+
+1. **Input Collection**: Gather required UTXOs
+2. **Script References**: Load reference scripts for validation
+3. **Datum Processing**: Construct proper on-chain data
+4. **Redeemer Creation**: Build script execution parameters
+5. **Output Generation**: Create transaction outputs
+6. **Fee Calculation**: Handle network and protocol fees
+7. **Serialization**: Convert to CBOR for signing
+
+### State Management
+
+The transaction builder manages multiple state types:
+
+- **Global State**: Cross-platform user progress and enrollments
+- **Course State**: Individual course progress and completion
+- **Assignment State**: Temporary state during assignment review
+- **Module Reference**: Course module specifications and requirements
+
+---
+
+## Usage Patterns
+
+### Basic Transaction Flow
+
+```typescript
+// 1. Initialize SDK
+const sdk = new AndamioSDK(config);
+
+// 2. Build transaction
+const txCbor = await sdk.transaction.mintAccessToken({
+  userAddress: walletAddress,
+  alias: "new_user"
+});
+
+// 3. Sign with wallet
+const signedTx = await wallet.signTx(txCbor);
+
+// 4. Submit to network
+const txHash = await wallet.submitTx(signedTx);
+
+console.log(`Transaction submitted: ${txHash}`);
+```
+
+### Error Handling
+
+```typescript
+try {
+  const txCbor = await sdk.transaction.student.enroll({
+    alias: "student",
+    courseId: "invalid-course"
+  });
+} catch (error) {
+  if (error instanceof SdkError) {
+    console.error("SDK Error:", error.message);
+  } else {
+    console.error("Unexpected error:", error);
+  }
+}
+```
+
+### Batch Operations
+
+```typescript
+// Sequential transaction processing
+const transactions = [];
+for (const enrollment of enrollments) {
+  const txCbor = await sdk.transaction.student.enroll(enrollment);
+  transactions.push(txCbor);
+}
+
+// Process each transaction
+for (const txCbor of transactions) {
+  const signedTx = await wallet.signTx(txCbor);
+  const txHash = await wallet.submitTx(signedTx);
+  await waitForConfirmation(txHash);
+}
+```
+
+---
+
+## Configuration
+
+### Network Setup
+
+```typescript
+const config = {
+  network: "Preprod", // or "Mainnet", "Preview"
+  providers: {
+    maestro: {
+      apiKey: "your-maestro-api-key"
+    },
+    utxorpc: {
+      url: "https://your-utxorpc-endpoint",
+      apiKey: "your-api-key"
+    }
+  }
+};
+```
+
+### Protocol Parameters
+
+The transaction builder automatically handles:
+- Protocol fees and treasury payments
+- Script reference locations
+- Validator addresses
+- Token policy IDs
+- Network-specific configurations
+
+---
+
+## Best Practices
+
+### Transaction Safety
+
+1. **Validation**: Always validate inputs before building transactions
+2. **Error Handling**: Implement comprehensive error handling
+3. **Testing**: Test transactions on testnet before mainnet deployment
+4. **Monitoring**: Monitor transaction confirmation and handle failures
+
+### Performance Optimization
+
+1. **UTXO Management**: Efficiently select UTXOs for transactions
+2. **Reference Scripts**: Use reference scripts to minimize transaction size
+3. **Batch Processing**: Group related operations when possible
+4. **Caching**: Cache frequently accessed data and references
+
+### Security Considerations
+
+1. **Key Management**: Secure private key handling for transaction signing
+2. **Input Validation**: Validate all transaction inputs and parameters
+3. **Script Verification**: Verify script references and validator logic
+4. **Fee Management**: Ensure adequate fees for transaction processing
+
+---
+
+## Integration Examples
+
+### Frontend Integration
+
+```typescript
+// React component example
+const useAndamioTransaction = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const enrollInCourse = async (courseId: string) => {
+    setIsLoading(true);
+    try {
+      const txCbor = await sdk.transaction.student.enroll({
+        alias: userAlias,
+        courseId
+      });
+      
+      const signedTx = await walletApi.signTx(txCbor);
+      const txHash = await walletApi.submitTx(signedTx);
+      
+      return { success: true, txHash };
+    } catch (error) {
+      return { success: false, error: error.message };
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  return { enrollInCourse, isLoading };
+};
+```
+
+### Backend Integration
+
+```typescript
+// Node.js server example
+app.post('/api/enroll', async (req, res) => {
+  try {
+    const { userAddress, alias, courseId } = req.body;
+    
+    // Build transaction
+    const txCbor = await sdk.transaction.student.enroll({
+      alias,
+      courseId
+    });
+    
+    // Return for client-side signing
+    res.json({ 
+      success: true, 
+      transaction: txCbor 
+    });
+  } catch (error) {
+    res.status(400).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Insufficient Funds**: Ensure wallet has adequate ADA for fees
+2. **Missing UTXOs**: Verify required tokens and UTXOs are available
+3. **Script Failures**: Check datum and redeemer construction
+4. **Network Congestion**: Handle timeout and retry logic
+
+### Debug Information
+
+Enable verbose logging for detailed transaction information:
+
+```typescript
+const sdk = new AndamioSDK({
+  ...config,
+  debug: true // Enables detailed logging
+});
+```
+
+This will provide detailed information about:
+- UTXO selection process
+- Script reference resolution
+- Datum and redeemer construction
+- Transaction building steps

@@ -1,5 +1,133 @@
 # All Instances
 
+The All Instances functionality provides network-wide discovery of courses and projects by querying governance UTXOs and categorizing instances based on their NFT types.
+
+## Overview
+
+All Instances scans the instance governance contract to identify all registered courses and projects on the Andamio network. It differentiates between courses and projects by examining the NFT assets associated with each governance UTXO.
+
+## Function
+
+### allInstances(core)
+
+Fetches all policy IDs categorized as courses or projects across the network.
+
+**Syntax:**
 ```typescript
-const instances = await sdk.provider.network.getAllInstancesList()
+const instances = await allInstances(core)
 ```
+
+**Parameters:**
+- `core` (Core) - The core SDK instance
+
+**Returns:**
+- `Promise<{ courses: string[]; projects: string[] }>` - Object containing arrays of course and project policy IDs
+
+**Example:**
+```typescript
+try {
+  const instances = await allInstances(core);
+  
+  console.log(`Network Overview:`);
+  console.log(`- Courses: ${instances.courses.length}`);
+  console.log(`- Projects: ${instances.projects.length}`);
+  console.log(`- Total Instances: ${instances.courses.length + instances.projects.length}`);
+  
+  // List all course policies
+  console.log('\nCourse Policies:');
+  instances.courses.forEach((policy, index) => {
+    console.log(`  ${index + 1}. ${policy}`);
+  });
+  
+  // List all project policies
+  console.log('\nProject Policies:');
+  instances.projects.forEach((policy, index) => {
+    console.log(`  ${index + 1}. ${policy}`);
+  });
+  
+  // Check if a specific policy is a course or project
+  const targetPolicy = "a1b2c3d4e5f6...";
+  if (instances.courses.includes(targetPolicy)) {
+    console.log(`${targetPolicy} is a course`);
+  } else if (instances.projects.includes(targetPolicy)) {
+    console.log(`${targetPolicy} is a project`);
+  } else {
+    console.log(`${targetPolicy} is not found in the network`);
+  }
+  
+} catch (error) {
+  console.error('Failed to fetch all instances:', error);
+}
+```
+
+**Advanced Usage:**
+```typescript
+// Build a comprehensive network directory
+try {
+  const instances = await allInstances(core);
+  
+  // Create a lookup map for quick instance type checking
+  const instanceTypeMap = new Map();
+  instances.courses.forEach(policy => instanceTypeMap.set(policy, 'course'));
+  instances.projects.forEach(policy => instanceTypeMap.set(policy, 'project'));
+  
+  // Function to get instance type
+  const getInstanceType = (policy: string) => {
+    return instanceTypeMap.get(policy) || 'unknown';
+  };
+  
+  // Network statistics
+  const networkStats = {
+    totalInstances: instances.courses.length + instances.projects.length,
+    courseToProjectRatio: instances.courses.length / instances.projects.length,
+    coursesPercentage: (instances.courses.length / (instances.courses.length + instances.projects.length) * 100).toFixed(1),
+    projectsPercentage: (instances.projects.length / (instances.courses.length + instances.projects.length) * 100).toFixed(1)
+  };
+  
+  console.log('Network Statistics:', networkStats);
+  
+} catch (error) {
+  console.error('Failed to analyze network:', error);
+}
+```
+
+**Detailed Behavior:**
+1. **Governance Query**: Retrieves all UTXOs from the instance governance contract
+2. **Policy Extraction**: Extracts the instance policy ID from each governance UTXO's datum
+3. **Asset Analysis**: Examines the assets in each UTXO to determine the instance type
+4. **Type Classification**: 
+   - UTXOs containing "CourseNFT" assets are classified as courses
+   - UTXOs containing "ProjectNFT" assets are classified as projects
+5. **Result Aggregation**: Returns separate arrays for courses and projects
+
+**Classification Logic:**
+- **Courses**: Identified by the presence of an asset with the name "CourseNFT" (hex: `436f757273654e4654`)
+- **Projects**: Identified by the presence of an asset with the name "ProjectNFT" (hex: `50726f6a6563744e4654`)
+- **Filtering**: Only UTXOs with valid policy data in the datum are processed
+
+**Data Structure:**
+```typescript
+{
+  courses: [
+    "policy1...",
+    "policy2...",
+    // ... more course policies
+  ],
+  projects: [
+    "policy3...",
+    "policy4...",
+    // ... more project policies
+  ]
+}
+```
+
+**Throws:**
+- `SdkError` - When the governance UTXOs cannot be retrieved or processed
+
+**Use Cases:**
+- Building network directory interfaces
+- Instance discovery and browsing
+- Network analytics and reporting
+- Validating instance policy IDs
+- Creating instance type lookup systems
+- Monitoring network growth and activity

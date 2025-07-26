@@ -1,0 +1,230 @@
+# Accept Assignment
+
+This function creates a transaction for course creators to accept and approve student assignments, transferring the assignment from the assignment validator to the course state.
+
+---
+
+## `acceptAssignmentTx(params)`
+
+Builds a transaction that allows a course creator to accept a student's assignment submission and issue a module token as proof of completion.
+
+### **Signature**
+```ts
+export async function acceptAssignmentTx({
+  client,
+  provider,
+  approverAlias,
+  studentAlias,
+  courseId,
+  moduleTokenName
+}: {
+  client: UtxorpcClient;
+  provider: Provider;
+  approverAlias: string;
+  studentAlias: string;
+  courseId: string;
+  moduleTokenName: string;
+}): Promise<string>
+```
+
+### **Parameters**
+
+| Name            | Type           | Description                                           |
+|-----------------|----------------|-------------------------------------------------------|
+| client          | `UtxorpcClient`| UTXO RPC client for blockchain interactions           |
+| provider        | `Provider`     | Provider instance for accessing core functionality    |
+| approverAlias   | `string`       | Alias of the course creator approving the assignment  |
+| studentAlias    | `string`       | Alias of the student whose assignment is being approved |
+| courseId        | `string`       | Unique identifier of the course                       |
+| moduleTokenName | `string`       | Name of the module token to be issued upon acceptance |
+
+### **Returns**
+
+A promise that resolves to a string containing the transaction CBOR that can be signed and submitted.
+
+### **Transaction Structure**
+
+The function constructs a complex transaction with the following components:
+
+#### **Inputs**
+1. **Assignment State UTXO**: 
+   - Spends from the assignment validator using Plutus V3 script
+   - Uses inline datum and reference script
+   - Redeemer: `conStr1([])` (acceptance action)
+
+2. **Instance Governance UTXO**:
+   - Spends from instance governance validator using Plutus V3 script
+   - Uses inline datum with hardcoded reference script
+   - Redeemer: `conStr0([builtinByteString("323232" + approverAlias)])`
+
+3. **User Access Token UTXO**:
+   - Spends the approver's access token for authorization
+   - Simple UTXO input (no script)
+
+#### **Outputs**
+1. **Course State Output**:
+   - Sends course state token to course state address
+   - Token: `courseStateTokenPolicy + studentAlias`
+   - Datum: Updated course state datum with module token name
+
+2. **Instance Governance Return**:
+   - Returns governance token to instance governance address
+   - Preserves original governance datum
+
+3. **User Access Token Return**:
+   - Returns access token to approver's address
+   - Token: `accessTokenPolicyId + "323232" + approverAlias`
+
+### **Behavior**
+
+1. **Setup**: Initializes Maestro provider and MeshTxBuilder with Preprod network configuration
+2. **Token Resolution**: Resolves course state token policy and addresses
+3. **UTXO Collection**: Gathers required UTXOs:
+   - User UTXOs (including access token and collateral)
+   - Instance governance UTXO for the course
+   - Assignment state UTXO for the student
+   - Assignment validator reference script
+4. **Datum Validation**: Validates the course state datum from assignment state
+5. **Transaction Building**: Constructs the transaction with proper inputs, outputs, and scripts
+6. **Completion**: Builds and returns the transaction CBOR
+
+### **Script References**
+
+- **Assignment Validator**: Retrieved dynamically from instance UTXOs
+- **Instance Governance**: Uses hardcoded reference (`4df3ebc0592b39124c5cc3a1cf680a5d7ac393531dd308e34ee499fbad7257e7`, index 3)
+
+### **Errors**
+
+Throws errors if:
+- User access token UTXO not found for the approver alias
+- Invalid course state datum in assignment state
+- Required UTXOs are missing or inaccessible
+- Transaction building fails
+
+---
+
+## Example Usage
+
+### Basic Assignment Acceptance
+
+```typescript
+import { acceptAssignmentTx } from './accept-assignment';
+
+// Accept a student's assignment
+const txCbor = await acceptAssignmentTx({
+  client: utxorpcClient,
+  provider: sdkProvider,
+  approverAlias: "instructor_alice",
+  studentAlias: "student_bob", 
+  courseId: "blockchain-fundamentals-2024",
+  moduleTokenName: "Module1Complete"
+});
+
+// Sign and submit the transaction
+const signedTx = await wallet.signTx(txCbor);
+const txHash = await wallet.submitTx(signedTx);
+console.log(`Assignment accepted! Transaction: ${txHash}`);
+```
+
+### Integration with Course Management
+
+```typescript
+// Course creator workflow
+async function approveAssignment(courseId: string, studentAlias: string, moduleToken: string) {
+  try {
+    // Build acceptance transaction
+    const txCbor = await acceptAssignmentTx({
+      client,
+      provider,
+      approverAlias: "course_creator",
+      studentAlias,
+      courseId,
+      moduleTokenName: moduleToken
+    });
+    
+    // Process transaction
+    const result = await processTransaction(txCbor);
+    return {
+      success: true,
+      txHash: result.txHash,
+      moduleToken
+    };
+  } catch (error) {
+    console.error("Failed to accept assignment:", error);
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### Batch Assignment Processing
+
+```typescript
+// Accept multiple assignments
+async function batchAcceptAssignments(assignments: Array<{
+  studentAlias: string;
+  courseId: string;
+  moduleTokenName: string;
+}>) {
+  const results = [];
+  
+  for (const assignment of assignments) {
+    const txCbor = await acceptAssignmentTx({
+      client,
+      provider,
+      approverAlias: "batch_approver",
+      ...assignment
+    });
+    
+    results.push({
+      student: assignment.studentAlias,
+      txCbor,
+      module: assignment.moduleTokenName
+    });
+  }
+  
+  return results;
+}
+```
+
+---
+
+## Workflow Integration
+
+### Assignment Lifecycle
+
+1. **Student Submission**: Student commits assignment using `commitAssignmentTx`
+2. **Review Period**: Assignment sits in assignment validator awaiting approval
+3. **Acceptance**: Course creator uses `acceptAssignmentTx` to approve
+4. **Token Issuance**: Module token is created and assigned to student
+5. **State Update**: Course state reflects completed module
+
+### Authorization Model
+
+- **Approver Verification**: Uses access token to verify approver authority
+- **Course Association**: Validates approver has rights to the specific course
+- **Student Validation**: Ensures assignment exists for the specified student
+
+---
+
+## Technical Notes
+
+### Network Configuration
+- **Hardcoded Network**: Currently configured for Preprod testnet
+- **Maestro Integration**: Uses Maestro as the primary provider for transaction operations
+- **API Key**: Contains hardcoded Maestro API key (should be externalized)
+
+### Token Naming Convention
+- **Access Tokens**: Format `policyId + "323232" + hexEncodedAlias`
+- **Course State Tokens**: Format `courseStatePolicy + hexEncodedStudentAlias`
+- **Module Tokens**: Custom names provided by course creators
+
+### Security Considerations
+- **Script Validation**: Uses Plutus V3 scripts for secure state transitions
+- **Datum Integrity**: Validates course state datum before processing
+- **Access Control**: Requires valid access token for transaction authorization
+- **Collateral Management**: Automatically selects appropriate collateral UTXO
+
+### Performance Optimization
+- **Reference Scripts**: Uses reference scripts to reduce transaction size
+- **Inline Datums**: Employs inline datums for efficient data storage
+- **UTXO Selection**: Automatically selects optimal UTXOs for transaction construction

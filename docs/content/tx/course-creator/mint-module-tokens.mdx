@@ -1,0 +1,307 @@
+# Mint Module Tokens
+
+This function creates a transaction for course creators to mint module tokens that define the structure and requirements of course modules.
+
+---
+
+## `mintModuleTokensTx(params)`
+
+Builds a transaction that allows a course creator to mint multiple module tokens for a course, each representing a distinct learning module with its own requirements and assignments.
+
+### **Signature**
+```ts
+export async function mintModuleTokensTx({
+  client,
+  provider,
+  alias,
+  courseId,
+  listOfModuleDetails
+}: {
+  client: UtxorpcClient;
+  provider: Provider;
+  alias: string;
+  courseId: string;
+  listOfModuleDetails: ModuleDetails[];
+}): Promise<string>
+```
+
+### **Parameters**
+
+| Name               | Type             | Description                                        |
+|--------------------|------------------|----------------------------------------------------|
+| client             | `UtxorpcClient`  | UTXO RPC client for blockchain interactions        |
+| provider           | `Provider`       | Provider instance for accessing core functionality |
+| alias              | `string`         | Alias of the course creator minting the tokens     |
+| courseId           | `string`         | Unique identifier of the course                    |
+| listOfModuleDetails| `ModuleDetails[]`| Array of module specifications to mint tokens for  |
+
+### **ModuleDetails Type**
+
+```ts
+type ModuleDetails = {
+  moduleTokenName: string;    // Unique name for the module token
+  slts: any;                 // Student Learning Targets
+  assignment: any;           // Assignment specifications
+}
+```
+
+### **Returns**
+
+A promise that resolves to a string containing the transaction CBOR that can be signed and submitted.
+
+### **Transaction Structure**
+
+The function constructs a transaction with the following components:
+
+#### **Inputs**
+1. **Instance Governance UTXO**:
+   - Spends from instance governance validator using Plutus V3 script
+   - Uses inline datum with hardcoded reference script
+   - Redeemer: `conStr0([builtinByteString("323232" + alias)])`
+
+2. **User Access Token UTXO**:
+   - Spends the course creator's access token for authorization
+   - Simple UTXO input (no script)
+
+#### **Minting Operations**
+For each module in `listOfModuleDetails`:
+- **Mint Module Token**: 
+  - Policy: Module reference token policy for the course
+  - Asset name: Hex-encoded module token name
+  - Quantity: 1 token
+  - Uses Plutus V3 minting script with reference
+
+#### **Outputs**
+1. **Module Reference Outputs** (one per module):
+   - Address: Module reference address for the course
+   - Token: `moduleReferenceTokenPolicy + hexEncodedModuleTokenName`
+   - Datum: Module reference datum containing module details
+
+2. **Instance Governance Return**:
+   - Returns governance token to instance governance address
+   - Preserves original governance datum
+
+3. **User Access Token Return**:
+   - Returns access token to creator's address
+   - Token: `accessTokenPolicyId + "323232" + alias`
+
+### **Behavior**
+
+1. **Setup**: Initializes Maestro provider and MeshTxBuilder with Preprod network configuration
+2. **Address Resolution**: Resolves user address and module reference address
+3. **UTXO Collection**: Gathers required UTXOs:
+   - User UTXOs (including access token and collateral)
+   - Instance governance UTXO for the course
+   - Module reference script reference UTXO
+4. **Datum Preparation**: Creates module reference datums for each module
+5. **Redeemer Construction**: Builds mint redeemer containing all module specifications
+6. **Transaction Building**: Constructs the transaction with:
+   - Instance governance spending
+   - User access token spending
+   - Module token minting (loop for each module)
+   - Appropriate outputs and returns
+7. **Completion**: Builds and returns the transaction CBOR
+
+### **Minting Redeemer Structure**
+
+The mint redeemer follows this structure:
+```ts
+conStr0([
+  list(
+    moduleDetails.map((details, index) =>
+      conStr0([
+        builtinByteString(hexEncodedModuleTokenName),
+        moduleReferenceDatum
+      ])
+    )
+  )
+])
+```
+
+### **Script References**
+
+- **Instance Governance**: Uses hardcoded reference (`4df3ebc0592b39124c5cc3a1cf680a5d7ac393531dd308e34ee499fbad7257e7`, index 3)
+- **Module Reference Script**: Retrieved dynamically from instance UTXOs ("ModuleScripts")
+
+### **Errors**
+
+Throws errors if:
+- User access token UTXO not found for the creator alias
+- Instance governance UTXO cannot be retrieved
+- Module reference script reference is missing
+- Transaction building fails
+
+---
+
+## Example Usage
+
+### Basic Module Token Minting
+
+```typescript
+import { mintModuleTokensTx } from './mint-module-tokens';
+
+// Define module details
+const moduleDetails = [
+  {
+    moduleTokenName: "IntroToBlockchain",
+    slts: {
+      learningObjectives: ["Understand blockchain basics", "Learn consensus mechanisms"],
+      prerequisites: []
+    },
+    assignment: {
+      type: "quiz",
+      passingScore: 80,
+      timeLimit: 3600 // 1 hour in seconds
+    }
+  },
+  {
+    moduleTokenName: "SmartContracts",
+    slts: {
+      learningObjectives: ["Write basic smart contracts", "Deploy to testnet"],
+      prerequisites: ["IntroToBlockchain"]
+    },
+    assignment: {
+      type: "project",
+      requirements: ["Deploy a simple contract", "Write tests"],
+      dueDate: "2024-12-31"
+    }
+  }
+];
+
+// Mint module tokens
+const txCbor = await mintModuleTokensTx({
+  client: utxorpcClient,
+  provider: sdkProvider,
+  alias: "course_creator_alice",
+  courseId: "blockchain-fundamentals-2024",
+  listOfModuleDetails: moduleDetails
+});
+
+// Sign and submit
+const signedTx = await wallet.signTx(txCbor);
+const txHash = await wallet.submitTx(signedTx);
+console.log(`Module tokens minted! Transaction: ${txHash}`);
+```
+
+### Course Setup Workflow
+
+```typescript
+// Complete course setup with modules
+async function setupCourseModules(
+  courseId: string,
+  creatorAlias: string,
+  modules: ModuleDetails[]
+) {
+  try {
+    // Mint all module tokens in one transaction
+    const txCbor = await mintModuleTokensTx({
+      client,
+      provider,
+      alias: creatorAlias,
+      courseId,
+      listOfModuleDetails: modules
+    });
+    
+    const result = await processTransaction(txCbor);
+    
+    return {
+      success: true,
+      txHash: result.txHash,
+      modulesCreated: modules.length,
+      moduleNames: modules.map(m => m.moduleTokenName)
+    };
+  } catch (error) {
+    console.error("Failed to mint module tokens:", error);
+    return { success: false, error: error.message };
+  }
+}
+```
+
+### Dynamic Module Creation
+
+```typescript
+// Create modules based on curriculum template
+function createModulesFromCurriculum(curriculum: any[]): ModuleDetails[] {
+  return curriculum.map((lesson, index) => ({
+    moduleTokenName: `Module${index + 1}_${lesson.title.replace(/\s+/g, '')}`,
+    slts: {
+      learningObjectives: lesson.objectives,
+      prerequisites: lesson.prerequisites || [],
+      estimatedDuration: lesson.duration
+    },
+    assignment: {
+      type: lesson.assessmentType || "quiz",
+      passingScore: lesson.passingScore || 70,
+      instructions: lesson.assignmentInstructions,
+      resources: lesson.resources || []
+    }
+  }));
+}
+
+// Usage
+const curriculum = getCurriculumTemplate("blockchain-basics");
+const moduleDetails = createModulesFromCurriculum(curriculum);
+const txCbor = await mintModuleTokensTx({
+  client,
+  provider,
+  alias: "curriculum_designer",
+  courseId: "auto-generated-course",
+  listOfModuleDetails: moduleDetails
+});
+```
+
+---
+
+## Workflow Integration
+
+### Course Creation Process
+
+1. **Course Initialization**: Course creator sets up basic course structure
+2. **Module Definition**: Creator defines learning modules with SLTs and assignments
+3. **Token Minting**: Uses `mintModuleTokensTx` to create module tokens on-chain
+4. **Course Launch**: Course becomes available for student enrollment
+5. **Assignment Management**: Students can commit assignments for approved modules
+
+### Module Token Lifecycle
+
+1. **Creation**: Module tokens are minted with full specifications
+2. **Reference Storage**: Module details are stored in datum at module reference address
+3. **Assignment Validation**: System uses module tokens to validate assignment submissions
+4. **Completion Tracking**: Module tokens serve as reference for completion requirements
+
+---
+
+## Technical Notes
+
+### Network Configuration
+- **Hardcoded Network**: Currently configured for Preprod testnet
+- **Maestro Integration**: Uses Maestro for all blockchain operations
+- **API Key**: Contains hardcoded Maestro API key (should be externalized)
+
+### Token Economics
+- **Single Mint**: Each module token is minted exactly once (quantity: 1)
+- **Unique Names**: Module token names must be unique within the course
+- **Policy Scoping**: All modules for a course share the same token policy
+
+### Data Structure
+- **Module Reference Datum**: Contains complete module specifications
+- **Inline Datums**: Uses inline datums for efficient on-chain storage
+- **CBOR Encoding**: Governance datum uses CBOR encoding for compatibility
+
+### Security Features
+- **Access Control**: Requires valid access token for minting authorization
+- **Course Association**: Module tokens are bound to specific courses
+- **Script Validation**: Uses Plutus V3 scripts for secure token minting
+- **Governance Integration**: Integrates with instance governance for course management
+
+### Performance Considerations
+- **Batch Minting**: Mints multiple module tokens in a single transaction
+- **Reference Scripts**: Uses reference scripts to minimize transaction size
+- **Collateral Management**: Automatically handles collateral selection
+- **UTXO Optimization**: Efficient UTXO selection and change handling
+
+### Integration Points
+- **Assignment System**: Module tokens validate assignment submissions
+- **Completion Tracking**: Completion system references module specifications
+- **Course Management**: Integrates with broader course management infrastructure
+- **Student Interface**: Students can view module requirements through token data

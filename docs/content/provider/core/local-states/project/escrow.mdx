@@ -1,7 +1,143 @@
 # Escrow
 
-## Get UTxOs
+The Escrow provides functionality for managing project-related escrow transactions and funds. This enables secure handling of payments, deposits, and releases associated with project contributions and milestones.
 
+## Overview
+
+Escrow manages UTXOs that hold funds in escrow for specific projects. Each project has its own escrow address derived from the project NFT policy, providing secure fund management with blockchain-enforced release conditions.
+
+## Methods
+
+### getAddress(projectNftPolicy)
+
+Derives the escrow address for a given project NFT policy.
+
+**Syntax:**
 ```typescript
-const utxos = await sdk.provider.core.course.escrow.getUtxos(<project-nft-policy>)
+const address = await sdk.provider.core.course.escrow.getAddress(projectNftPolicy)
 ```
+
+**Parameters:**
+- `projectNftPolicy` (string) - The policy ID of the project NFT
+
+**Returns:**
+- `Promise<string>` - The derived escrow address for the project
+
+**Example:**
+```typescript
+try {
+  const projectPolicy = "a1b2c3d4e5f6...";
+  const escrowAddress = await sdk.provider.core.course.escrow.getAddress(projectPolicy);
+  console.log('Project escrow address:', escrowAddress);
+  // Example output: addr1q9x2kw...
+} catch (error) {
+  console.error('Failed to derive escrow address:', error);
+}
+```
+
+**Throws:**
+- `SdkError` - When address derivation fails
+
+---
+
+### getUtxos(projectNftPolicy?, address?)
+
+Retrieves UTXOs associated with a project's escrow address. Can use either a project policy to derive the address or a direct address.
+
+**Syntax:**
+```typescript
+const utxos = await sdk.provider.core.course.escrow.getUtxos(projectNftPolicy?, address?)
+```
+
+**Parameters:**
+- `projectNftPolicy` (string, optional) - The policy ID of the project NFT
+- `address` (string, optional) - Direct escrow address to query
+
+**Returns:**
+- `Promise<Utxo[]>` - Array of escrow UTXOs containing funds and assets
+
+**Example:**
+```typescript
+// Using project policy (address will be derived)
+try {
+  const projectPolicy = "a1b2c3d4e5f6...";
+  const utxos = await sdk.provider.core.course.escrow.getUtxos(projectPolicy);
+  console.log(`Found ${utxos.length} escrow UTXOs`);
+  
+  // Calculate total ADA in escrow
+  const totalLovelace = utxos.reduce((sum, utxo) => 
+    sum + parseInt(utxo.parsedValued?.coin || '0'), 0);
+  console.log(`Total ADA in escrow: ${totalLovelace / 1_000_000} ADA`);
+} catch (error) {
+  console.error('Failed to fetch escrow UTXOs:', error);
+}
+
+// Using direct address
+try {
+  const escrowAddress = "addr1q9x2kw...";
+  const utxos = await sdk.provider.core.course.escrow.getUtxos(undefined, escrowAddress);
+  console.log(`Found ${utxos.length} UTXOs at escrow address`);
+} catch (error) {
+  console.error('Failed to fetch UTXOs:', error);
+}
+```
+
+**Behavior:**
+- If only `projectNftPolicy` is provided, derives the escrow address first
+- If `address` is provided, uses it directly for UTXO queries
+- At least one parameter must be provided
+
+**Throws:**
+- `SdkError` - When neither parameter is provided or when UTXO fetching fails
+
+---
+
+### getUtxoByAlias(projectId, alias)
+
+Retrieves a specific escrow UTXO by project ID and contributor alias.
+
+**Syntax:**
+```typescript
+const utxo = await sdk.provider.core.course.escrow.getUtxoByAlias(projectId, alias)
+```
+
+**Parameters:**
+- `projectId` (string) - The project NFT policy ID
+- `alias` (string) - The contributor's alias
+
+**Returns:**
+- `Promise<Utxo>` - The escrow UTXO for the specified contributor and project
+
+**Example:**
+```typescript
+try {
+  const projectId = "a1b2c3d4e5f6...";
+  const contributorAlias = "contributor123";
+  
+  const utxo = await sdk.provider.core.course.escrow.getUtxoByAlias(projectId, contributorAlias);
+  console.log('Found escrow for contributor:', utxo.txHash);
+  console.log('Escrowed amount:', utxo.parsedValued?.coin, 'lovelace');
+  console.log('Escrow assets:', utxo.parsedValued?.assets);
+} catch (error) {
+  if (error.message.includes('No UTXO found')) {
+    console.error('No escrow found for contributor:', contributorAlias);
+  } else {
+    console.error('Error retrieving escrow:', error);
+  }
+}
+```
+
+**Behavior:**
+1. Retrieves all escrow UTXOs for the project using `getUtxos()`
+2. Searches through UTXOs for assets containing the specified alias name
+3. Returns the first matching UTXO found
+4. Asset names are decoded from hexadecimal format for comparison
+
+**Throws:**
+- `SdkError` - When no UTXO is found for the specified project and alias, or when the fetch operation fails
+
+**Use Cases:**
+- Checking escrowed funds for specific contributors
+- Managing milestone-based payments
+- Retrieving contributor deposit information
+- Facilitating escrow release conditions
