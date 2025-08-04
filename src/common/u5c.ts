@@ -128,5 +128,17 @@ export class UtxorpcClient {
         }
     }
 
+    async getUtxosByStakingPart(hash: string): Promise<Utxo[]> {
+        try {
+            const response = await this.cardanoQueryClient.searchUtxosByDelegationPart(
+                hexToBytes(hash)
+            );
+            return response;
+        } catch (error) {
+            logger.error(JSON.stringify(error, null, 2));
+            throw new SdkError("Failed to fetch UTXOs by staking part.");
+        }
+    }
+
 
 }

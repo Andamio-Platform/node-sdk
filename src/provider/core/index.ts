@@ -3,6 +3,7 @@ import { AliasIndex } from "./alias-index";
 import { GlobalState } from "./global-state";
 import { IndexReference } from "./index-reference";
 import { LocalStates } from "./local-states";
+import { Stake } from "./stake";
 import { UserAccessToken } from "./user-access-token";
 
 /**
@@ -17,6 +18,7 @@ export class Core {
   public globalState: GlobalState;
   public indesxReference: IndexReference;
   public userAccessToken: UserAccessToken;
+  public stake: Stake;
 
   public localStates: LocalStates;
 
@@ -28,6 +30,7 @@ export class Core {
     this.globalState = new GlobalState(this.client);
     this.indesxReference = new IndexReference(this.client);
     this.userAccessToken = new UserAccessToken(this.client);
+    this.stake = new Stake(this.client);
 
     this.localStates = new LocalStates(this.client);
   }

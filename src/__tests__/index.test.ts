@@ -11,7 +11,7 @@ describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
 
   beforeEach(() => {
-    sdk = new AndamioSDK("https://preprod.utxorpc-v0.demeter.run:443", "Preprod", process.env.DMTR_API_KEY || "");
+    sdk = new AndamioSDK("https://utxorpc.dolos.nelsonksh.dev:443", 'Mainnet', process.env.DMTR_API_KEY || "");
   });
 
   describe('overview endpoints', () => {
@@ -32,8 +32,7 @@ describe('AndamioSDK', () => {
     // });
 
     it('should fetch overview data', async () => {
-      console.log(process.env.DMTR_API_KEY);
-      const data = await sdk.provider.overview.getUserData("Zeus")
+      const data = await sdk.provider.core.stake.getTotalLovelaceStaked()
       console.log("Overview Data:", JSON.stringify(data, null, 2));
     });
 
