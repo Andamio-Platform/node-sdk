@@ -6,6 +6,7 @@ import AndamioConfigMainnet from "./common/andamio-config-mainnet.json";
 import AndamioConfigPreprodV2 from "./common/andamio-config-preprod-v2.json";
 import { SdkError } from "./common/error";
 import { Transaction } from "./tx";
+import { Utils } from "./utils";
 
 /**
  * Main class for the Andamio SDK.
@@ -23,6 +24,7 @@ export class AndamioSDK {
   private client: UtxorpcClient;
   public provider: Provider;
   public transaction: Transaction;
+  public utils: Utils;
 
   constructor(
     private readonly baseUrl: string,
@@ -46,7 +48,17 @@ export class AndamioSDK {
     );
     this.provider = new Provider(this.client);
     this.transaction = new Transaction(this.client, this.provider);
+    this.utils = new Utils();
   }
 }
 
 export default AndamioSDK;
+
+
+// Export Types
+export type { Network } from "./common/network";
+export type { Utxo, BlockfrostUTxO } from "./common/utxo";
+export type { UtxorpcClient } from "./common/u5c";
+export type { Provider } from "./provider";
+export type { Transaction } from "./tx";
+export type { Utils } from "./utils";

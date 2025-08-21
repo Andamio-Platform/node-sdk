@@ -1,6 +1,6 @@
 {
   "name": "@andamiojs/sdk",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Query Andamio data and build transactions",
   "main": "./dist/cjs/index.js",
   "module": "./dist/index.js",
