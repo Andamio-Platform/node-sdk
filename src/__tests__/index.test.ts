@@ -1,9 +1,10 @@
 // src/__tests__/index.test.ts
 require('dotenv').config()
-import { BlockfrostProvider, bytesToHex, TxParser } from '@meshsdk/core';
+import { BlockfrostProvider, bytesToHex, hexToString, TxParser } from '@meshsdk/core';
 import { AndamioSDK } from '../index';
 import { CSLSerializer } from '@meshsdk/core-csl';
 import { isGlobalStateDatum, toMeshGlobalStateDatum } from '../utils/parser/datum/global-state';
+import { rpcUtxoToBlockfrostUtxo, rpcUtxoToMeshUtxo } from '../common/utxo';
 
 jest.setTimeout(500000);
 
@@ -11,7 +12,7 @@ describe('AndamioSDK', () => {
   let sdk: AndamioSDK;
 
   beforeEach(() => {
-    sdk = new AndamioSDK("https://utxorpc.dolos.nelsonksh.dev:443", 'Mainnet', process.env.DMTR_API_KEY || "");
+    sdk = new AndamioSDK("https://preprod.utxorpc.dolos.andamio.space:443", 'Preprod', 2);
   });
 
   describe('overview endpoints', () => {
@@ -32,8 +33,9 @@ describe('AndamioSDK', () => {
     // });
 
     it('should fetch overview data', async () => {
-      const data = await sdk.provider.core.stake.getTotalLovelaceStaked()
-      console.log("Overview Data:", JSON.stringify(data, null, 2));
+      const data = await sdk.provider.core.localStates.instance.getUtxos()
+      console.log("Overview Data:", JSON.stringify(rpcUtxoToBlockfrostUtxo(data[0]), null, 2));
+      // console.log("Overview Data Buffer:", JSON.stringify(b, null, 2));
     });
 
     // it('should fetch overview data', async () => {

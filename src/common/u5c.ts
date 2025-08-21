@@ -8,6 +8,7 @@ import { hexToBytes, toBytes } from "@meshsdk/common";
 import { Network } from "./network";
 import AndamioConfigPreprod from "./andamio-config-preprod.json";
 import AndamioConfigMainnet from "./andamio-config-mainnet.json";
+import AndamioConfigPreprodV2 from "./andamio-config-preprod-v2.json"
 
 export class UtxorpcClient {
     private readonly cardanoQueryClient: CardanoQueryClient;
@@ -16,14 +17,18 @@ export class UtxorpcClient {
     constructor(
         public readonly baseUrl: string,
         public readonly network: Network,
+        public readonly protocolVersion?: number,
         public readonly dmtr_api_key?: string
     ) {
         this.network = this.network;
+        this.protocolVersion = this.protocolVersion;
         this.cardanoQueryClient = this.initializeCardanoClient();
         if (this.network === "Preview") {
             throw new SdkError("Preview network is not supported by Andamio");
+        } else if (this.network === "Preprod" && this.protocolVersion === 2) {
+            this.andamioConfig = AndamioConfigPreprodV2;
         } else if (this.network === "Preprod") {
-            this.andamioConfig = AndamioConfigPreprod;
+            this.andamioConfig =AndamioConfigPreprod;
         }
     }
 

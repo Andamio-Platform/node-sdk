@@ -3,13 +3,14 @@ import { UtxorpcClient } from "./common/u5c";
 import { Provider } from "./provider";
 import AndamioConfigPreprod from "./common/andamio-config-preprod.json";
 import AndamioConfigMainnet from "./common/andamio-config-mainnet.json";
+import AndamioConfigPreprodV2 from "./common/andamio-config-preprod-v2.json";
 import { SdkError } from "./common/error";
 import { Transaction } from "./tx";
 
 /**
  * Main class for the Andamio SDK.
  * Provides access to the UTXO-RPC client and provider.
- * 
+ *
  * @class AndamioSDK
  * @example
  * ```typescript
@@ -26,10 +27,13 @@ export class AndamioSDK {
   constructor(
     private readonly baseUrl: string,
     private readonly network: Network,
+    private readonly protocolVersion?: number,
     private readonly dmtr_api_key?: string
   ) {
     if (this.network === "Preview") {
       throw new SdkError("Preview network is not supported by Andamio");
+    } else if (this.network === "Preprod" && this.protocolVersion === 2) {
+      this.config = AndamioConfigPreprodV2;
     } else if (this.network === "Preprod") {
       this.config = AndamioConfigPreprod;
     }
@@ -37,6 +41,7 @@ export class AndamioSDK {
     this.client = new UtxorpcClient(
       this.baseUrl,
       this.network,
+      this.protocolVersion,
       this.dmtr_api_key
     );
     this.provider = new Provider(this.client);
